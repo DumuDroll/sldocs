@@ -307,7 +307,7 @@ public class WriteIPController {
                         }
                         String[] ends1 = {"КЕРІВНИЦТВО"};
                         rownum = writeKerivnictvo(rownum, professor, style, style12Bold, sheet, true, ends1);
-                        String[] ends2 = {"                  Аспіранти, докторанти", "                  Магістри професійні",
+                        String[] ends2 = {"              Аспіранти, докторанти", "                  Магістри професійні",
                                 "                  Бакалаври", "                  Курсові 5 курс"};
                         rownum = writeKerivnictvo(rownum, professor, style, style12, sheet, true, ends2);
                         row = sheet.createRow(rownum++);
@@ -352,7 +352,7 @@ public class WriteIPController {
 
                             rownum = writeHours(cell, rownum, psl_vmList, style, rowAutoHeightStyle, sheet);
                         }
-                        ends2 = new String[]{"                  Аспіранти, докторанти", "                  Магістри наукові",
+                        ends2 = new String[]{"              Аспіранти, докторанти", "                  Магістри наукові",
                                 "                  Бакалаври", "                  Курсові 5 курс"};
                         rownum = writeKerivnictvo(rownum, professor, style, style12Bold, sheet, false, ends1);
                         rownum = writeKerivnictvo(rownum, professor, style, style12, sheet, false, ends2);
@@ -500,12 +500,17 @@ public class WriteIPController {
             cell = row.createCell(2);
             cell.setCellValue(end);
             cell.setCellStyle(style12Bold);
-            for (int l = 3; l < 50; l++) {
+            for (int l = 3; l < 49; l++) {
+                cell = row.createCell(l);
+                cell.setCellValue(0);
+                cell.setCellStyle(style);
+            }
+            for (int l = 3; l < 49; l++) {
                 switch (end.trim()) {
                     case ("Аспіранти, докторанти"):
                         if (l == 29) {
                             cell = row.createCell(l);
-                            cell.setCellFormula("C" + (rownum - 1) + "*25");
+                            cell.setCellFormula("F" + rownum + "*25");
                             cell.setCellStyle(style);
                         }
                         if (l == 5) {
@@ -520,7 +525,7 @@ public class WriteIPController {
                     case ("Магістри наукові"):
                         if (l == 23) {
                             cell = row.createCell(l);
-                            cell.setCellFormula("C" + (rownum - 1) + "*27");
+                            cell.setCellFormula("F" + rownum + "*27");
                             cell.setCellStyle(style);
                         }
                         break;
@@ -528,27 +533,29 @@ public class WriteIPController {
                         if(autumn){
                             if (l == 17) {
                                 cell = row.createCell(l);
-                                cell.setCellFormula("C" + (rownum - 1) + "*3");
+                                cell.setCellFormula("F" + rownum + "*3");
                                 cell.setCellStyle(style);
                             }
                         }else{
                             if (l == 23) {
                                 cell = row.createCell(l);
-                                cell.setCellFormula("C" + (rownum - 1) + "*3");
+                                cell.setCellFormula("F" + rownum + "*3");
                                 cell.setCellStyle(style);
                             }
                         }
+                        break;
                     case ("Курсові 5 курс"):
                         if (l == 17) {
                             cell = row.createCell(l);
-                            cell.setCellFormula("C" + (rownum - 1) + "*3");
+                            cell.setCellFormula("F" + rownum + "*3");
                             cell.setCellStyle(style);
                         }
                         break;
                     default:
                         cell = row.createCell(l);
-                        cell.setCellValue("");
+                        cell.setCellValue(0);
                         cell.setCellStyle(style);
+                        break;
                 }
             }
             cell = row.createCell(49);

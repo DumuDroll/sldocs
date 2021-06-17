@@ -244,7 +244,7 @@ public class WritePSLController {
                         }
                         String[] sums = {"E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S"};
                         int cell_count = 4;
-                        last_vert_cell_sum = rownum - 2;
+                        last_vert_cell_sum = rownum - 1;
                         for (String sum : sums) {
                             cell = row.createCell(cell_count++);
                             cell.setCellFormula("ROUND(SUM(" + sum + "7:" + sum + last_vert_cell_sum + "),0)");
@@ -277,7 +277,7 @@ public class WritePSLController {
                         cell.setCellValue("");
                         cell.setCellStyle(styleThickBotTopRightBord);
 
-                        int first_sum_cell_spring = rownum;
+                        int first_sum_cell_spring = rownum+1;
                         if (pls_vmService.getPSL_VMData("2", professor.getName()).size() != 0) {
                             psl_vmList = pls_vmService.getPSL_VMData("2", professor.getName());
                             for (PSL_VM psl_vm : psl_vmList) {
@@ -304,7 +304,7 @@ public class WritePSLController {
                             cell.setCellStyle(styleThickBotTopBord);
                         }
                         cell_count = 4;
-                        last_vert_cell_sum = rownum - 2;
+                        last_vert_cell_sum = rownum - 1;
                         for (String sum : sums) {
                             cell = row.createCell(cell_count++);
                             cell.setCellFormula("ROUND(SUM(" + sum + first_sum_cell_spring + ":" + sum + last_vert_cell_sum + "),0)");
@@ -446,11 +446,16 @@ public class WritePSLController {
             cell.setCellValue(end);
             cell.setCellStyle(style14Bold);
             for (int l = 1; l < 19; l++) {
+                cell = row.createCell(l);
+                cell.setCellValue(0);
+                cell.setCellStyle(style);
+            }
+            for (int l = 1; l < 19; l++) {
                 switch (end.trim()) {
                     case ("Аспіранти, докторанти"):
                         if (l == 15) {
                             cell = row.createCell(l);
-                            cell.setCellFormula("C" + (rownum - 1) + "*25");
+                            cell.setCellFormula("C" + rownum + "*25");
                             cell.setCellStyle(style);
                         }
 
@@ -461,13 +466,12 @@ public class WritePSLController {
                                 cell.setCellStyle(style);
                             }
                         }
-
                         break;
                     case ("Магістри професійні"):
                     case ("Магістри наукові"):
                         if (l == 12) {
                             cell = row.createCell(l);
-                            cell.setCellFormula("C" + (rownum - 1) + "*27");
+                            cell.setCellFormula("C" + rownum + "*27");
                             cell.setCellStyle(style);
                         }
                         break;
@@ -475,31 +479,33 @@ public class WritePSLController {
                         if(autumn){
                             if (l == 9) {
                                 cell = row.createCell(l);
-                                cell.setCellFormula("C" + (rownum - 1) + "*3");
+                                cell.setCellFormula("C" + rownum + "*3");
                                 cell.setCellStyle(style);
                             }
                         }else{
                             if (l == 12) {
                                 cell = row.createCell(l);
-                                cell.setCellFormula("C" + (rownum - 1) + "*3");
+                                cell.setCellFormula("C" + rownum + "*3");
                                 cell.setCellStyle(style);
                             }
                         }
+                        break;
                     case ("Курсові 5 курс"):
                         if (l == 9) {
                             cell = row.createCell(l);
-                            cell.setCellFormula("C" + (rownum - 1) + "*3");
+                            cell.setCellFormula("C" + rownum + "*3");
                             cell.setCellStyle(style);
                         }
                         break;
                     default:
                         cell = row.createCell(l);
-                        cell.setCellValue("");
+                        cell.setCellValue(0);
                         cell.setCellStyle(style);
+                        break;
                 }
             }
             cell = row.createCell(19);
-            cell.setCellFormula("SUM(E" + (rownum) + ":S" + (rownum) + ")");
+            cell.setCellFormula("SUM(E" + rownum + ":S" + rownum + ")");
             cell.setCellStyle(style);
 
         }

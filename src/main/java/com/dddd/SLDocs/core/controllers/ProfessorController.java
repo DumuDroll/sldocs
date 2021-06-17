@@ -40,19 +40,12 @@ public class ProfessorController {
     }
 
     @RequestMapping("/professor/save")
-    public String saveAndViewProfessorsPage(@RequestParam("id") long professor_id,
-                                            @RequestParam("name") String name, @RequestParam("posada") String posada,
-                                            @RequestParam("nauk_stupin") String nauk_stupin,
-                                            @RequestParam("vch_zvana") String vch_zvana, @RequestParam("stavka") String stavka,
-                                            @RequestParam("note") String note, @RequestParam("email_address") String email_address,
-                                            Model model) {
-        Professor professor=professorService.getByID(professor_id);
+    public String saveAndViewProfessorsPage(@RequestParam("id") long professor_id, @RequestParam("name") String name,
+                                            @RequestParam("full_name") String full_name,
+                                            @RequestParam("email_address") String email_address, Model model) {
+        Professor professor = professorService.getByID(professor_id);
         professor.setName(name);
-        professor.setPosada(posada);
-        professor.setNauk_stupin(nauk_stupin);
-        professor.setVch_zvana(vch_zvana);
-        professor.setStavka(stavka);
-        professor.setNote(note);
+        professor.setFull_name(full_name);
         professor.setEmail_address(email_address);
         professorService.save(professor);
         List<Professor> professors = professorService.listAllOrderName();
@@ -70,20 +63,21 @@ public class ProfessorController {
     @RequestMapping("/professor/sendIpTo")
     public String sendIpTo(@RequestParam("name") String name, @RequestParam("email") String email) {
         Professor professor = professorService.findByName(name);
-       try{ Sender.Send(email, professor.getIp_filename());
-       }catch (NullPointerException ex){
-           return "error/noFilesYet";
-       }
+        try {
+            Sender.Send(email, professor.getIp_filename());
+        } catch (NullPointerException ex) {
+            return "error/noFilesYet";
+        }
         return getTimeString(professor);
     }
-
 
 
     @RequestMapping("/professor/sendPslTo")
     public String sendPslTo(@RequestParam("name") String name, @RequestParam("email") String email) {
         Professor professor = professorService.findByName(name);
-        try{ Sender.Send(email, professor.getPsl_filename());
-        }catch (NullPointerException ex){
+        try {
+            Sender.Send(email, professor.getPsl_filename());
+        } catch (NullPointerException ex) {
             return "error/noFilesYet";
         }
         return getTimeString(professor);
@@ -94,8 +88,8 @@ public class ProfessorController {
         List<Professor> professors = professorService.listWithEmails();
         String time_regex = "([0-9[-]]+)(T)(.{5})";
         StringBuilder stringBuffer = new StringBuilder();
-        for(Professor professor : professors){
-            Sender.Send(professor.getEmail_address(),professor.getIp_filename());
+        for (Professor professor : professors) {
+            Sender.Send(professor.getEmail_address(), professor.getIp_filename());
             setEmailedDate(professor, time_regex, stringBuffer);
             stringBuffer = new StringBuilder();
         }
@@ -107,8 +101,8 @@ public class ProfessorController {
         List<Professor> professors = professorService.listWithEmails();
         String time_regex = "([0-9[-]]+)(T)(.{5})";
         StringBuilder stringBuffer = new StringBuilder();
-        for(Professor professor : professors){
-            Sender.Send(professor.getEmail_address(),professor.getPsl_filename());
+        for (Professor professor : professors) {
+            Sender.Send(professor.getEmail_address(), professor.getPsl_filename());
             setEmailedDate(professor, time_regex, stringBuffer);
             stringBuffer = new StringBuilder();
         }
