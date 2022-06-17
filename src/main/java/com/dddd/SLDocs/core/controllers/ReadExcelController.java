@@ -153,15 +153,15 @@ public class ReadExcelController {
             }
 
             String space_regex = "\\s+";
-            StringBuffer stringBuffer = new StringBuffer();
+            StringBuilder stringBuilder = new StringBuilder();
             for (int p = 0; p < 2; p++) {
                 String[] values = dep_fac_sem.get(p).toString().split(space_regex);
 
                 for (int i = 1; i < values.length; i++) {
-                    stringBuffer.append(values[i]).append(" ");
+                    stringBuilder.append(values[i]).append(" ");
                 }
-                dep_fac_sem.set(p, stringBuffer);
-                stringBuffer = new StringBuffer();
+                dep_fac_sem.set(p, stringBuilder);
+                stringBuilder = new StringBuilder();
             }
             row = sheet.getRow(3);
             String[] values;
@@ -272,7 +272,7 @@ public class ReadExcelController {
             String[] res = arrayList.get(0).toString().split(space_regex);
             String name = (res[1]+" " + res[2]).trim();
             Professor professor = professorService.findByName(name);
-            if (!(professor == null)) {
+            if (professor != null) {
                 professor.setAsp_num(arrayList.get(1).toString());
                 professor.setAutumn_asp(arrayList.get(2).toString());
                 professor.setSpring_asp(arrayList.get(3).toString());
