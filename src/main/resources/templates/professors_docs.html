@@ -69,10 +69,10 @@
         <tr th:each="professor : ${professors}">
             <form th:action="@{/professor/sendIpTo}" method="post">
                 <input type="hidden" th:name="name" th:value="*{professor.name}"/>
-                <input type="hidden" th:name="email" th:value="*{professor.email_address}"/>
+                <input type="hidden" th:name="email" th:value="*{professor.getEmailAddress}"/>
                 <td th:text="*{professor.name}"></td>
-                <td th:text="*{professor.email_address}"></td>
-                <td th:text="*{professor.emailed_date}"></td>
+                <td th:text="*{professor.getEmailAddress}"></td>
+                <td th:text="*{professor.getEmailedDate}"></td>
                 <td><input type="submit" value="Надіслати індивідуальний план"/></td>
                 <td><input type="submit" formaction="/professor/sendPslTo" value="Надіслати навантаження"/></td>
             </form>
