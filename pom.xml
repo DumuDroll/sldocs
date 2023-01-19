@@ -12,6 +12,7 @@
 	<artifactId>SLDocs</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>SLDocs</name>
+	<packaging>war</packaging>
 	<description>Excel to DB to Excel</description>
 	<properties>
 		<java.version>1.8</java.version>
