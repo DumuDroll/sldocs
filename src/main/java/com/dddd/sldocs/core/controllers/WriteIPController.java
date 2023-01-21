@@ -7,6 +7,7 @@ import com.dddd.sldocs.core.services.FacultyService;
 import com.dddd.sldocs.core.services.PersonalLoadViewService;
 import com.dddd.sldocs.core.services.ProfessorService;
 import com.dddd.sldocs.core.general.utils.cyrToLatin.UkrainianToLatin;
+import lombok.extern.log4j.Log4j2;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Controller
+@Log4j2
 public class WriteIPController {
     private final PersonalLoadViewService pls_vmService;
     private final ProfessorService professorService;
@@ -478,7 +480,7 @@ public class WriteIPController {
         } catch (IOException | EncryptedDocumentException ex) {
             ex.printStackTrace();
         }
-        System.out.println(System.currentTimeMillis() - m);
+        log.info("IP created in {} seconds",(System.currentTimeMillis() - m)/100);
 
         return "redirect:/";
     }

@@ -415,3 +415,22 @@ li > a:only-child:after {
     }
 
 }
+
+#loading-spinner {
+    width: 100px;
+    height: 100px;
+    left: 47.25%;
+    top: 45%;
+    transform: translate(-47%, -47%);
+    position: absolute;
+    border: 3px solid #f3f3f3;
+    border-radius: 50%;
+    border-top-color: #3498db;
+    animation: spin 1s linear infinite;
+    display: none;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

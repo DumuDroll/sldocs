@@ -3,12 +3,15 @@ package com.dddd.sldocs.core.controllers;
 import com.dddd.sldocs.core.entities.Faculty;
 import com.dddd.sldocs.core.entities.Professor;
 import com.dddd.sldocs.core.entities.views.PersonalLoadView;
+import com.dddd.sldocs.core.general.utils.cyrToLatin.UkrainianToLatin;
 import com.dddd.sldocs.core.services.FacultyService;
 import com.dddd.sldocs.core.services.PersonalLoadViewService;
 import com.dddd.sldocs.core.services.ProfessorService;
-import com.dddd.sldocs.core.general.utils.cyrToLatin.UkrainianToLatin;
-import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.ss.usermodel.*;
+import lombok.extern.log4j.Log4j2;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.*;
@@ -24,10 +27,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
 @Controller
+@Log4j2
 public class WritePSLController {
 
     private final PersonalLoadViewService pls_vmService;
@@ -173,6 +178,7 @@ public class WritePSLController {
             rowAutoHeightStyle.setWrapText(true);
 
             List<Professor> professors = professorService.listAll();
+            professors.sort(Comparator.comparing(Professor::getFullName, Comparator.nullsLast(Comparator.naturalOrder())));
 
             XSSFRow row;
             XSSFCell cell;
@@ -277,7 +283,7 @@ public class WritePSLController {
                         cell.setCellValue("");
                         cell.setCellStyle(styleThickBotTopRightBord);
 
-                        int first_sum_cell_spring = rownum+1;
+                        int first_sum_cell_spring = rownum + 1;
                         if (pls_vmService.getPSL_VMData("2", professor.getName()).size() != 0) {
                             personalLoadViewList = pls_vmService.getPSL_VMData("2", professor.getName());
                             for (PersonalLoadView personalLoadView : personalLoadViewList) {
@@ -360,10 +366,11 @@ public class WritePSLController {
             facultyService.save(faculties.get(0));
             writePSLforProf();
 
-        } catch (IOException | EncryptedDocumentException ex) {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            log.error("Error creating PSL file");
+            log.error(ex);
         }
-        System.out.println(System.currentTimeMillis() - m);
+        log.info("PSL created in {} seconds",(System.currentTimeMillis() - m)/100);
         return "redirect:/";
     }
 
@@ -447,7 +454,7 @@ public class WritePSLController {
             cell.setCellStyle(style14Bold);
             for (int l = 1; l < 19; l++) {
                 cell = row.createCell(l);
-                cell.setCellValue(0);
+                //cell.setCellValue(0);
                 cell.setCellStyle(style);
             }
             for (int l = 1; l < 19; l++) {
@@ -476,13 +483,13 @@ public class WritePSLController {
                         }
                         break;
                     case ("Бакалаври"):
-                        if(autumn){
+                        if (autumn) {
                             if (l == 9) {
                                 cell = row.createCell(l);
                                 cell.setCellFormula("C" + rownum + "*3");
                                 cell.setCellStyle(style);
                             }
-                        }else{
+                        } else {
                             if (l == 12) {
                                 cell = row.createCell(l);
                                 cell.setCellFormula("C" + rownum + "*3");

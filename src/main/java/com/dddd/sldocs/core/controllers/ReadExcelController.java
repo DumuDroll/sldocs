@@ -104,7 +104,7 @@ public class ReadExcelController {
     }
 
     @RequestMapping("/readPPS")
-    private String readPPS(@RequestParam("path") String path) throws IOException {
+    public String readPPS(@RequestParam("path") String path) throws IOException {
         String[] parts = path.split("\\.");
         if (!parts[1].equals("xlsx")) {
             return Dictionary.ERROR_BAD_FILE;
@@ -121,6 +121,24 @@ public class ReadExcelController {
         return "success/ppsToDB";
     }
 
+    @RequestMapping("/readPS")
+    public String readPS(@RequestParam("path") String path) throws IOException {
+        String[] parts = path.split("\\.");
+        if (!parts[1].equals("xlsx")) {
+            return Dictionary.ERROR_BAD_FILE;
+        }
+        try(FileInputStream fis = new FileInputStream(path)){
+            XSSFWorkbook workbook = new XSSFWorkbook(fis);
+
+            long m = System.currentTimeMillis();
+            readPSSheet(workbook);
+            log.info(System.currentTimeMillis() - m);
+        } catch (Exception e){
+            log.error(e);
+        }
+
+        return "success/ppsToDB";
+    }
 
     public void readObsyagSheet(XSSFWorkbook workbook, int sheetNum) {
         XSSFSheet sheet = workbook.getSheetAt(sheetNum);
@@ -280,6 +298,51 @@ public class ReadExcelController {
     }
 
     private void readPPSSheet(XSSFWorkbook workbook) {
+        XSSFSheet sheet = workbook.getSheetAt(0);
+        DataFormatter df = new DataFormatter();
+        int rows = 3;
+        XSSFRow row;
+        while (true) {
+
+            row = sheet.getRow(rows);
+            try {
+                if (df.formatCellValue(row.getCell(1)).equals("")) {
+                    break;
+                }
+                rows++;
+            } catch (NullPointerException ex) {
+                break;
+            }
+        }
+        ArrayList<Object> arrayList = new ArrayList<>();
+        for (int r = 3; r < rows; r++) {
+            row = sheet.getRow(r);
+            for (int c = 0; c < 9; c++) {
+                XSSFCell cell = row.getCell(c);
+                readCell(arrayList, cell);
+            }
+
+
+            Professor professor = professorService.findByName(arrayList.get(1).toString().trim());
+
+            if (professor == null) {
+                professor = new Professor();
+                professor.setName(arrayList.get(1).toString());
+            }
+            professor.setFullName(arrayList.get(2).toString());
+            professor.setStavka(arrayList.get(3).toString());
+            professor.setPosada(arrayList.get(4).toString());
+            professor.setNaukStupin(arrayList.get(5).toString());
+            professor.setVchZvana(arrayList.get(6).toString());
+            professor.setNote(arrayList.get(7).toString());
+            professor.setEmailAddress(arrayList.get(8).toString());
+            professorService.save(professor);
+            arrayList = new ArrayList<>();
+        }
+
+    }
+
+    private void readPSSheet(XSSFWorkbook workbook) {
         XSSFSheet sheet = workbook.getSheetAt(0);
         DataFormatter df = new DataFormatter();
         int rows = 3;

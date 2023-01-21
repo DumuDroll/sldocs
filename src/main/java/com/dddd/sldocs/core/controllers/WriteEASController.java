@@ -139,7 +139,7 @@ public class WriteEASController {
         } catch (Exception ex) {
            log.error(ex);
         }
-        System.out.println(System.currentTimeMillis() - m);
+        log.info("EAS created in {} seconds",(System.currentTimeMillis() - m)/100);
         return "redirect:/";
     }
 

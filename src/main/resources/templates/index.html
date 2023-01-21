@@ -8,7 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
     <title>Форумвання витягів</title>
 </head>
-<body>
+<body id="mahBody">
 <nav>
     <div id="logo">Study load docs</div>
     <label for="drop" class="toggle">Menu</label>
@@ -48,6 +48,10 @@
         <li><a href="/logout">Вийти</a></li>
     </ul>
 </nav>
+<div id="spinner-container">
+    <div id="loading-spinner"></div>
+</div>
+
 <div sec:authorize="hasAnyAuthority('ADMIN')" align="center">
     Файли для зчитування повинні бути названі латиницею
     <p>1. Зчитайте навантаження у базу даних</p>
@@ -58,7 +62,7 @@
             <input type="file" id="fileObs" name="file">
         </div>
         <div>
-            <button>Зчитати у базу даних</button>
+            <button onclick="blockW()">Зчитати у базу даних</button>
         </div>
     </form>
 
@@ -69,13 +73,25 @@
             <input type="file" id="filePPS" name="file">
         </div>
         <div>
-            <button>Зчитати у базу даних</button>
+            <button onclick="blockW()">Зчитати у базу даних</button>
         </div>
     </form>
-    <p>3. Перевірте зчитане з ППС</p>
+
+    <p>3. Зчитайте дипломників</p>
+    <form th:action="@{/uploadPS}" method="post" enctype="multipart/form-data">
+        <div>
+            <label for="filePS">Оберіть ПВС+дипломники (Поки не працює)</label>
+            <input type="file" id="filePS" name="file">
+        </div>
+        <div>
+            <button hidden onclick="blockW()">Зчитати у базу даних</button>
+        </div>
+    </form>
+
+    <p>4. Перевірте зчитане з ППС</p>
     <a href="/professors">Перелік викладачів</a>
 
-    <p>4. Сформуйте необхідні файли</p>
+    <p>5. Сформуйте необхідні файли</p>
 
     <div class="content">
         <ul class="content__list">
@@ -86,7 +102,7 @@
                 <ul class="content__text">
                     <li>
                         <form th:action="@{/EdAsSt}" method="post">
-                            <input type="submit" value="Сформувати документ"/>
+                            <input type="submit" value="Сформувати документ" onclick="blockW()" onended="unBlockW()"/>
                         </form>
                     </li>
                     <div th:if="${eas==true}">
@@ -105,7 +121,7 @@
                 <ul class="content__text">
                     <li>
                         <form th:action="@{/PSL}" method="post">
-                            <input type="submit" value="Сформувати документ"/>
+                            <input type="submit" value="Сформувати документ" onclick="blockW()" onended="unBlockW()"/>
                         </form>
                     </li>
                     <div th:if="${psl==true}">
@@ -115,7 +131,7 @@
                             </form>
                         </li>
                         <li>
-                            <form th:action="@{/uploadPSL}" method="post" enctype="multipart/form-data" >
+                            <form th:action="@{/uploadPSL}" method="post" enctype="multipart/form-data">
                                 <div>
                                     <input type="file" name="file">
                                 </div>
@@ -135,7 +151,7 @@
                 <ul class="content__text">
                     <li>
                         <form th:action="@{/IP}" method="post">
-                            <input type="submit" value="Сформувати документ"/>
+                            <input type="submit" value="Сформувати документ" onclick="blockW()" onended="unBlockW()"/>
                         </form>
                     </li>
                     <div th:if="${ip==true}">
@@ -158,7 +174,7 @@
                 </ul>
             </li>
         </ul>
-        <p>5. Активуйте акаунти викладачів або замостійно розішліть документи</p>
+        <p>6. Активуйте акаунти викладачів або замостійно розішліть документи</p>
         <a href="/users">Перелік акаунтів викладачів</a><br>
         <a href="/professors/docs">Перелік викладачів для відправки</a>
 
@@ -179,4 +195,22 @@
     </form>
 </div>
 </body>
+<script>
+    function blockW() {
+        let body = document.getElementById("mahBody");
+        body.style.opacity = "0.5";
+        body.style.pointerEvents = "none";
+        let spinner = document.getElementById("loading-spinner")
+        spinner.style.display = "block";
+        spinner.style.opacity = "1";
+    }
+
+    function unBlockW() {
+        let body = document.getElementById("mahBody");
+        body.style.opacity = "1";
+        body.style.pointerEvents = "none";
+        let spinner = document.getElementById("loading-spinner")
+        spinner.style.display = "none";
+    }
+</script>
 </html>

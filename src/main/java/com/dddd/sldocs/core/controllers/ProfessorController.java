@@ -40,7 +40,7 @@ public class ProfessorController {
     }
 
     @RequestMapping("/professor/save")
-    public String saveAndViewProfessorsPage(@RequestParam("professorId") long professorId, @RequestParam("name") String name,
+    public String saveAndViewProfessorsPage(@RequestParam("id") long professorId, @RequestParam("name") String name,
                                             @RequestParam("fullName") String fullName,
                                             @RequestParam("emailAddress") String emailAddress, Model model) {
         Professor professor = professorService.getByID(professorId);

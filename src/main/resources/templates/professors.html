@@ -62,8 +62,8 @@
             <form th:action="@{/professor/save}" method="post">
                 <input type="hidden" th:name="id" th:value="*{professor.id}"/>
                 <td> <input type="text" th:name="name" th:value="*{professor.name}"/> </td>
-                <td> <input type="text" th:name="full_name" th:value="*{professor.getFullName}"/> </td>
-                <td> <input type="text" th:name="email_address" th:value="*{professor.getEmailAddress}"/> </td>
+                <td> <input type="text" th:name="fullName" th:value="*{professor.getFullName}"/> </td>
+                <td> <input type="text" th:name="emailAddress" th:value="*{professor.getEmailAddress}"/> </td>
                 <td> <input type="submit" th:value="Зберегти"/></td>
             </form>
         </tr>
