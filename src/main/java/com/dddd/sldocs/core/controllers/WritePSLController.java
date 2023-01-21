@@ -62,7 +62,7 @@ public class WritePSLController {
 
         long m = System.currentTimeMillis();
         try {
-            InputStream inputStream = getClass().getResourceAsStream("/BOOT-INF/classes/PSLExample.xlsx");
+            InputStream inputStream = Files.newInputStream(new File("src/main/resources/PSLExample.xlsx").toPath());
             XSSFWorkbookFactory workbookFactory = new XSSFWorkbookFactory();
             XSSFWorkbook workbook = workbookFactory.create(inputStream);
 

@@ -17,7 +17,7 @@ import java.util.Properties;
 public class Sender {
 
     public static void Send(String to, String filename) {
-        String from = "studyloaddocs@gmail.com";
+        String from = "isppd.semit@gmail.com";
         Properties props = new Properties();
         props.put("mail.smtp.user", "username");
         props.put("mail.smtp.host", "smtp.gmail.com");
@@ -33,7 +33,7 @@ public class Sender {
         Session session = Session.getInstance(props,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(from, "rT7un34Lm5");
+                        return new PasswordAuthentication(from, "xdgrwygtffgepgpy");
                     }
                 });
         try {
@@ -61,8 +61,7 @@ public class Sender {
         final StringBuilder sb = new StringBuilder(len << 1);
         final char[] digits = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
         final byte[] attr_char = {'!','#','$','&','+','-','.','0','1','2','3','4','5','6','7','8','9',           'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','^','_','`',                        'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','|', '~'};
-        for (int i = 0; i < len; ++i) {
-            final byte b = s_bytes[i];
+        for (final byte b : s_bytes) {
             if (Arrays.binarySearch(attr_char, b) >= 0)
                 sb.append((char) b);
             else {

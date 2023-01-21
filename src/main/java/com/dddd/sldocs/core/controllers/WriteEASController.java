@@ -4,18 +4,22 @@ import com.dddd.sldocs.core.entities.Faculty;
 import com.dddd.sldocs.core.entities.views.EdAsStView;
 import com.dddd.sldocs.core.services.EdAsStViewService;
 import com.dddd.sldocs.core.services.FacultyService;
-import org.apache.poi.EncryptedDocumentException;
+import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Controller
+@Log4j2
 public class WriteEASController {
 
     private static final String COMMA_REGEX = ",";
@@ -34,7 +38,7 @@ public class WriteEASController {
     public String createExcel() {
         long m = System.currentTimeMillis();
         try {
-            InputStream in = getClass().getResourceAsStream("/BOOT-INF/classes/EdAsStExample.xlsx");
+            InputStream in = Files.newInputStream(new File("src/main/resources/EdAsStExample.xlsx").toPath());
             XSSFWorkbookFactory workbookFactory = new XSSFWorkbookFactory();
             XSSFWorkbook workbook = workbookFactory.create(in);
 
@@ -132,8 +136,8 @@ public class WriteEASController {
             faculties.get(0).setEasFilename(someFile.getName());
             facultyService.save(faculties.get(0));
 
-        } catch (IOException | EncryptedDocumentException ex) {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+           log.error(ex);
         }
         System.out.println(System.currentTimeMillis() - m);
         return "redirect:/";
@@ -334,11 +338,11 @@ public class WriteEASController {
         style.setFont(font);
         cell.setCellStyle(style);
         if (divider) {
-            cell.setCellValue(Double.toString(Double.parseDouble(data.get(i).getPractHours()) /
-                    Double.parseDouble(data.get(i).getNumberOfSubgroups()) / 10));
+            cell.setCellValue(Double.toString(Math.round(Double.parseDouble(data.get(i).getPractHours()) /
+                    Double.parseDouble(data.get(i).getNumberOfSubgroups()) / 10)));
         } else {
-            cell.setCellValue(Double.toString(Double.parseDouble(data.get(i).getPractHours()) /
-                    Double.parseDouble(data.get(i).getNumberOfSubgroups()) / 16));
+            cell.setCellValue(Double.toString(Math.round(Double.parseDouble(data.get(i).getPractHours()) /
+                    Double.parseDouble(data.get(i).getNumberOfSubgroups()) / 16)));
         }
         cell = row.createCell(6);
         style.setFont(font);
@@ -416,11 +420,11 @@ public class WriteEASController {
     private void writeLab_hours_inner_inner(XSSFFont font, CellStyle style, List<EdAsStView> data, int i, Row row, Cell cell,
                                             boolean divider) {
         if (divider) {
-            cell.setCellValue(Double.toString(Double.parseDouble(data.get(i).getLabHours()) /
-                    Double.parseDouble(data.get(i).getNumberOfSubgroups()) / 10));
+            cell.setCellValue(Double.toString(Math.round(Double.parseDouble(data.get(i).getLabHours()) /
+                    Double.parseDouble(data.get(i).getNumberOfSubgroups()) / 10)));
         } else {
-            cell.setCellValue(Double.toString(Double.parseDouble(data.get(i).getLabHours()) /
-                    Double.parseDouble(data.get(i).getNumberOfSubgroups()) / 16));
+            cell.setCellValue(Double.toString(Math.round(Double.parseDouble(data.get(i).getLabHours()) /
+                    Double.parseDouble(data.get(i).getNumberOfSubgroups()) / 16)));
         }
         cell = row.createCell(5);
         style.setFont(font);
@@ -438,9 +442,9 @@ public class WriteEASController {
         style.setFont(font);
         cell.setCellStyle(style);
         if (divider) {
-            cell.setCellValue(Double.toString(Double.parseDouble(data.get(i).getLecHours()) / 10));
+            cell.setCellValue(Double.toString(Math.round(Double.parseDouble(data.get(i).getLecHours()) / 10)));
         } else {
-            cell.setCellValue(Double.toString(Double.parseDouble(data.get(i).getLecHours()) / 16));
+            cell.setCellValue(Double.toString(Math.round(Double.parseDouble(data.get(i).getLecHours()) / 16)));
         }
         cell = row.createCell(4);
         style.setFont(font);

@@ -106,7 +106,7 @@ public final class UkrainianToLatin {
      * @return the result
      */
     public static String generateLat(String name) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         ConvertCase prevConvertCase = null;
         for (int index = 0; index < name.length(); index += 1) {
             String curChar = name.substring(index, index + INDEX_1);
@@ -140,7 +140,7 @@ public final class UkrainianToLatin {
      * @param convertCase     current character object
      * @param nextConvertCase next character object
      */
-    private static void checkFirstChar(StringBuffer result, ConvertCase convertCase, ConvertCase nextConvertCase) {
+    private static void checkFirstChar(StringBuilder result, ConvertCase convertCase, ConvertCase nextConvertCase) {
         String latName = convertCase.getConvert().name();
         switch (latName.length()) {
             case LENGTH_2:
@@ -174,7 +174,7 @@ public final class UkrainianToLatin {
      * @param convertCase     current character object
      * @param nextConvertCase next character object
      */
-    private static void checkMiddleChar(StringBuffer result, ConvertCase convertCase, ConvertCase nextConvertCase) {
+    private static void checkMiddleChar(StringBuilder result, ConvertCase convertCase, ConvertCase nextConvertCase) {
         String latName = convertCase.getConvert().name();
         switch (latName.length()) {
             case LENGTH_2:

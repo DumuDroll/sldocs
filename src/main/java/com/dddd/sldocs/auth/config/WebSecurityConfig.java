@@ -1,6 +1,7 @@
 package com.dddd.sldocs.auth.config;
 
 import com.dddd.sldocs.auth.user_details.UserDetailsServiceImpl;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.dao.*;
 import org.springframework.security.config.annotation.authentication.builders.*;
@@ -12,6 +13,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
+@Log4j2
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
@@ -41,8 +43,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/resources/**", "/css/**", "/login_error_disabled", "login_error",
-                        "/login_error_bad_credentials", "/login", "/registration", "/resources/templates/registration.html", "/").permitAll()
+                .antMatchers("/login_error_disabled", "login_error", "/login_error_bad_credentials",
+                        "/login", "/registration", "/resources/templates/registration.html", "/resources/**",
+                        "/css/**").permitAll()
                 .antMatchers("/professor/downloadIp").hasAnyAuthority("USER")
                 .antMatchers("/professor/downloadPsl").hasAnyAuthority("USER")
                 .antMatchers("/**").hasAnyAuthority("ADMIN")
@@ -51,8 +54,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/login")
                 .failureHandler((request, response, exception) -> {
-                    System.out.println("Login failed");
-                    System.out.println(exception.toString());
+                    log.error("Login failed");
+                    log.error(exception);
 
                     if (exception.toString().equals("org.springframework.security.authentication.DisabledException: User is disabled")) {
                         response.sendRedirect("/login_error_disabled");

@@ -69,7 +69,7 @@ public class WriteIPController {
                 if (!professor.getName().equals("")) {
                     total_sum = 0;
                     List<PersonalLoadView> personalLoadViewList;
-                    InputStream iS = getClass().getResourceAsStream("/BOOT-INF/classes/IndPlanExample.xlsx");
+                    InputStream iS = Files.newInputStream(new File("src/main/resources/IndPlanExample.xlsx").toPath());
                     XSSFWorkbookFactory wbF = new XSSFWorkbookFactory();
                     XSSFWorkbook workbook = wbF.create(iS);
 
@@ -290,7 +290,7 @@ public class WriteIPController {
                         sheet = workbook.getSheetAt(4);
                         row = sheet.getRow(12);
                         cell = row.getCell(1);
-                        String sb = "Звіт про виконання індивідуального плану за" + " 2021/2022 навчальний рік викладача " +
+                        String sb = "Звіт про виконання індивідуального плану за" + " 2022/2023 навчальний рік викладача " +
                                 getCellValue(workbook, 0, 23, 0) + " розглянуто розглянуто ___  _____________ 20__ р. " +
                                 " на засіданні кафедри " + getCellValue(workbook, 0, 11, 1) + " й ухвалено рішення ( протокол №___):" +
                                 " ): Індивідуальний план виконано в повному обсязі.";
@@ -452,7 +452,7 @@ public class WriteIPController {
                         sheet = workbook.getSheetAt(1);
                         row = sheet.getRow(14);
                         cell = row.createCell(3);
-                        cell.setCellValue(total_sum);
+                        cell.setCellValue((int)total_sum);
                         cell.setCellStyle(style14B);
                         sheet.setFitToPage(true);
                         sheet.getPrintSetup().setLandscape(true);
@@ -592,14 +592,14 @@ public class WriteIPController {
             if (personalLoadView.getCourse().isEmpty()) {
                 cell.setCellValue(0);
             } else {
-                cell.setCellValue(Double.parseDouble(personalLoadView.getCourse()));
+                cell.setCellValue((int)Double.parseDouble(personalLoadView.getCourse()));
             }
             cell.setCellStyle(style);
             cell = row.createCell(5);
             if (personalLoadView.getStudentsNumber().isEmpty()) {
                 cell.setCellValue(0);
             } else {
-                cell.setCellValue(Double.parseDouble(personalLoadView.getStudentsNumber()));
+                cell.setCellValue((int)Double.parseDouble(personalLoadView.getStudentsNumber()));
             }
             cell.setCellStyle(style);
             cell = row.createCell(6);
@@ -670,7 +670,7 @@ public class WriteIPController {
             if (personalLoadView.getExamHours().isEmpty()) {
                 cell.setCellValue(0);
             } else {
-                cell.setCellValue(Math.round(Double.parseDouble(personalLoadView.getExamHours())));
+                cell.setCellValue((int)Math.round(Double.parseDouble(personalLoadView.getExamHours())));
                 total_sum += Math.round(Double.parseDouble(personalLoadView.getExamHours()));
             }
             cell.setCellStyle(style);
