@@ -72,6 +72,18 @@ public class ReadExcelController {
         return readPPS(file.getOriginalFilename());
     }
 
+    @PostMapping("/uploadPS")
+    public String uploadPSToLFS(@RequestParam("file") MultipartFile file) {
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        Path path = Paths.get(fileName);
+        try {
+            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return readPS(file.getOriginalFilename());
+    }
+
 
     @RequestMapping("/readObsyag")
     public String readObsyag(@RequestParam("path") String path) throws IOException {
@@ -96,7 +108,6 @@ public class ReadExcelController {
         for (int i = 0; i < 2; i++) {
             readObsyagSheet(workbook, i);
         }
-        readAspSheet(workbook);
         fis.close();
         log.info(System.currentTimeMillis() - m);
 
@@ -118,11 +129,11 @@ public class ReadExcelController {
         fis.close();
         log.info(System.currentTimeMillis() - m);
 
-        return "success/ppsToDB";
+        return "success/psToDB";
     }
 
     @RequestMapping("/readPS")
-    public String readPS(@RequestParam("path") String path) throws IOException {
+    public String readPS(@RequestParam("path") String path) {
         String[] parts = path.split("\\.");
         if (!parts[1].equals("xlsx")) {
             return Dictionary.ERROR_BAD_FILE;
@@ -257,46 +268,6 @@ public class ReadExcelController {
             log.error(ex);
         }
     }
-
-    private void readAspSheet(XSSFWorkbook workbook) {
-        XSSFSheet sheet = workbook.getSheetAt(2);
-        DataFormatter df = new DataFormatter();
-        int rows = 26;
-        XSSFRow row;
-        while (true) {
-
-            row = sheet.getRow(rows);
-            try {
-                if (df.formatCellValue(row.getCell(5)).equals("")) {
-                    break;
-                }
-                rows++;
-            } catch (NullPointerException ex) {
-                break;
-            }
-        }
-        ArrayList<Object> arrayList = new ArrayList<>();
-        for (int r = 26; r < rows; r++) {
-            row = sheet.getRow(r);
-            for (int c = 5; c < 11; c++) {
-                XSSFCell cell = row.getCell(c);
-                readCell(arrayList, cell);
-            }
-
-            String space_regex = "\\s+";
-            String[] res = arrayList.get(0).toString().split(space_regex);
-            String name = (res[1] + " " + res[2]).trim();
-            Professor professor = professorService.findByName(name);
-            if (professor != null) {
-                professor.setAspNum(arrayList.get(1).toString());
-                professor.setAutumnAsp(arrayList.get(2).toString());
-                professor.setSpringAsp(arrayList.get(3).toString());
-                professorService.save(professor);
-            }
-            arrayList = new ArrayList<>();
-        }
-    }
-
     private void readPPSSheet(XSSFWorkbook workbook) {
         XSSFSheet sheet = workbook.getSheetAt(0);
         DataFormatter df = new DataFormatter();
@@ -343,7 +314,7 @@ public class ReadExcelController {
     }
 
     private void readPSSheet(XSSFWorkbook workbook) {
-        XSSFSheet sheet = workbook.getSheetAt(0);
+        XSSFSheet sheet = workbook.getSheetAt(1);
         DataFormatter df = new DataFormatter();
         int rows = 3;
         XSSFRow row;
@@ -362,7 +333,7 @@ public class ReadExcelController {
         ArrayList<Object> arrayList = new ArrayList<>();
         for (int r = 3; r < rows; r++) {
             row = sheet.getRow(r);
-            for (int c = 0; c < 9; c++) {
+            for (int c = 0; c < 8; c++) {
                 XSSFCell cell = row.getCell(c);
                 readCell(arrayList, cell);
             }
@@ -374,13 +345,10 @@ public class ReadExcelController {
                 professor = new Professor();
                 professor.setName(arrayList.get(1).toString());
             }
-            professor.setFullName(arrayList.get(2).toString());
-            professor.setStavka(arrayList.get(3).toString());
-            professor.setPosada(arrayList.get(4).toString());
-            professor.setNaukStupin(arrayList.get(5).toString());
-            professor.setVchZvana(arrayList.get(6).toString());
-            professor.setNote(arrayList.get(7).toString());
-            professor.setEmailAddress(arrayList.get(8).toString());
+            professor.setBachNum(arrayList.get(4).toString());
+            professor.setFifthCourseNum(arrayList.get(5).toString());
+            professor.setMasterProfNum(arrayList.get(6).toString());
+            professor.setMasterScNum(arrayList.get(7).toString());
             professorService.save(professor);
             arrayList = new ArrayList<>();
         }

@@ -46,7 +46,7 @@ public class WriteIPController {
 
     @PostMapping("/uploadIp")
     public String uploadAgain(@RequestParam("file") MultipartFile[] files) throws IOException {
-        for(MultipartFile file : files){
+        for (MultipartFile file : files) {
             String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
             Path path = Paths.get(fileName);
             try {
@@ -293,8 +293,8 @@ public class WriteIPController {
                         row = sheet.getRow(12);
                         cell = row.getCell(1);
                         String sb = "Звіт про виконання індивідуального плану за" + " 2022/2023 навчальний рік викладача " +
-                                getCellValue(workbook, 0, 23, 0) + " розглянуто розглянуто ___  _____________ 20__ р. " +
-                                " на засіданні кафедри " + getCellValue(workbook, 0, 11, 1) + " й ухвалено рішення ( протокол №___):" +
+                                getCellValue(workbook, 23, 0) + " розглянуто розглянуто ___  _____________ 20__ р. " +
+                                " на засіданні кафедри " + getCellValue(workbook, 11, 1) + " й ухвалено рішення ( протокол №___):" +
                                 " ): Індивідуальний план виконано в повному обсязі.";
                         cell.setCellValue(sb);
                         cell.setCellStyle(style10);
@@ -454,7 +454,7 @@ public class WriteIPController {
                         sheet = workbook.getSheetAt(1);
                         row = sheet.getRow(14);
                         cell = row.createCell(3);
-                        cell.setCellValue((int)total_sum);
+                        cell.setCellValue((int) total_sum);
                         cell.setCellStyle(style14B);
                         sheet.setFitToPage(true);
                         sheet.getPrintSetup().setLandscape(true);
@@ -480,13 +480,13 @@ public class WriteIPController {
         } catch (IOException | EncryptedDocumentException ex) {
             ex.printStackTrace();
         }
-        log.info("IP created in {} seconds",(System.currentTimeMillis() - m)/100);
+        log.info("IP created in {} seconds", (System.currentTimeMillis() - m) / 100);
 
         return "redirect:/";
     }
 
-    private String getCellValue(XSSFWorkbook workbook, int sheetNum, int rowNum, int cellNum){
-        XSSFSheet sheet = workbook.getSheetAt(sheetNum);
+    private String getCellValue(XSSFWorkbook workbook, int rowNum, int cellNum) {
+        XSSFSheet sheet = workbook.getSheetAt(0);
         XSSFRow row = sheet.getRow(rowNum);
         return row.getCell(cellNum).getStringCellValue();
     }
@@ -509,21 +509,34 @@ public class WriteIPController {
             for (int l = 3; l < 49; l++) {
                 switch (end.trim()) {
                     case ("Аспіранти, докторанти"):
+                        if (l == 5) {
+                            cell = row.createCell(l);
+                            cell.setCellStyle(style);
+                        }
                         if (l == 29) {
                             cell = row.createCell(l);
                             cell.setCellFormula("F" + rownum + "*25");
                             cell.setCellStyle(style);
                         }
-                        if (l == 5) {
-                            if (professor.getAspNum() != null && !professor.getAspNum().equals("")) {
-                                cell = row.createCell(l);
-                                cell.setCellValue(Double.parseDouble(professor.getAspNum()));
-                                cell.setCellStyle(style);
-                            }
-                        }
                         break;
                     case ("Магістри професійні"):
+                        if (l == 5 && professor.getMasterProfNum() != null && !professor.getMasterProfNum().isEmpty()) {
+                            cell = row.createCell(l);
+                            cell.setCellValue((int)Double.parseDouble(professor.getMasterProfNum()));
+                            cell.setCellStyle(style);
+                        }
+                        if (l == 23) {
+                            cell = row.createCell(l);
+                            cell.setCellFormula("F" + rownum + "*27");
+                            cell.setCellStyle(style);
+                        }
+                        break;
                     case ("Магістри наукові"):
+                        if (l == 5 && professor.getMasterScNum() != null && !professor.getMasterScNum().isEmpty()) {
+                            cell = row.createCell(l);
+                            cell.setCellValue((int)Double.parseDouble(professor.getMasterScNum()));
+                            cell.setCellStyle(style);
+                        }
                         if (l == 23) {
                             cell = row.createCell(l);
                             cell.setCellFormula("F" + rownum + "*27");
@@ -531,21 +544,31 @@ public class WriteIPController {
                         }
                         break;
                     case ("Бакалаври"):
-                        if(autumn){
+                        if (l == 5 && professor.getBachNum() != null && !professor.getBachNum().isEmpty()) {
+                            cell = row.createCell(l);
+                            cell.setCellValue((int)Double.parseDouble(professor.getBachNum()));
+                            cell.setCellStyle(style);
+                        }
+                        if (autumn) {
                             if (l == 17) {
                                 cell = row.createCell(l);
                                 cell.setCellFormula("F" + rownum + "*3");
                                 cell.setCellStyle(style);
                             }
-                        }else{
+                        } else {
                             if (l == 23) {
                                 cell = row.createCell(l);
-                                cell.setCellFormula("F" + rownum + "*3");
+                                cell.setCellFormula("F" + rownum + "*14");
                                 cell.setCellStyle(style);
                             }
                         }
                         break;
                     case ("Курсові 5 курс"):
+                        if (l == 5 && professor.getFifthCourseNum() != null && !professor.getFifthCourseNum().isEmpty()) {
+                            cell = row.createCell(l);
+                            cell.setCellValue((int)Double.parseDouble(professor.getFifthCourseNum()));
+                            cell.setCellStyle(style);
+                        }
                         if (l == 17) {
                             cell = row.createCell(l);
                             cell.setCellFormula("F" + rownum + "*3");
@@ -554,7 +577,6 @@ public class WriteIPController {
                         break;
                     default:
                         cell = row.createCell(l);
-                        cell.setCellValue(0);
                         cell.setCellStyle(style);
                         break;
                 }
@@ -594,14 +616,14 @@ public class WriteIPController {
             if (personalLoadView.getCourse().isEmpty()) {
                 cell.setCellValue(0);
             } else {
-                cell.setCellValue((int)Double.parseDouble(personalLoadView.getCourse()));
+                cell.setCellValue((int) Double.parseDouble(personalLoadView.getCourse()));
             }
             cell.setCellStyle(style);
             cell = row.createCell(5);
             if (personalLoadView.getStudentsNumber().isEmpty()) {
                 cell.setCellValue(0);
             } else {
-                cell.setCellValue((int)Double.parseDouble(personalLoadView.getStudentsNumber()));
+                cell.setCellValue((int) Double.parseDouble(personalLoadView.getStudentsNumber()));
             }
             cell.setCellStyle(style);
             cell = row.createCell(6);
@@ -672,7 +694,7 @@ public class WriteIPController {
             if (personalLoadView.getExamHours().isEmpty()) {
                 cell.setCellValue(0);
             } else {
-                cell.setCellValue((int)Math.round(Double.parseDouble(personalLoadView.getExamHours())));
+                cell.setCellValue((int) Math.round(Double.parseDouble(personalLoadView.getExamHours())));
                 total_sum += Math.round(Double.parseDouble(personalLoadView.getExamHours()));
             }
             cell.setCellStyle(style);

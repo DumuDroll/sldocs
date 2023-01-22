@@ -80,11 +80,11 @@
     <p>3. Зчитайте дипломників</p>
     <form th:action="@{/uploadPS}" method="post" enctype="multipart/form-data">
         <div>
-            <label for="filePS">Оберіть ПВС+дипломники (Поки не працює)</label>
+            <label for="filePS">Оберіть ПВС+дипломники</label>
             <input type="file" id="filePS" name="file">
         </div>
         <div>
-            <button hidden onclick="blockW()">Зчитати у базу даних</button>
+            <button onclick="blockW()">Зчитати у базу даних</button>
         </div>
     </form>
 

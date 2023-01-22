@@ -188,8 +188,8 @@ public class WritePSLController {
             for (Professor professor : professors) {
                 if (!professor.getName().equals("")) {
                     List<PersonalLoadView> personalLoadViewList;
-                    if (pls_vmService.getPSL_VMData("1", professor.getName()).size() != 0
-                            || pls_vmService.getPSL_VMData("2", professor.getName()).size() != 0) {
+                    if (!pls_vmService.getPSL_VMData("1", professor.getName()).isEmpty()
+                            || !pls_vmService.getPSL_VMData("2", professor.getName()).isEmpty()) {
                         XSSFSheet sheet = workbook.cloneSheet(1, professor.getName());
                         row = sheet.getRow(2);
                         cell = row.getCell(0);
@@ -205,7 +205,7 @@ public class WritePSLController {
                         cell.setCellStyle(style14);
 
                         cell = row.getCell(5);
-                        if (pls_vmService.getPSL_VMData("1", professor.getName()).size() != 0) {
+                        if (!pls_vmService.getPSL_VMData("1", professor.getName()).isEmpty()) {
                             personalLoadViewList = pls_vmService.getPSL_VMData("1", professor.getName());
                         } else {
                             personalLoadViewList = pls_vmService.getPSL_VMData("2", professor.getName());
@@ -220,7 +220,7 @@ public class WritePSLController {
                         cell.setCellValue("Кафедра " + personalLoadViewList.get(0).getDepName() + " на " + personalLoadViewList.get(0).getYear());
                         cell.setCellStyle(style14);
                         rownum = 6;
-                        if (pls_vmService.getPSL_VMData("1", professor.getName()).size() != 0) {
+                        if (!pls_vmService.getPSL_VMData("1", professor.getName()).isEmpty()) {
                             personalLoadViewList = pls_vmService.getPSL_VMData("1", professor.getName());
                             for (PersonalLoadView personalLoadView : personalLoadViewList) {
                                 row = sheet.createRow(rownum++);
@@ -370,7 +370,7 @@ public class WritePSLController {
             log.error("Error creating PSL file");
             log.error(ex);
         }
-        log.info("PSL created in {} seconds",(System.currentTimeMillis() - m)/100);
+        log.info("PSL created in {} seconds", (System.currentTimeMillis() - m) / 100);
         return "redirect:/";
     }
 
@@ -397,8 +397,9 @@ public class WritePSLController {
                 row = sheet.getRow(5);
                 cell = row.getCell(getByStavka(stavka));
                 return cell.getNumericCellValue();
+            default:
+                return 400;
         }
-        return 400;
     }
 
     private int getByStavka(String stavka) {
@@ -412,9 +413,9 @@ public class WritePSLController {
             case "1.25":
                 return 3;
             case "1.5":
+            default:
                 return 2;
         }
-        return 2;
     }
 
     private void writePSLforProf() throws IOException {
@@ -454,28 +455,39 @@ public class WritePSLController {
             cell.setCellStyle(style14Bold);
             for (int l = 1; l < 19; l++) {
                 cell = row.createCell(l);
-                //cell.setCellValue(0);
                 cell.setCellStyle(style);
             }
             for (int l = 1; l < 19; l++) {
                 switch (end.trim()) {
                     case ("Аспіранти, докторанти"):
+                        if (l == 2) {
+                            cell = row.createCell(l);
+                            cell.setCellStyle(style);
+                        }
                         if (l == 15) {
                             cell = row.createCell(l);
                             cell.setCellFormula("C" + rownum + "*25");
                             cell.setCellStyle(style);
                         }
-
-                        if (l == 2) {
-                            if (professor.getAspNum() != null && !professor.getAspNum().equals("")) {
-                                cell = row.createCell(l);
-                                cell.setCellValue(Double.parseDouble(professor.getAspNum()));
-                                cell.setCellStyle(style);
-                            }
-                        }
                         break;
                     case ("Магістри професійні"):
+                        if (l == 2 && professor.getMasterProfNum() != null && !professor.getMasterProfNum().isEmpty()) {
+                            cell = row.createCell(l);
+                            cell.setCellValue((int)Double.parseDouble(professor.getMasterProfNum()));
+                            cell.setCellStyle(style);
+                        }
+                        if (l == 12) {
+                            cell = row.createCell(l);
+                            cell.setCellFormula("C" + rownum + "*27");
+                            cell.setCellStyle(style);
+                        }
+                        break;
                     case ("Магістри наукові"):
+                        if (l == 2 && professor.getMasterScNum() != null && !professor.getMasterScNum().isEmpty()) {
+                            cell = row.createCell(l);
+                            cell.setCellValue((int)Double.parseDouble(professor.getMasterScNum()));
+                            cell.setCellStyle(style);
+                        }
                         if (l == 12) {
                             cell = row.createCell(l);
                             cell.setCellFormula("C" + rownum + "*27");
@@ -483,6 +495,11 @@ public class WritePSLController {
                         }
                         break;
                     case ("Бакалаври"):
+                        if (l == 2 && professor.getBachNum() != null && !professor.getBachNum().isEmpty()) {
+                            cell = row.createCell(l);
+                            cell.setCellValue((int)Double.parseDouble(professor.getBachNum()));
+                            cell.setCellStyle(style);
+                        }
                         if (autumn) {
                             if (l == 9) {
                                 cell = row.createCell(l);
@@ -492,12 +509,17 @@ public class WritePSLController {
                         } else {
                             if (l == 12) {
                                 cell = row.createCell(l);
-                                cell.setCellFormula("C" + rownum + "*3");
+                                cell.setCellFormula("C" + rownum + "*14");
                                 cell.setCellStyle(style);
                             }
                         }
                         break;
                     case ("Курсові 5 курс"):
+                        if (l == 2 && professor.getFifthCourseNum() != null && !professor.getFifthCourseNum().isEmpty()) {
+                            cell = row.createCell(l);
+                            cell.setCellValue((int)Double.parseDouble(professor.getFifthCourseNum()));
+                            cell.setCellStyle(style);
+                        }
                         if (l == 9) {
                             cell = row.createCell(l);
                             cell.setCellFormula("C" + rownum + "*3");
@@ -506,7 +528,6 @@ public class WritePSLController {
                         break;
                     default:
                         cell = row.createCell(l);
-                        cell.setCellValue(0);
                         cell.setCellStyle(style);
                         break;
                 }
@@ -516,40 +537,6 @@ public class WritePSLController {
             cell.setCellStyle(style);
 
         }
-        return rownum;
-    }
-
-    private void writeAspHours(CellStyle style, Professor professor, boolean autumn, XSSFRow row, int l) {
-        XSSFCell cell;
-        if (autumn) {
-            cell = row.createCell(l);
-            if (professor.getAutumnAsp() != null && !professor.getAutumnAsp().equals("")) {
-                cell.setCellValue(Double.parseDouble(professor.getAutumnAsp()));
-            } else {
-                cell.setCellValue(professor.getAutumnAsp());
-            }
-            cell.setCellStyle(style);
-        } else {
-            cell = row.createCell(l);
-            if (professor.getSpringAsp() != null && !professor.getSpringAsp().equals("")) {
-                cell.setCellValue(Double.parseDouble(professor.getSpringAsp()));
-            } else {
-                cell.setCellValue(professor.getSpringAsp());
-            }
-            cell.setCellStyle(style);
-        }
-    }
-
-    private int writeLine(CellStyle style, int rownum, XSSFSheet sheet) {
-        XSSFRow row;
-        XSSFCell cell;
-        row = sheet.createRow(rownum++);
-        for (int l = 0; l < 19; l++) {
-            cell = row.createCell(l);
-            cell.setCellStyle(style);
-        }
-        cell = row.createCell(19);
-        cell.setCellStyle(style);
         return rownum;
     }
 

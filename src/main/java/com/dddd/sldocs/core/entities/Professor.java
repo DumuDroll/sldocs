@@ -27,9 +27,10 @@ public class Professor {
     private String pslFilename;
     private String emailAddress;
     private String emailedDate;
-    private String autumnAsp;
-    private String springAsp;
-    private String aspNum;
+    private String bachNum;
+    private String fifthCourseNum;
+    private String masterProfNum;
+    private String masterScNum;
 
     @ManyToMany(mappedBy = "professors", fetch = FetchType.LAZY)
     private Set<Curriculum> curriculums = new HashSet<>();
