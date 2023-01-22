@@ -127,7 +127,7 @@ public class ReadExcelController {
             log.error(e);
         }
 
-        return "success/psToDB";
+        return "success/ppsToDB";
     }
 
     @RequestMapping("/readPS")
@@ -144,7 +144,7 @@ public class ReadExcelController {
             log.error(e);
         }
 
-        return "success/ppsToDB";
+        return "success/psToDB";
     }
 
     public void readObsyagSheet(XSSFWorkbook workbook, int sheetNum) {

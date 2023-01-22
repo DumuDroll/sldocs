@@ -8,7 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
     <title>Відправка викладачам</title>
 </head>
-<body>
+<body id="mahBody">
 <nav>
     <div id="logo">Study load docs</div>
     <label for="drop" class="toggle">Menu</label>
@@ -48,13 +48,16 @@
         <li><a href="/logout">Вийти</a></li>
     </ul>
 </nav>
+<div id="spinner-container">
+    <div id="loading-spinner"></div>
+</div>
 <div align="center">
     <p>Надіслати усім заповненим або окремим викладачам</p>
     <form th:action="@{/professor/sendPslToAll}" method="post">
-        <input type="submit" value="Надіслати навантаження усім"/>
+        <input type="submit" value="Надіслати навантаження усім" onclick="blockW()"/>
     </form>
     <form th:action="@{/professor/sendIpToAll}" method="post">
-        <input type="submit" value="Надіслати індивідуальні плани усім"/>
+        <input type="submit" value="Надіслати індивідуальні плани усім" onclick="blockW()"/>
     </form>
 <p></p>
     <table style="border-color:#254441;" class="table__prof" border="1" cellpadding="10">
@@ -73,8 +76,8 @@
                 <td th:text="*{professor.name}"></td>
                 <td th:text="*{professor.getEmailAddress}"></td>
                 <td th:text="*{professor.getEmailedDate}"></td>
-                <td><input type="submit" value="Надіслати індивідуальний план"/></td>
-                <td><input type="submit" formaction="/professor/sendPslTo" value="Надіслати навантаження"/></td>
+                <td><input type="submit" value="Надіслати індивідуальний план" onclick="blockW()"/></td>
+                <td><input type="submit" formaction="/professor/sendPslTo" value="Надіслати навантаження" onclick="blockW()"/></td>
             </form>
         </tr>
 
@@ -82,4 +85,22 @@
     </table>
 </div>
 </body>
+<script>
+    function blockW() {
+        let body = document.getElementById("mahBody");
+        body.style.opacity = "0.5";
+        body.style.pointerEvents = "none";
+        let spinner = document.getElementById("loading-spinner")
+        spinner.style.display = "block";
+        spinner.style.opacity = "1";
+    }
+
+    function unBlockW() {
+        let body = document.getElementById("mahBody");
+        body.style.opacity = "1";
+        body.style.pointerEvents = "none";
+        let spinner = document.getElementById("loading-spinner")
+        spinner.style.display = "none";
+    }
+</script>
 </html>

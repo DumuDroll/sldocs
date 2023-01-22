@@ -61,7 +61,7 @@ public class WriteIPController {
                 e.printStackTrace();
             }
         }
-        return "redirect:/";
+        return "success/ipToDB";
     }
 
     @RequestMapping("/IP")
@@ -624,16 +624,12 @@ public class WriteIPController {
 
 
             cell = row.createCell(4);
-            if (personalLoadView.getCourse().isEmpty()) {
-                cell.setCellValue(0);
-            } else {
+            if (!personalLoadView.getCourse().isEmpty()) {
                 cell.setCellValue((int) Double.parseDouble(personalLoadView.getCourse()));
             }
             cell.setCellStyle(style);
             cell = row.createCell(5);
-            if (personalLoadView.getStudentsNumber().isEmpty()) {
-                cell.setCellValue(0);
-            } else {
+            if (!personalLoadView.getStudentsNumber().isEmpty()) {
                 cell.setCellValue((int) Double.parseDouble(personalLoadView.getStudentsNumber()));
             }
             cell.setCellStyle(style);
@@ -642,120 +638,91 @@ public class WriteIPController {
             cell.setCellStyle(style);
 
             cell = row.createCell(7);
-            if (personalLoadView.getLecHours().isEmpty()) {
-                cell.setCellValue(0);
-            } else {
+            if (!personalLoadView.getLecHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getLecHours()));
                 total_sum += Double.parseDouble(personalLoadView.getLecHours());
             }
             cell.setCellStyle(style);
 
             cell = row.createCell(9);
-            if (personalLoadView.getConsultHours().isEmpty()) {
-                cell.setCellValue(0);
-            } else {
+            if (!personalLoadView.getConsultHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getConsultHours()));
                 total_sum += Double.parseDouble(personalLoadView.getConsultHours());
             }
             cell.setCellStyle(style);
 
             cell = row.createCell(11);
-            if (personalLoadView.getLabHours().isEmpty()) {
-                cell.setCellValue(0);
-            } else {
+            if (!personalLoadView.getLabHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getLabHours()));
                 total_sum += Double.parseDouble(personalLoadView.getLabHours());
             }
             cell.setCellStyle(style);
 
             cell = row.createCell(13);
-            if (personalLoadView.getPractHours().isEmpty()) {
-                cell.setCellValue(0);
-            } else {
+            if (!personalLoadView.getPractHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getPractHours()));
                 total_sum += Double.parseDouble(personalLoadView.getPractHours());
             }
             cell.setCellStyle(style);
 
             cell = row.createCell(15);
-            if (personalLoadView.getIndTaskHours().isEmpty()) {
-                cell.setCellValue(0);
-            } else {
+            if (!personalLoadView.getIndTaskHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getIndTaskHours()));
                 total_sum += Double.parseDouble(personalLoadView.getIndTaskHours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(17);
-            if (personalLoadView.getCpHours().isEmpty()) {
-                cell.setCellValue(0);
-            } else {
+            if (!personalLoadView.getCpHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getCpHours()));
                 total_sum += Double.parseDouble(personalLoadView.getCpHours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(19);
-            if (personalLoadView.getZalikHours().isEmpty()) {
-                cell.setCellValue(0);
-            } else {
+            if (!personalLoadView.getZalikHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getZalikHours()));
                 total_sum += Double.parseDouble(personalLoadView.getZalikHours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(21);
-            if (personalLoadView.getExamHours().isEmpty()) {
-                cell.setCellValue(0);
-            } else {
+            if (!personalLoadView.getExamHours().isEmpty()) {
                 cell.setCellValue((int) Math.round(Double.parseDouble(personalLoadView.getExamHours())));
                 total_sum += Math.round(Double.parseDouble(personalLoadView.getExamHours()));
             }
             cell.setCellStyle(style);
             cell = row.createCell(23);
-            if (personalLoadView.getDiplomaHours().isEmpty()) {
-                cell.setCellValue(0);
-            } else {
+            if (!personalLoadView.getDiplomaHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getDiplomaHours()));
                 total_sum += Double.parseDouble(personalLoadView.getDiplomaHours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(25);
-            if (personalLoadView.getDecCell().isEmpty()) {
-                cell.setCellValue(0);
-            } else {
+            if (!personalLoadView.getDecCell().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getDecCell()));
                 total_sum += Double.parseDouble(personalLoadView.getDecCell());
             }
             cell.setCellStyle(style);
             cell = row.createCell(27);
-            if (personalLoadView.getNdrs().isEmpty()) {
-                cell.setCellValue(0);
-            } else {
+            if (!personalLoadView.getNdrs().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getNdrs()));
                 total_sum += Double.parseDouble(personalLoadView.getNdrs());
             }
             cell.setCellStyle(style);
             cell = row.createCell(29);
-            if (personalLoadView.getAspirantHours().isEmpty()) {
-                cell.setCellValue(0);
-            } else {
+            if (!personalLoadView.getAspirantHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getAspirantHours()));
                 total_sum += Double.parseDouble(personalLoadView.getAspirantHours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(31);
-            if (personalLoadView.getPractice().isEmpty()) {
-                cell.setCellValue(0);
-            } else {
+            if (!personalLoadView.getPractice().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getPractice()));
                 total_sum += Double.parseDouble(personalLoadView.getPractice());
             }
             cell.setCellStyle(style);
             cell = row.createCell(33);
-            cell.setCellValue(0);
             cell.setCellStyle(style);
             cell = row.createCell(35);
-            if (personalLoadView.getOtherFormsHours().isEmpty()) {
-                cell.setCellValue(0);
-            } else {
+            if (!personalLoadView.getOtherFormsHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getOtherFormsHours()));
                 total_sum += Double.parseDouble(personalLoadView.getOtherFormsHours());
             }
@@ -763,12 +730,10 @@ public class WriteIPController {
 
             for (int c = 8; c < 37; c += 2) {
                 cell = row.createCell(c);
-                cell.setCellValue(Double.parseDouble("0"));
                 cell.setCellStyle(style);
             }
             for (int c = 37; c < 49; c++) {
                 cell = row.createCell(c);
-                cell.setCellValue(0);
                 cell.setCellStyle(style);
             }
 
