@@ -3,6 +3,7 @@ package com.dddd.sldocs.core.controllers;
 import com.dddd.sldocs.core.entities.Faculty;
 import com.dddd.sldocs.core.entities.Professor;
 import com.dddd.sldocs.core.entities.views.PersonalLoadView;
+import com.dddd.sldocs.core.general.Dictionary;
 import com.dddd.sldocs.core.general.utils.cyrToLatin.UkrainianToLatin;
 import com.dddd.sldocs.core.services.FacultyService;
 import com.dddd.sldocs.core.services.PersonalLoadViewService;
@@ -65,312 +66,316 @@ public class WritePSLController {
     @RequestMapping("/PSL")
     public String writePSL() {
 
-        long m = System.currentTimeMillis();
         try {
-            InputStream inputStream = Files.newInputStream(new File("src/main/resources/PSLExample.xlsx").toPath());
-            XSSFWorkbookFactory workbookFactory = new XSSFWorkbookFactory();
-            XSSFWorkbook workbook = workbookFactory.create(inputStream);
+            try (InputStream inputStream = Files.newInputStream(new File("src/main/resources/PSLExample.xlsx").toPath())) {
+                XSSFWorkbookFactory workbookFactory = new XSSFWorkbookFactory();
+                try (XSSFWorkbook workbook = workbookFactory.create(inputStream)) {
 
-            XSSFFont defaultFont = workbook.createFont();
-            defaultFont.setFontHeightInPoints((short) 12);
-            defaultFont.setFontName(TIMES_NEW_ROMAN);
-            defaultFont.setBold(false);
-            defaultFont.setItalic(false);
+                    XSSFFont defaultFont = workbook.createFont();
+                    defaultFont.setFontHeightInPoints((short) 12);
+                    defaultFont.setFontName(TIMES_NEW_ROMAN);
+                    defaultFont.setBold(false);
+                    defaultFont.setItalic(false);
 
-            XSSFFont font10 = workbook.createFont();
-            font10.setFontHeightInPoints((short) 10);
-            font10.setFontName(TIMES_NEW_ROMAN);
-            font10.setBold(false);
-            font10.setItalic(false);
+                    XSSFFont font10 = workbook.createFont();
+                    font10.setFontHeightInPoints((short) 10);
+                    font10.setFontName(TIMES_NEW_ROMAN);
+                    font10.setBold(false);
+                    font10.setItalic(false);
 
-            XSSFFont font14 = workbook.createFont();
-            font14.setFontHeightInPoints((short) 14);
-            font14.setFontName(TIMES_NEW_ROMAN);
-            font14.setBold(false);
-            font14.setItalic(false);
+                    XSSFFont font14 = workbook.createFont();
+                    font14.setFontHeightInPoints((short) 14);
+                    font14.setFontName(TIMES_NEW_ROMAN);
+                    font14.setBold(false);
+                    font14.setItalic(false);
 
-            XSSFFont font14Bold = workbook.createFont();
-            font14Bold.setFontHeightInPoints((short) 14);
-            font14Bold.setFontName(TIMES_NEW_ROMAN);
-            font14Bold.setBold(true);
-            font14Bold.setItalic(false);
+                    XSSFFont font14Bold = workbook.createFont();
+                    font14Bold.setFontHeightInPoints((short) 14);
+                    font14Bold.setFontName(TIMES_NEW_ROMAN);
+                    font14Bold.setBold(true);
+                    font14Bold.setItalic(false);
 
-            CellStyle style = workbook.createCellStyle();
-            style.setVerticalAlignment(VerticalAlignment.CENTER);
-            style.setAlignment(HorizontalAlignment.CENTER);
-            style.setFont(font10);
-            style.setWrapText(true);
-            style.setBorderBottom(BorderStyle.THIN);
-            style.setBorderLeft(BorderStyle.THIN);
-            style.setBorderRight(BorderStyle.THIN);
-            style.setBorderTop(BorderStyle.THIN);
+                    CellStyle style = workbook.createCellStyle();
+                    style.setVerticalAlignment(VerticalAlignment.CENTER);
+                    style.setAlignment(HorizontalAlignment.CENTER);
+                    style.setFont(font10);
+                    style.setWrapText(true);
+                    style.setBorderBottom(BorderStyle.THIN);
+                    style.setBorderLeft(BorderStyle.THIN);
+                    style.setBorderRight(BorderStyle.THIN);
+                    style.setBorderTop(BorderStyle.THIN);
 
 
-            CellStyle style14 = workbook.createCellStyle();
-            style14.setVerticalAlignment(VerticalAlignment.CENTER);
-            style14.setAlignment(HorizontalAlignment.CENTER);
-            style14.setFont(font14);
-            style14.setWrapText(true);
-            style14.setBorderBottom(BorderStyle.THIN);
-            style14.setBorderLeft(BorderStyle.THIN);
-            style14.setBorderRight(BorderStyle.THIN);
-            style14.setBorderTop(BorderStyle.THIN);
+                    CellStyle style14 = workbook.createCellStyle();
+                    style14.setVerticalAlignment(VerticalAlignment.CENTER);
+                    style14.setAlignment(HorizontalAlignment.CENTER);
+                    style14.setFont(font14);
+                    style14.setWrapText(true);
+                    style14.setBorderBottom(BorderStyle.THIN);
+                    style14.setBorderLeft(BorderStyle.THIN);
+                    style14.setBorderRight(BorderStyle.THIN);
+                    style14.setBorderTop(BorderStyle.THIN);
 
-            CellStyle style14Bold = workbook.createCellStyle();
-            style14Bold.setFont(font14Bold);
-            style14Bold.setWrapText(true);
-            style14Bold.setBorderBottom(BorderStyle.THIN);
-            style14Bold.setBorderLeft(BorderStyle.THIN);
-            style14Bold.setBorderRight(BorderStyle.THIN);
-            style14Bold.setBorderTop(BorderStyle.THIN);
+                    CellStyle style14Bold = workbook.createCellStyle();
+                    style14Bold.setFont(font14Bold);
+                    style14Bold.setWrapText(true);
+                    style14Bold.setBorderBottom(BorderStyle.THIN);
+                    style14Bold.setBorderLeft(BorderStyle.THIN);
+                    style14Bold.setBorderRight(BorderStyle.THIN);
+                    style14Bold.setBorderTop(BorderStyle.THIN);
 
-            CellStyle style14RightAl = workbook.createCellStyle();
-            style14RightAl.setVerticalAlignment(VerticalAlignment.CENTER);
-            style14RightAl.setAlignment(HorizontalAlignment.RIGHT);
-            style14RightAl.setBorderBottom(BorderStyle.THIN);
-            style14RightAl.setBorderLeft(BorderStyle.THIN);
-            style14RightAl.setBorderRight(BorderStyle.THIN);
-            style14RightAl.setBorderTop(BorderStyle.THIN);
-            style14RightAl.setFont(font14);
-            style14RightAl.setWrapText(true);
+                    CellStyle style14RightAl = workbook.createCellStyle();
+                    style14RightAl.setVerticalAlignment(VerticalAlignment.CENTER);
+                    style14RightAl.setAlignment(HorizontalAlignment.RIGHT);
+                    style14RightAl.setBorderBottom(BorderStyle.THIN);
+                    style14RightAl.setBorderLeft(BorderStyle.THIN);
+                    style14RightAl.setBorderRight(BorderStyle.THIN);
+                    style14RightAl.setBorderTop(BorderStyle.THIN);
+                    style14RightAl.setFont(font14);
+                    style14RightAl.setWrapText(true);
 
-            CellStyle styleThickBotBord = workbook.createCellStyle();
-            styleThickBotBord.setFont(font14Bold);
-            styleThickBotBord.setWrapText(true);
-            styleThickBotBord.setBorderBottom(BorderStyle.THICK);
-            styleThickBotBord.setBorderLeft(BorderStyle.THIN);
-            styleThickBotBord.setBorderRight(BorderStyle.THIN);
-            styleThickBotBord.setBorderTop(BorderStyle.THIN);
+                    CellStyle styleThickBotBord = workbook.createCellStyle();
+                    styleThickBotBord.setFont(font14Bold);
+                    styleThickBotBord.setWrapText(true);
+                    styleThickBotBord.setBorderBottom(BorderStyle.THICK);
+                    styleThickBotBord.setBorderLeft(BorderStyle.THIN);
+                    styleThickBotBord.setBorderRight(BorderStyle.THIN);
+                    styleThickBotBord.setBorderTop(BorderStyle.THIN);
 
-            CellStyle styleThickBotRightBord = workbook.createCellStyle();
-            styleThickBotRightBord.setFont(font14Bold);
-            styleThickBotRightBord.setWrapText(true);
-            styleThickBotRightBord.setBorderBottom(BorderStyle.THICK);
-            styleThickBotRightBord.setBorderLeft(BorderStyle.THIN);
-            styleThickBotRightBord.setBorderRight(BorderStyle.THICK);
-            styleThickBotRightBord.setBorderTop(BorderStyle.THIN);
+                    CellStyle styleThickBotRightBord = workbook.createCellStyle();
+                    styleThickBotRightBord.setFont(font14Bold);
+                    styleThickBotRightBord.setWrapText(true);
+                    styleThickBotRightBord.setBorderBottom(BorderStyle.THICK);
+                    styleThickBotRightBord.setBorderLeft(BorderStyle.THIN);
+                    styleThickBotRightBord.setBorderRight(BorderStyle.THICK);
+                    styleThickBotRightBord.setBorderTop(BorderStyle.THIN);
 
-            CellStyle styleThickBotTopBord = workbook.createCellStyle();
-            styleThickBotTopBord.setFont(font14Bold);
-            styleThickBotTopBord.setWrapText(true);
-            styleThickBotTopBord.setBorderBottom(BorderStyle.THICK);
-            styleThickBotTopBord.setBorderLeft(BorderStyle.THIN);
-            styleThickBotTopBord.setBorderRight(BorderStyle.THIN);
-            styleThickBotTopBord.setBorderTop(BorderStyle.THICK);
+                    CellStyle styleThickBotTopBord = workbook.createCellStyle();
+                    styleThickBotTopBord.setFont(font14Bold);
+                    styleThickBotTopBord.setWrapText(true);
+                    styleThickBotTopBord.setBorderBottom(BorderStyle.THICK);
+                    styleThickBotTopBord.setBorderLeft(BorderStyle.THIN);
+                    styleThickBotTopBord.setBorderRight(BorderStyle.THIN);
+                    styleThickBotTopBord.setBorderTop(BorderStyle.THICK);
 
-            CellStyle styleThickBotTopRightBord = workbook.createCellStyle();
-            styleThickBotTopRightBord.setFont(font14Bold);
-            styleThickBotTopRightBord.setWrapText(true);
-            styleThickBotTopRightBord.setBorderBottom(BorderStyle.THICK);
-            styleThickBotTopRightBord.setBorderLeft(BorderStyle.THIN);
-            styleThickBotTopRightBord.setBorderRight(BorderStyle.THICK);
-            styleThickBotTopRightBord.setBorderTop(BorderStyle.THICK);
+                    CellStyle styleThickBotTopRightBord = workbook.createCellStyle();
+                    styleThickBotTopRightBord.setFont(font14Bold);
+                    styleThickBotTopRightBord.setWrapText(true);
+                    styleThickBotTopRightBord.setBorderBottom(BorderStyle.THICK);
+                    styleThickBotTopRightBord.setBorderLeft(BorderStyle.THIN);
+                    styleThickBotTopRightBord.setBorderRight(BorderStyle.THICK);
+                    styleThickBotTopRightBord.setBorderTop(BorderStyle.THICK);
 
-            CellStyle styleThickRightBord = workbook.createCellStyle();
-            styleThickRightBord.setFont(font14);
-            styleThickRightBord.setWrapText(true);
-            styleThickRightBord.setBorderBottom(BorderStyle.THIN);
-            styleThickRightBord.setBorderLeft(BorderStyle.THIN);
-            styleThickRightBord.setBorderRight(BorderStyle.THICK);
-            styleThickRightBord.setBorderTop(BorderStyle.THIN);
+                    CellStyle styleThickRightBord = workbook.createCellStyle();
+                    styleThickRightBord.setFont(font14);
+                    styleThickRightBord.setWrapText(true);
+                    styleThickRightBord.setBorderBottom(BorderStyle.THIN);
+                    styleThickRightBord.setBorderLeft(BorderStyle.THIN);
+                    styleThickRightBord.setBorderRight(BorderStyle.THICK);
+                    styleThickRightBord.setBorderTop(BorderStyle.THIN);
 
-            XSSFCellStyle rowAutoHeightStyle = workbook.createCellStyle();
-            rowAutoHeightStyle.setWrapText(true);
+                    XSSFCellStyle rowAutoHeightStyle = workbook.createCellStyle();
+                    rowAutoHeightStyle.setWrapText(true);
 
-            List<Professor> professors = professorService.listAll();
-            professors.sort(Comparator.comparing(Professor::getFullName, Comparator.nullsLast(Comparator.naturalOrder())));
+                    List<Professor> professors = professorService.listAll();
+                    professors.sort(Comparator.comparing(Professor::getFullName, Comparator.nullsLast(Comparator.naturalOrder())));
 
-            XSSFRow row;
-            XSSFCell cell;
+                    XSSFRow row;
+                    XSSFCell cell;
 
-            int last_vert_cell_sum;
-            int rownum;
-            for (Professor professor : professors) {
-                if (!professor.getName().equals("")) {
-                    List<PersonalLoadView> personalLoadViewList;
-                    if (!pls_vmService.getPSL_VMData("1", professor.getName()).isEmpty()
-                            || !pls_vmService.getPSL_VMData("2", professor.getName()).isEmpty()) {
-                        XSSFSheet sheet = workbook.cloneSheet(1, professor.getName());
-                        row = sheet.getRow(2);
-                        cell = row.getCell(0);
-                        cell.setCellValue(professor.getName());
-                        cell.setCellStyle(style14);
+                    int last_vert_cell_sum;
+                    int rownum;
+                    for (Professor professor : professors) {
+                        if (!professor.getName().equals("")) {
+                            List<PersonalLoadView> personalLoadViewList;
+                            if (!pls_vmService.getPSL_VMData("1", professor.getName()).isEmpty()
+                                    || !pls_vmService.getPSL_VMData("2", professor.getName()).isEmpty()) {
+                                XSSFSheet sheet = workbook.cloneSheet(1, professor.getName());
+                                row = sheet.getRow(2);
+                                cell = row.getCell(0);
+                                cell.setCellValue(professor.getName());
+                                cell.setCellStyle(style14);
 
-                        cell = row.createCell(4);
-                        cell.setCellValue("Ставка");
-                        cell.setCellStyle(style14);
+                                cell = row.createCell(4);
+                                cell.setCellValue("Ставка");
+                                cell.setCellStyle(style14);
 
-                        cell = row.createCell(4);
-                        cell.setCellValue(professor.getStavka());
-                        cell.setCellStyle(style14);
+                                cell = row.createCell(4);
+                                cell.setCellValue(professor.getStavka());
+                                cell.setCellStyle(style14);
 
-                        cell = row.getCell(5);
-                        if (!pls_vmService.getPSL_VMData("1", professor.getName()).isEmpty()) {
-                            personalLoadViewList = pls_vmService.getPSL_VMData("1", professor.getName());
-                        } else {
-                            personalLoadViewList = pls_vmService.getPSL_VMData("2", professor.getName());
-                        }
-                        CellRangeAddress cellRangeAddress = new CellRangeAddress(2, 2, 5, 18);
-                        sheet.addMergedRegion(cellRangeAddress);
-                        cell.setCellStyle(style14);
-                        RegionUtil.setBorderBottom(cell.getCellStyle().getBorderBottom(), cellRangeAddress, sheet);
-                        RegionUtil.setBorderTop(cell.getCellStyle().getBorderTop(), cellRangeAddress, sheet);
-                        RegionUtil.setBorderLeft(cell.getCellStyle().getBorderLeft(), cellRangeAddress, sheet);
-                        RegionUtil.setBorderRight(cell.getCellStyle().getBorderRight(), cellRangeAddress, sheet);
-                        cell.setCellValue("Кафедра " + personalLoadViewList.get(0).getDepName() + " на " + personalLoadViewList.get(0).getYear());
-                        cell.setCellStyle(style14);
-                        rownum = 6;
-                        if (!pls_vmService.getPSL_VMData("1", professor.getName()).isEmpty()) {
-                            personalLoadViewList = pls_vmService.getPSL_VMData("1", professor.getName());
-                            for (PersonalLoadView personalLoadView : personalLoadViewList) {
+                                cell = row.getCell(5);
+                                if (!pls_vmService.getPSL_VMData("1", professor.getName()).isEmpty()) {
+                                    personalLoadViewList = pls_vmService.getPSL_VMData("1", professor.getName());
+                                } else {
+                                    personalLoadViewList = pls_vmService.getPSL_VMData("2", professor.getName());
+                                }
+                                CellRangeAddress cellRangeAddress = new CellRangeAddress(2, 2, 5, 18);
+                                sheet.addMergedRegion(cellRangeAddress);
+                                cell.setCellStyle(style14);
+                                RegionUtil.setBorderBottom(cell.getCellStyle().getBorderBottom(), cellRangeAddress, sheet);
+                                RegionUtil.setBorderTop(cell.getCellStyle().getBorderTop(), cellRangeAddress, sheet);
+                                RegionUtil.setBorderLeft(cell.getCellStyle().getBorderLeft(), cellRangeAddress, sheet);
+                                RegionUtil.setBorderRight(cell.getCellStyle().getBorderRight(), cellRangeAddress, sheet);
+                                cell.setCellValue("Кафедра " + personalLoadViewList.get(0).getDepName() + " на " + personalLoadViewList.get(0).getYear());
+                                cell.setCellStyle(style14);
+                                rownum = 6;
+                                if (!pls_vmService.getPSL_VMData("1", professor.getName()).isEmpty()) {
+                                    personalLoadViewList = pls_vmService.getPSL_VMData("1", professor.getName());
+                                    for (PersonalLoadView personalLoadView : personalLoadViewList) {
+                                        row = sheet.createRow(rownum++);
+                                        cell = row.createCell(0);
+                                        cell = writeDisciplines(style, row, cell, personalLoadView);
+                                        cell.setCellFormula(Dictionary.SUM_E_START_OF_THE_FORMULA + rownum + ":S" + rownum + ")");
+                                        cell.setCellStyle(style);
+                                        row.setRowStyle(rowAutoHeightStyle);
+                                    }
+                                }
+                                String[] ends1 = {"КЕРІВНИЦТВО"};
+                                rownum = writeKerivnictvo(style, professor, style14Bold, rownum, sheet, true, ends1);
+                                String[] ends2 = {Dictionary.ASPIRANTS_DOCTORANTS, "Магістри професійні", Dictionary.BACHELORS, Dictionary.COURSE_PROJECTS_5_COURSE};
+                                rownum = writeKerivnictvo(style, professor, style14RightAl, rownum, sheet, true, ends2);
+
+
+                                int autumn_sum = rownum;
                                 row = sheet.createRow(rownum++);
                                 cell = row.createCell(0);
-                                cell = writeDisciplines(style, row, cell, personalLoadView);
-                                cell.setCellFormula("SUM(E" + rownum + ":S" + rownum + ")");
-                                cell.setCellStyle(style);
-                                row.setRowStyle(rowAutoHeightStyle);
-                            }
-                        }
-                        String[] ends1 = {"КЕРІВНИЦТВО"};
-                        rownum = writeKerivnictvo(style, professor, style14Bold, rownum, sheet, true, ends1);
-                        String[] ends2 = {"Аспіранти, докторанти", "Магістри професійні", "Бакалаври", "Курсові 5 курс"};
-                        rownum = writeKerivnictvo(style, professor, style14RightAl, rownum, sheet, true, ends2);
+                                cell.setCellValue("Усього за осінь");
+                                cell.setCellStyle(styleThickBotTopBord);
 
+                                for (int k = 1; k < 4; k++) {
+                                    cell = row.createCell(k);
+                                    cell.setCellValue("");
+                                    cell.setCellStyle(styleThickBotTopBord);
+                                }
+                                String[] sums = {"E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S"};
+                                int cell_count = 4;
+                                last_vert_cell_sum = rownum - 1;
+                                for (String sum : sums) {
+                                    cell = row.createCell(cell_count++);
+                                    cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + "7:" + sum + last_vert_cell_sum + "),0)");
+                                    cell.setCellStyle(styleThickBotTopBord);
+                                }
+                                cell = row.createCell(cell_count);
+                                cell.setCellFormula("ROUND(SUM(T7:" + "T" + last_vert_cell_sum + "),0)");
+                                cell.setCellStyle(styleThickBotTopRightBord);
 
-                        int autumn_sum = rownum;
-                        row = sheet.createRow(rownum++);
-                        cell = row.createCell(0);
-                        cell.setCellValue("Усього за осінь");
-                        cell.setCellStyle(styleThickBotTopBord);
-
-                        for (int k = 1; k < 4; k++) {
-                            cell = row.createCell(k);
-                            cell.setCellValue("");
-                            cell.setCellStyle(styleThickBotTopBord);
-                        }
-                        String[] sums = {"E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S"};
-                        int cell_count = 4;
-                        last_vert_cell_sum = rownum - 1;
-                        for (String sum : sums) {
-                            cell = row.createCell(cell_count++);
-                            cell.setCellFormula("ROUND(SUM(" + sum + "7:" + sum + last_vert_cell_sum + "),0)");
-                            cell.setCellStyle(styleThickBotTopBord);
-                        }
-                        cell = row.createCell(cell_count);
-                        cell.setCellFormula("ROUND(SUM(T7:" + "T" + last_vert_cell_sum + "),0)");
-                        cell.setCellStyle(styleThickBotTopRightBord);
-
-                        row = sheet.createRow(rownum++);
-                        cell = row.createCell(0);
-                        cell.setCellValue("весна");
-                        cell.setCellStyle(style14);
-                        sheet.addMergedRegion(new CellRangeAddress(
-                                rownum - 1, //first row (0-based)
-                                rownum - 1, //last row  (0-based)
-                                0, //first column (0-based)
-                                19  //last column  (0-based)
-                        ));
-                        row = sheet.createRow(rownum++);
-                        cell = row.createCell(0);
-                        cell.setCellValue("Норматив");
-                        cell.setCellStyle(styleThickBotTopBord);
-                        for (int k = 1; k < 19; k++) {
-                            cell = row.createCell(k);
-                            cell.setCellValue("");
-                            cell.setCellStyle(styleThickBotTopBord);
-                        }
-                        cell = row.createCell(19);
-                        cell.setCellValue("");
-                        cell.setCellStyle(styleThickBotTopRightBord);
-
-                        int first_sum_cell_spring = rownum + 1;
-                        if (pls_vmService.getPSL_VMData("2", professor.getName()).size() != 0) {
-                            personalLoadViewList = pls_vmService.getPSL_VMData("2", professor.getName());
-                            for (PersonalLoadView personalLoadView : personalLoadViewList) {
                                 row = sheet.createRow(rownum++);
                                 cell = row.createCell(0);
-                                cell = writeDisciplines(style, row, cell, personalLoadView);
-                                cell.setCellFormula("SUM(E" + rownum + ":S" + rownum + ")");
-                                cell.setCellStyle(style);
-                                row.setRowStyle(rowAutoHeightStyle);
+                                cell.setCellValue("весна");
+                                cell.setCellStyle(style14);
+                                sheet.addMergedRegion(new CellRangeAddress(
+                                        rownum - 1, //first row (0-based)
+                                        rownum - 1, //last row  (0-based)
+                                        0, //first column (0-based)
+                                        19  //last column  (0-based)
+                                ));
+                                row = sheet.createRow(rownum++);
+                                cell = row.createCell(0);
+                                cell.setCellValue("Норматив");
+                                cell.setCellStyle(styleThickBotTopBord);
+                                for (int k = 1; k < 19; k++) {
+                                    cell = row.createCell(k);
+                                    cell.setCellValue("");
+                                    cell.setCellStyle(styleThickBotTopBord);
+                                }
+                                cell = row.createCell(19);
+                                cell.setCellValue("");
+                                cell.setCellStyle(styleThickBotTopRightBord);
+
+                                int first_sum_cell_spring = rownum + 1;
+                                if (pls_vmService.getPSL_VMData("2", professor.getName()).size() != 0) {
+                                    personalLoadViewList = pls_vmService.getPSL_VMData("2", professor.getName());
+                                    for (PersonalLoadView personalLoadView : personalLoadViewList) {
+                                        row = sheet.createRow(rownum++);
+                                        cell = row.createCell(0);
+                                        cell = writeDisciplines(style, row, cell, personalLoadView);
+                                        cell.setCellFormula(Dictionary.SUM_E_START_OF_THE_FORMULA + rownum + ":S" + rownum + ")");
+                                        cell.setCellStyle(style);
+                                        row.setRowStyle(rowAutoHeightStyle);
+                                    }
+                                }
+                                ends2 = new String[]{Dictionary.ASPIRANTS_DOCTORANTS, "Магістри наукові", Dictionary.BACHELORS, Dictionary.COURSE_PROJECTS_5_COURSE};
+                                rownum = writeKerivnictvo(style, professor, style14Bold, rownum, sheet, false, ends1);
+                                rownum = writeKerivnictvo(style, professor, style14RightAl, rownum, sheet, false, ends2);
+
+                                row = sheet.createRow(rownum++);
+                                cell = row.createCell(0);
+                                cell.setCellValue("Усього за весну");
+                                cell.setCellStyle(styleThickBotTopBord);
+
+                                for (int k = 1; k < 4; k++) {
+                                    cell = row.createCell(k);
+                                    cell.setCellValue("");
+                                    cell.setCellStyle(styleThickBotTopBord);
+                                }
+                                cell_count = 4;
+                                last_vert_cell_sum = rownum - 1;
+                                for (String sum : sums) {
+                                    cell = row.createCell(cell_count++);
+                                    cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + first_sum_cell_spring + ":" + sum + last_vert_cell_sum + "),0)");
+                                    cell.setCellStyle(styleThickBotTopBord);
+                                }
+                                cell = row.createCell(cell_count);
+                                cell.setCellFormula("ROUND(SUM(T" + first_sum_cell_spring + ":" + "T" + last_vert_cell_sum + "),0)");
+                                cell.setCellStyle(styleThickBotTopRightBord);
+
+                                row = sheet.createRow(rownum++);
+                                cell = row.createCell(0);
+                                cell.setCellValue("Загальний ПІДСУМОК");
+                                cell.setCellStyle(styleThickBotBord);
+
+
+                                for (int k = 1; k < 4; k++) {
+                                    cell = row.createCell(k);
+                                    cell.setCellValue("");
+                                    cell.setCellStyle(styleThickBotBord);
+                                }
+                                cell_count = 4;
+                                for (String sum : sums) {
+                                    cell = row.createCell(cell_count++);
+                                    cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + (autumn_sum + 1) + "+" + sum + (rownum - 1) + "),0)");
+                                    cell.setCellStyle(styleThickBotBord);
+                                }
+                                cell = row.createCell(cell_count);
+                                cell.setCellFormula("ROUND(SUM(T" + (autumn_sum + 1) + "+" + "T" + (rownum - 1) + "),0)");
+                                cell.setCellStyle(styleThickBotTopRightBord);
+
+                                if (!(professor.getPosada() == null || professor.getPosada().equals(""))) {
+                                    row = sheet.createRow(rownum + 2);
+                                    cell = row.createCell(cell_count++);
+                                    cell.setCellValue(getStandartHours(professor.getStavka(), professor.getPosada(), workbook));
+                                    cell = row.createCell(cell_count);
+                                    cell.setCellFormula("T" + rownum + "-T" + (rownum + 3));
+                                }
+                                sheet.setFitToPage(true);
+                                sheet.getPrintSetup().setLandscape(true);
                             }
                         }
-                        ends2 = new String[]{"Аспіранти, докторанти", "Магістри наукові", "Бакалаври", "Курсові 5 курс"};
-                        rownum = writeKerivnictvo(style, professor, style14Bold, rownum, sheet, false, ends1);
-                        rownum = writeKerivnictvo(style, professor, style14RightAl, rownum, sheet, false, ends2);
-
-                        row = sheet.createRow(rownum++);
-                        cell = row.createCell(0);
-                        cell.setCellValue("Усього за весну");
-                        cell.setCellStyle(styleThickBotTopBord);
-
-                        for (int k = 1; k < 4; k++) {
-                            cell = row.createCell(k);
-                            cell.setCellValue("");
-                            cell.setCellStyle(styleThickBotTopBord);
-                        }
-                        cell_count = 4;
-                        last_vert_cell_sum = rownum - 1;
-                        for (String sum : sums) {
-                            cell = row.createCell(cell_count++);
-                            cell.setCellFormula("ROUND(SUM(" + sum + first_sum_cell_spring + ":" + sum + last_vert_cell_sum + "),0)");
-                            cell.setCellStyle(styleThickBotTopBord);
-                        }
-                        cell = row.createCell(cell_count);
-                        cell.setCellFormula("ROUND(SUM(T" + first_sum_cell_spring + ":" + "T" + last_vert_cell_sum + "),0)");
-                        cell.setCellStyle(styleThickBotTopRightBord);
-
-                        row = sheet.createRow(rownum++);
-                        cell = row.createCell(0);
-                        cell.setCellValue("Загальний ПІДСУМОК");
-                        cell.setCellStyle(styleThickBotBord);
-
-
-                        for (int k = 1; k < 4; k++) {
-                            cell = row.createCell(k);
-                            cell.setCellValue("");
-                            cell.setCellStyle(styleThickBotBord);
-                        }
-                        cell_count = 4;
-                        for (String sum : sums) {
-                            cell = row.createCell(cell_count++);
-                            cell.setCellFormula("ROUND(SUM(" + sum + (autumn_sum + 1) + "+" + sum + (rownum - 1) + "),0)");
-                            cell.setCellStyle(styleThickBotBord);
-                        }
-                        cell = row.createCell(cell_count);
-                        cell.setCellFormula("ROUND(SUM(T" + (autumn_sum + 1) + "+" + "T" + (rownum - 1) + "),0)");
-                        cell.setCellStyle(styleThickBotTopRightBord);
-
-                        if (!(professor.getPosada() == null || professor.getPosada().equals(""))) {
-                            row = sheet.createRow(rownum + 2);
-                            cell = row.createCell(cell_count++);
-                            cell.setCellValue(getStandartHours(professor.getStavka(), professor.getPosada(), workbook));
-                            cell = row.createCell(cell_count);
-                            cell.setCellFormula("T" + rownum + "-T" + (rownum + 3));
-                        }
-                        sheet.setFitToPage(true);
-                        sheet.getPrintSetup().setLandscape(true);
                     }
-                }
-            }
 
-            workbook.removeSheetAt(1);
-            inputStream.close();
-            File someFile = new File(pslFileName);
-            FileOutputStream outputStream = new FileOutputStream(someFile);
-            workbook.write(outputStream);
-            workbook.close();
-            outputStream.close();
-            List<Faculty> faculties = facultyService.listAll();
-            faculties.get(0).setPslFilename(someFile.getName());
-            facultyService.save(faculties.get(0));
-            writePSLforProf();
+                    workbook.removeSheetAt(1);
+                    File someFile = new File(pslFileName);
+                    try (FileOutputStream outputStream = new FileOutputStream(someFile)) {
+                        workbook.write(outputStream);
+                        List<Faculty> faculties = facultyService.listAll();
+                        faculties.get(0).setPslFilename(someFile.getName());
+                        facultyService.save(faculties.get(0));
+                        writePSLforProf();
+                    } catch (Exception e) {
+                        log.error(e);
+                    }
+                } catch (Exception e) {
+                    log.error(e);
+                }
+            } catch (Exception e) {
+                log.error(e);
+            }
 
         } catch (Exception ex) {
             log.error("Error creating PSL file");
             log.error(ex);
         }
-        log.info("PSL created in {} seconds", (System.currentTimeMillis() - m) / 100);
         return "redirect:/";
     }
 
@@ -424,24 +429,30 @@ public class WritePSLController {
             File originalWb = new File(pslFileName);
             File clonedWb = new File(UkrainianToLatin.generateLat(professor.getName()) + " personal_study_load.xlsx");
             Files.copy(originalWb.toPath(), clonedWb.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            FileInputStream iS = new FileInputStream(clonedWb);
-            XSSFWorkbookFactory wbF = new XSSFWorkbookFactory();
-            XSSFWorkbook workbook = wbF.create(iS);
-            while (workbook.getNumberOfSheets() > 1) {
-                if (!professor.getName().equals(workbook.getSheetAt(0).getSheetName())) {
-                    workbook.removeSheetAt(0);
-                } else if (!professor.getName().equals(workbook.getSheetAt(1).getSheetName())) {
-                    workbook.removeSheetAt(1);
-                }
+            try (FileInputStream iS = new FileInputStream(clonedWb)) {
 
+                XSSFWorkbookFactory wbF = new XSSFWorkbookFactory();
+                try (XSSFWorkbook workbook = wbF.create(iS)) {
+                    while (workbook.getNumberOfSheets() > 1) {
+                        if (!professor.getName().equals(workbook.getSheetAt(0).getSheetName())) {
+                            workbook.removeSheetAt(0);
+                        } else if (!professor.getName().equals(workbook.getSheetAt(1).getSheetName())) {
+                            workbook.removeSheetAt(1);
+                        }
+                    }
+                    try (FileOutputStream outputStream = new FileOutputStream(clonedWb)) {
+                        workbook.write(outputStream);
+                        professor.setPslFilename(clonedWb.getName());
+                        professorService.save(professor);
+                    } catch (Exception e) {
+                        log.error(e);
+                    }
+                } catch (Exception e) {
+                    log.error(e);
+                }
+            } catch (Exception e) {
+                log.error(e);
             }
-            iS.close();
-            FileOutputStream outputStream = new FileOutputStream(clonedWb);
-            workbook.write(outputStream);
-            workbook.close();
-            outputStream.close();
-            professor.setPslFilename(clonedWb.getName());
-            professorService.save(professor);
         }
     }
 
@@ -459,7 +470,7 @@ public class WritePSLController {
             }
             for (int l = 1; l < 19; l++) {
                 switch (end.trim()) {
-                    case ("Аспіранти, докторанти"):
+                    case (Dictionary.ASPIRANTS_DOCTORANTS):
                         if (l == 2) {
                             cell = row.createCell(l);
                             cell.setCellStyle(style);
@@ -473,7 +484,7 @@ public class WritePSLController {
                     case ("Магістри професійні"):
                         if (l == 2 && professor.getMasterProfNum() != null && !professor.getMasterProfNum().isEmpty()) {
                             cell = row.createCell(l);
-                            cell.setCellValue((int)Double.parseDouble(professor.getMasterProfNum()));
+                            cell.setCellValue((int) Double.parseDouble(professor.getMasterProfNum()));
                             cell.setCellStyle(style);
                         }
                         if (l == 12) {
@@ -485,7 +496,7 @@ public class WritePSLController {
                     case ("Магістри наукові"):
                         if (l == 2 && professor.getMasterScNum() != null && !professor.getMasterScNum().isEmpty()) {
                             cell = row.createCell(l);
-                            cell.setCellValue((int)Double.parseDouble(professor.getMasterScNum()));
+                            cell.setCellValue((int) Double.parseDouble(professor.getMasterScNum()));
                             cell.setCellStyle(style);
                         }
                         if (l == 12) {
@@ -494,10 +505,10 @@ public class WritePSLController {
                             cell.setCellStyle(style);
                         }
                         break;
-                    case ("Бакалаври"):
+                    case (Dictionary.BACHELORS):
                         if (l == 2 && professor.getBachNum() != null && !professor.getBachNum().isEmpty()) {
                             cell = row.createCell(l);
-                            cell.setCellValue((int)Double.parseDouble(professor.getBachNum()));
+                            cell.setCellValue((int) Double.parseDouble(professor.getBachNum()));
                             cell.setCellStyle(style);
                         }
                         if (autumn) {
@@ -514,10 +525,10 @@ public class WritePSLController {
                             }
                         }
                         break;
-                    case ("Курсові 5 курс"):
+                    case (Dictionary.COURSE_PROJECTS_5_COURSE):
                         if (l == 2 && professor.getFifthCourseNum() != null && !professor.getFifthCourseNum().isEmpty()) {
                             cell = row.createCell(l);
-                            cell.setCellValue((int)Double.parseDouble(professor.getFifthCourseNum()));
+                            cell.setCellValue((int) Double.parseDouble(professor.getFifthCourseNum()));
                             cell.setCellStyle(style);
                         }
                         if (l == 9) {
@@ -533,7 +544,7 @@ public class WritePSLController {
                 }
             }
             cell = row.createCell(19);
-            cell.setCellFormula("SUM(E" + rownum + ":S" + rownum + ")");
+            cell.setCellFormula(Dictionary.SUM_E_START_OF_THE_FORMULA + rownum + ":S" + rownum + ")");
             cell.setCellStyle(style);
 
         }

@@ -93,23 +93,20 @@ public class ReadExcelController {
             return Dictionary.ERROR_BAD_FILE;
         }
 
-        FileInputStream fis = new FileInputStream(path);
-        XSSFWorkbook workbook = new XSSFWorkbook(fis);
-        try {
+        try (FileInputStream fis = new FileInputStream(path);) {
+            XSSFWorkbook workbook = new XSSFWorkbook(fis);
             String[] res = workbook.getSheetAt(0).getRow(3).getCell(3).toString()
                     .split(Dictionary.SPACE_REGEX);
             if (!res[0].equals("ПЛАН")) {
                 return Dictionary.ERROR_BAD_FILE;
             }
-        } catch (Exception ex) {
-            return Dictionary.ERROR_BAD_FILE;
+            for (int i = 0; i < 2; i++) {
+                readObsyagSheet(workbook, i);
+            }
+        } catch (Exception e) {
+            log.error("Error reading obsyag");
+            log.error(e);
         }
-        long m = System.currentTimeMillis();
-        for (int i = 0; i < 2; i++) {
-            readObsyagSheet(workbook, i);
-        }
-        fis.close();
-        log.info(System.currentTimeMillis() - m);
 
         return "success/obsyagToDB";
     }
@@ -121,13 +118,14 @@ public class ReadExcelController {
             return Dictionary.ERROR_BAD_FILE;
         }
 
-        FileInputStream fis = new FileInputStream(path);
-        XSSFWorkbook workbook = new XSSFWorkbook(fis);
+        try (FileInputStream fis = new FileInputStream(path)) {
+            XSSFWorkbook workbook = new XSSFWorkbook(fis);
 
-        long m = System.currentTimeMillis();
-        readPPSSheet(workbook);
-        fis.close();
-        log.info(System.currentTimeMillis() - m);
+            readPPSSheet(workbook);
+        } catch (Exception e) {
+            log.error("error reading pps");
+            log.error(e);
+        }
 
         return "success/psToDB";
     }
@@ -138,13 +136,11 @@ public class ReadExcelController {
         if (!parts[1].equals("xlsx")) {
             return Dictionary.ERROR_BAD_FILE;
         }
-        try(FileInputStream fis = new FileInputStream(path)){
+        try (FileInputStream fis = new FileInputStream(path)) {
             XSSFWorkbook workbook = new XSSFWorkbook(fis);
 
-            long m = System.currentTimeMillis();
             readPSSheet(workbook);
-            log.info(System.currentTimeMillis() - m);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error(e);
         }
 
@@ -268,6 +264,7 @@ public class ReadExcelController {
             log.error(ex);
         }
     }
+
     private void readPPSSheet(XSSFWorkbook workbook) {
         XSSFSheet sheet = workbook.getSheetAt(0);
         DataFormatter df = new DataFormatter();

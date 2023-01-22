@@ -36,110 +36,108 @@ public class WriteEASController {
 
     @RequestMapping("/EdAsSt")
     public String createExcel() {
-        long m = System.currentTimeMillis();
-        try {
-            InputStream in = Files.newInputStream(new File("src/main/resources/EdAsStExample.xlsx").toPath());
+        try (InputStream in = Files.newInputStream(new File("src/main/resources/EdAsStExample.xlsx").toPath())) {
             XSSFWorkbookFactory workbookFactory = new XSSFWorkbookFactory();
-            XSSFWorkbook workbook = workbookFactory.create(in);
+            try (XSSFWorkbook workbook = workbookFactory.create(in)) {
 
-            XSSFFont defaultFont = workbook.createFont();
-            defaultFont.setFontHeightInPoints((short) 12);
-            defaultFont.setFontName(TIMES_NEW_ROMAN);
-            defaultFont.setColor(IndexedColors.BLACK.getIndex());
-            defaultFont.setBold(false);
-            defaultFont.setItalic(false);
+                XSSFFont defaultFont = workbook.createFont();
+                defaultFont.setFontHeightInPoints((short) 12);
+                defaultFont.setFontName(TIMES_NEW_ROMAN);
+                defaultFont.setColor(IndexedColors.BLACK.getIndex());
+                defaultFont.setBold(false);
+                defaultFont.setItalic(false);
 
-            XSSFFont font = workbook.createFont();
-            font.setFontHeightInPoints((short) 12);
-            font.setFontName(TIMES_NEW_ROMAN);
-            font.setColor(IndexedColors.BLACK.getIndex());
-            font.setBold(false);
-            font.setItalic(false);
-
-
-            CellStyle style = workbook.createCellStyle();
-            style.setVerticalAlignment(VerticalAlignment.CENTER);
-            style.setAlignment(HorizontalAlignment.CENTER);
-            style.setBorderBottom(BorderStyle.THIN);
-            style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
-            style.setBorderLeft(BorderStyle.THIN);
-            style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
-            style.setBorderRight(BorderStyle.THIN);
-            style.setRightBorderColor(IndexedColors.BLACK.getIndex());
-            style.setBorderTop(BorderStyle.THIN);
-            style.setTopBorderColor(IndexedColors.BLACK.getIndex());
-            style.setWrapText(true);
+                XSSFFont font = workbook.createFont();
+                font.setFontHeightInPoints((short) 12);
+                font.setFontName(TIMES_NEW_ROMAN);
+                font.setColor(IndexedColors.BLACK.getIndex());
+                font.setBold(false);
+                font.setItalic(false);
 
 
-            XSSFCellStyle rowAutoHeightStyle = workbook.createCellStyle();
-            rowAutoHeightStyle.setWrapText(true);
-
-            XSSFSheet sheet = workbook.getSheetAt(0);
-            //Autumn 1-3 semesters
-            int rowCount = 5;
-            List<EdAsStView> data = eas_vmService.getEASVM13Data("1", "4.0");
-
-            writeSheet(font, style, sheet, rowCount, data, false, workbook, rowAutoHeightStyle);
-            //Autumn 4 semester
-            sheet = workbook.getSheetAt(1);
-            rowCount = 5;
-            data = eas_vmService.getEASVMData("1", "4.0");
-
-            writeSheet(font, style, sheet, rowCount, data, false, workbook, rowAutoHeightStyle);
-            //Autumn 5 semester
-            sheet = workbook.getSheetAt(2);
-            rowCount = 5;
-            data = eas_vmService.getEASVMData("1", "5.0");
-
-            writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
-            //Autumn 6 semester
-            sheet = workbook.getSheetAt(3);
-            rowCount = 5;
-            data = eas_vmService.getEASVMData("1", "6.0");
-
-            writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
-            //Spring 1-3 semesters
-            sheet = workbook.getSheetAt(4);
-            rowCount = 5;
-            data = eas_vmService.getEASVM13Data("2", "4.0");
-
-            writeSheet(font, style, sheet, rowCount, data, false, workbook, rowAutoHeightStyle);
-            //Spring 4 semester
-            sheet = workbook.getSheetAt(5);
-            rowCount = 5;
-            data = eas_vmService.getEASVMData("2", "4.0");
-
-            writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
-            //Spring 5 semester
-            sheet = workbook.getSheetAt(6);
-            rowCount = 5;
-            data = eas_vmService.getEASVMData("2", "5.0");
-
-            writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
-            //Spring 6 semester
-            sheet = workbook.getSheetAt(7);
-            rowCount = 5;
-            data = eas_vmService.getEASVMData("2", "6.0");
-
-            writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
+                CellStyle style = workbook.createCellStyle();
+                style.setVerticalAlignment(VerticalAlignment.CENTER);
+                style.setAlignment(HorizontalAlignment.CENTER);
+                style.setBorderBottom(BorderStyle.THIN);
+                style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+                style.setBorderLeft(BorderStyle.THIN);
+                style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+                style.setBorderRight(BorderStyle.THIN);
+                style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+                style.setBorderTop(BorderStyle.THIN);
+                style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+                style.setWrapText(true);
 
 
+                XSSFCellStyle rowAutoHeightStyle = workbook.createCellStyle();
+                rowAutoHeightStyle.setWrapText(true);
 
-            in.close();
-            File someFile = new File("Відомість_учбових_доручень.xlsx");
-            FileOutputStream outputStream = new FileOutputStream(someFile);
-            workbook.write(outputStream);
-            workbook.close();
-            outputStream.close();
+                XSSFSheet sheet = workbook.getSheetAt(0);
+                //Autumn 1-3 semesters
+                int rowCount = 5;
+                List<EdAsStView> data = eas_vmService.getEASVM13Data("1", "4.0");
 
-            List<Faculty> faculties = facultyService.listAll();
-            faculties.get(0).setEasFilename(someFile.getName());
-            facultyService.save(faculties.get(0));
+                writeSheet(font, style, sheet, rowCount, data, false, workbook, rowAutoHeightStyle);
+                //Autumn 4 semester
+                sheet = workbook.getSheetAt(1);
+                rowCount = 5;
+                data = eas_vmService.getEASVMData("1", "4.0");
 
+                writeSheet(font, style, sheet, rowCount, data, false, workbook, rowAutoHeightStyle);
+                //Autumn 5 semester
+                sheet = workbook.getSheetAt(2);
+                rowCount = 5;
+                data = eas_vmService.getEASVMData("1", "5.0");
+
+                writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
+                //Autumn 6 semester
+                sheet = workbook.getSheetAt(3);
+                rowCount = 5;
+                data = eas_vmService.getEASVMData("1", "6.0");
+
+                writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
+                //Spring 1-3 semesters
+                sheet = workbook.getSheetAt(4);
+                rowCount = 5;
+                data = eas_vmService.getEASVM13Data("2", "4.0");
+
+                writeSheet(font, style, sheet, rowCount, data, false, workbook, rowAutoHeightStyle);
+                //Spring 4 semester
+                sheet = workbook.getSheetAt(5);
+                rowCount = 5;
+                data = eas_vmService.getEASVMData("2", "4.0");
+
+                writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
+                //Spring 5 semester
+                sheet = workbook.getSheetAt(6);
+                rowCount = 5;
+                data = eas_vmService.getEASVMData("2", "5.0");
+
+                writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
+                //Spring 6 semester
+                sheet = workbook.getSheetAt(7);
+                rowCount = 5;
+                data = eas_vmService.getEASVMData("2", "6.0");
+
+                writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
+
+                File someFile = new File("Відомість_учбових_доручень.xlsx");
+
+                try (FileOutputStream outputStream = new FileOutputStream(someFile)) {
+                    workbook.write(outputStream);
+                } catch (Exception e) {
+                    log.error(e);
+                }
+
+                List<Faculty> faculties = facultyService.listAll();
+                faculties.get(0).setEasFilename(someFile.getName());
+                facultyService.save(faculties.get(0));
+            } catch (Exception e) {
+                log.error(e);
+            }
         } catch (Exception ex) {
-           log.error(ex);
+            log.error(ex);
         }
-        log.info("EAS created in {} seconds",(System.currentTimeMillis() - m)/100);
         return "redirect:/";
     }
 
