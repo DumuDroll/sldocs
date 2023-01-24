@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Getter
 @Setter
@@ -43,7 +42,4 @@ public class PersonalLoadView {
     private String posada;
     private String vchZvana;
     private String stavka;
-
-    @ElementCollection
-    private List<String> hours;
 }
