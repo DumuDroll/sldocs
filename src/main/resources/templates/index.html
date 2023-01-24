@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8"/>
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
-    <title>Форумвання витягів</title>
+    <title>Формування витягів</title>
 </head>
 <body id="mahBody">
 <nav>
@@ -66,7 +66,7 @@
         </div>
     </form>
 
-    <p>2. Зчитайте посади, звання, ставки зчитаним викладачам</p>
+    <p>2. Зчитайте посади, звання, ставки викладачів</p>
     <form th:action="@{/uploadPPS}" method="post" enctype="multipart/form-data">
         <div>
             <label for="filePPS">Оберіть ППС+ставки</label>
@@ -116,7 +116,7 @@
             </li>
             <li class="content__elem">
                 <div class="content__title">
-                    Навантаження по викладачх:
+                    Навантаження по викладачах:
                 </div>
                 <ul class="content__text">
                     <li>
@@ -174,7 +174,7 @@
                 </ul>
             </li>
         </ul>
-        <p>6. Активуйте акаунти викладачів або замостійно розішліть документи</p>
+        <p>6. Активуйте акаунти викладачів або самостійно розішліть документи</p>
         <a href="/users">Перелік акаунтів викладачів</a><br>
         <a href="/professors/docs">Перелік викладачів для відправки</a>
 

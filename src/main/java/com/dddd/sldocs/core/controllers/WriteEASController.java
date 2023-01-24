@@ -232,7 +232,7 @@ public class WriteEASController {
         style2.setFont(fontCustom);
         cell.setCellStyle(style2);
         cell = row.createCell(2);
-        cell.setCellValue("В.о. зав. кафедрою");
+        cell.setCellValue("Зав. кафедрою");
         style2 = workbook.createCellStyle();
         fontCustom = workbook.createFont();
         fontCustom.setFontHeightInPoints((short) 12);
@@ -253,7 +253,7 @@ public class WriteEASController {
         style2.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         cell.setCellStyle(style2);
         cell = row.createCell(6);
-        cell.setCellValue("Михайло ГОДЛЕВСЬКИЙ");
+        cell.setCellValue("Ігор ГАМАЮН");
         style2 = workbook.createCellStyle();
         style2.setFont(font);
         style2.setBorderBottom(BorderStyle.THIN);
