@@ -13,4 +13,14 @@
         <sqlFile path="db/changelog/tables/admin-account.sql"/>
     </changeSet>
 
+    <changeSet id="2023/01/26_1" author="dddd">
+        <createTable tableName="creation_metric">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="professor_number" type="int"/>
+            <column name="time_to_form" type="double"/>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

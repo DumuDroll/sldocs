@@ -1,10 +1,12 @@
 package com.dddd.sldocs.core.controllers;
 
+import com.dddd.sldocs.core.entities.CreationMetric;
 import com.dddd.sldocs.core.entities.Faculty;
 import com.dddd.sldocs.core.entities.Professor;
 import com.dddd.sldocs.core.entities.views.PersonalLoadView;
 import com.dddd.sldocs.core.general.Dictionary;
 import com.dddd.sldocs.core.general.utils.cyrToLatin.UkrainianToLatin;
+import com.dddd.sldocs.core.services.CreationMetricService;
 import com.dddd.sldocs.core.services.FacultyService;
 import com.dddd.sldocs.core.services.PersonalLoadViewService;
 import com.dddd.sldocs.core.services.ProfessorService;
@@ -38,16 +40,18 @@ import java.util.Objects;
 @Log4j2
 public class WriteIPController {
     private final PersonalLoadViewService pls_vmService;
+    private final CreationMetricService metricService;
     private final ProfessorService professorService;
     private final FacultyService facultyService;
     private double total_sum;
     private static final String TIMES_NEW_ROMAN = "Times New Roman";
 
     public WriteIPController(PersonalLoadViewService pls_vmService, ProfessorService professorService,
-                             FacultyService facultyService) {
+                             FacultyService facultyService, CreationMetricService metricService) {
         this.pls_vmService = pls_vmService;
         this.professorService = professorService;
         this.facultyService = facultyService;
+        this.metricService = metricService;
     }
 
     @PostMapping("/uploadIp")
@@ -66,6 +70,7 @@ public class WriteIPController {
 
     @RequestMapping("/IP")
     public String createExcel() {
+        long startTime = System.currentTimeMillis();
         try {
             List<Professor> professors = professorService.listAll();
             XSSFRow row;
@@ -489,6 +494,12 @@ public class WriteIPController {
             Faculty faculty = facultyService.listAll().get(0);
             faculty.setIndPlanZipFilename("someFileName");
             facultyService.save(faculty);
+
+            CreationMetric cr = new CreationMetric();
+            cr.setProfessorNumber(professors.size());
+            cr.setTimeToForm((System.currentTimeMillis()-startTime));
+            log.info("Number of professors: [{}]    Creation time: [{}]", cr.getProfessorNumber(), cr.getTimeToForm());
+            metricService.save(cr);
         } catch (Exception e) {
             log.error(e);
         }
