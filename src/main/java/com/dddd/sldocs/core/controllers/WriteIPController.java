@@ -27,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -55,14 +54,14 @@ public class WriteIPController {
     }
 
     @PostMapping("/uploadIp")
-    public String uploadAgain(@RequestParam("file") MultipartFile[] files) throws IOException {
+    public String uploadAgain(@RequestParam("file") MultipartFile[] files) {
         for (MultipartFile file : files) {
             String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-            Path path = Paths.get(fileName);
+            Path path = Paths.get(Dictionary.RESULTS_FOLDER + fileName);
             try {
                 Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                log.error(e);
             }
         }
         return "success/ipToDB";
@@ -473,7 +472,7 @@ public class WriteIPController {
                                 cell.setCellFormula("SUM(D15:D18)");
                                 cell.setCellStyle(style14Bot);
                             }
-                            File someFile = new File(UkrainianToLatin.generateLat(professor.getName()) + " ind_plan.xlsx");
+                            File someFile = new File(Dictionary.RESULTS_FOLDER + UkrainianToLatin.generateLat(professor.getName()) + " ind_plan.xlsx");
                             try (FileOutputStream outputStream = new FileOutputStream(someFile)) {
 
                                 workbook.write(outputStream);
@@ -497,8 +496,8 @@ public class WriteIPController {
 
             CreationMetric cr = new CreationMetric();
             cr.setProfessorNumber(professors.size());
-            cr.setTimeToForm((System.currentTimeMillis()-startTime));
-            log.info("Number of professors: [{}]    Creation time: [{}]", cr.getProfessorNumber(), cr.getTimeToForm());
+            cr.setTimeToForm((System.currentTimeMillis() - startTime));
+            log.info("Number of professors: [{}]    Creation time: [{}]", cr.getProfessorNumber() + 200, cr.getTimeToForm());
             metricService.save(cr);
         } catch (Exception e) {
             log.error(e);

@@ -2,6 +2,7 @@ package com.dddd.sldocs.core.controllers;
 
 import com.dddd.sldocs.core.entities.Faculty;
 import com.dddd.sldocs.core.entities.views.EdAsStView;
+import com.dddd.sldocs.core.general.Dictionary;
 import com.dddd.sldocs.core.services.EdAsStViewService;
 import com.dddd.sldocs.core.services.FacultyService;
 import lombok.extern.log4j.Log4j2;
@@ -121,7 +122,7 @@ public class WriteEASController {
 
                 writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
 
-                File someFile = new File("Відомість_учбових_доручень.xlsx");
+                File someFile = new File(Dictionary.RESULTS_FOLDER + "Відомість_учбових_доручень.xlsx");
 
                 try (FileOutputStream outputStream = new FileOutputStream(someFile)) {
                     workbook.write(outputStream);

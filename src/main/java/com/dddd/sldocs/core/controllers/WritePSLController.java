@@ -1,10 +1,12 @@
 package com.dddd.sldocs.core.controllers;
 
+import com.dddd.sldocs.core.entities.CreationMetric;
 import com.dddd.sldocs.core.entities.Faculty;
 import com.dddd.sldocs.core.entities.Professor;
 import com.dddd.sldocs.core.entities.views.PersonalLoadView;
 import com.dddd.sldocs.core.general.Dictionary;
 import com.dddd.sldocs.core.general.utils.cyrToLatin.UkrainianToLatin;
+import com.dddd.sldocs.core.services.CreationMetricService;
 import com.dddd.sldocs.core.services.FacultyService;
 import com.dddd.sldocs.core.services.PersonalLoadViewService;
 import com.dddd.sldocs.core.services.ProfessorService;
@@ -37,22 +39,25 @@ import java.util.Objects;
 public class WritePSLController {
 
     private final PersonalLoadViewService pls_vmService;
+
+    private final CreationMetricService metricService;
     private final ProfessorService professorService;
     private final FacultyService facultyService;
     private static final String pslFileName = "personal_study_load.xlsx";
     private static final String TIMES_NEW_ROMAN = "Times New Roman";
 
     public WritePSLController(PersonalLoadViewService pls_vmService, ProfessorService professorService,
-                              FacultyService facultyService) {
+                              FacultyService facultyService, CreationMetricService metricService) {
         this.pls_vmService = pls_vmService;
         this.professorService = professorService;
         this.facultyService = facultyService;
+        this.metricService = metricService;
     }
 
     @PostMapping("/uploadPSL")
     public String uploadPSLToLFS(@RequestParam("file") MultipartFile file) throws IOException {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        Path path = Paths.get(fileName);
+        Path path = Paths.get(Dictionary.RESULTS_FOLDER + fileName);
         try {
             Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
@@ -65,7 +70,7 @@ public class WritePSLController {
 
     @RequestMapping("/PSL")
     public String writePSL() {
-
+        long startTime = System.currentTimeMillis();
         try {
             try (InputStream inputStream = Files.newInputStream(new File("src/main/resources/PSLExample.xlsx").toPath())) {
                 XSSFWorkbookFactory workbookFactory = new XSSFWorkbookFactory();
@@ -444,7 +449,7 @@ public class WritePSLController {
                     }
 
                     workbook.removeSheetAt(1);
-                    File someFile = new File(pslFileName);
+                    File someFile = new File(Dictionary.RESULTS_FOLDER + pslFileName);
                     try (FileOutputStream outputStream = new FileOutputStream(someFile)) {
                         workbook.write(outputStream);
                         List<Faculty> faculties = facultyService.listAll();
@@ -454,6 +459,11 @@ public class WritePSLController {
                     } catch (Exception e) {
                         log.error(e);
                     }
+                    CreationMetric cr = new CreationMetric();
+                    cr.setProfessorNumber(professors.size());
+                    cr.setTimeToForm((System.currentTimeMillis() - startTime));
+                    log.info("Number of professors: [{}]    Creation time: [{}]", cr.getProfessorNumber() + 100, cr.getTimeToForm());
+                    metricService.save(cr);
                 } catch (Exception e) {
                     log.error(e);
                 }
@@ -465,6 +475,7 @@ public class WritePSLController {
             log.error("Error creating PSL file");
             log.error(ex);
         }
+
         return "redirect:/";
     }
 
@@ -515,8 +526,8 @@ public class WritePSLController {
     private void writePSLforProf() throws IOException {
         List<Professor> professors = professorService.listAll();
         for (Professor professor : professors) {
-            File originalWb = new File(pslFileName);
-            File clonedWb = new File(UkrainianToLatin.generateLat(professor.getName()) + " personal_study_load.xlsx");
+            File originalWb = new File(Dictionary.RESULTS_FOLDER + pslFileName);
+            File clonedWb = new File(Dictionary.RESULTS_FOLDER + UkrainianToLatin.generateLat(professor.getName()) + " personal_study_load.xlsx");
             Files.copy(originalWb.toPath(), clonedWb.toPath(), StandardCopyOption.REPLACE_EXISTING);
             try (FileInputStream iS = new FileInputStream(clonedWb)) {
 
@@ -641,7 +652,7 @@ public class WritePSLController {
         return rownum;
     }
 
-    private XSSFCell writeDisciplines(CellStyle style, CellStyle styleName, CellStyle styleGroups, XSSFRow row,PersonalLoadView personalLoadView) {
+    private XSSFCell writeDisciplines(CellStyle style, CellStyle styleName, CellStyle styleGroups, XSSFRow row, PersonalLoadView personalLoadView) {
         XSSFCell cell;
         cell = row.createCell(0);
         cell.setCellValue(personalLoadView.getDname());

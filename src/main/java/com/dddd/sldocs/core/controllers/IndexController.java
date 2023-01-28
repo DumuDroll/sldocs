@@ -115,7 +115,7 @@ public class IndexController {
     @GetMapping("/downloadEAS")
     public ResponseEntity downloadEAS() throws IOException {
         Faculty faculty = facultyService.listAll().get(0);
-        File file = new File(faculty.getEasFilename());
+        File file = new File(Dictionary.RESULTS_FOLDER + faculty.getEasFilename());
         return ResponseEntity.ok()
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .header(HttpHeaders.CONTENT_DISPOSITION, Dictionary.ATTACHMENT_FILENAME + rfc5987_encode(faculty.getEasFilename()) + "\"")
@@ -126,7 +126,7 @@ public class IndexController {
     public ResponseEntity downloadPSL() throws IOException {
 
         Faculty faculty = facultyService.listAll().get(0);
-        File file = new File(faculty.getPslFilename());
+        File file = new File(Dictionary.RESULTS_FOLDER + faculty.getPslFilename());
         return ResponseEntity.ok()
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .header(HttpHeaders.CONTENT_DISPOSITION, Dictionary.ATTACHMENT_FILENAME + rfc5987_encode(faculty.getPslFilename()) + "\"")
@@ -135,13 +135,13 @@ public class IndexController {
 
     @GetMapping(value = "/downloadIp", produces = "application/zip")
     public ResponseEntity downloadIpZip() throws IOException {
-        File zipFile = new File("Ind_plans.zip");
+        File zipFile = new File(Dictionary.RESULTS_FOLDER + "Ind_plans.zip");
         FileOutputStream fos = new FileOutputStream(zipFile);
         try (ZipOutputStream zipOS = new ZipOutputStream(fos)) {
             List<String> fileNames = professorService.listIpFilenames();
             for (String fileName : fileNames) {
-                File someFile = new File(fileName);
-                writeToZipFile(someFile.getName(), zipOS);
+                File someFile = new File(Dictionary.RESULTS_FOLDER + fileName);
+                writeToZipFile(Dictionary.RESULTS_FOLDER + someFile.getName(), zipOS);
             }
         }
         Faculty faculty = facultyService.listAll().get(0);

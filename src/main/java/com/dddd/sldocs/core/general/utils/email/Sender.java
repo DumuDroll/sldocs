@@ -1,5 +1,7 @@
 package com.dddd.sldocs.core.general.utils.email;
 
+import com.dddd.sldocs.core.general.Dictionary;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import javax.activation.DataHandler;
@@ -7,13 +9,12 @@ import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.*;
 import javax.mail.internet.*;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Properties;
 
 @Service
-
+@Log4j2
 public class Sender {
 
     public static void Send(String to, String filename) {
@@ -32,6 +33,7 @@ public class Sender {
         props.setProperty("mail.smtp.socketFactory.port", "465");
         Session session = Session.getInstance(props,
                 new javax.mail.Authenticator() {
+                    @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(from, "xdgrwygtffgepgpy");
                     }
@@ -40,7 +42,7 @@ public class Sender {
             BodyPart messageBodyPart = new MimeBodyPart();
             messageBodyPart.setText("Mail Body");
             Multipart multipart = new MimeMultipart();
-            DataSource source = new FileDataSource(filename);
+            DataSource source = new FileDataSource(Dictionary.RESULTS_FOLDER + filename);
             messageBodyPart.setDataHandler(new DataHandler(source));
             messageBodyPart.setFileName(MimeUtility.encodeWord(filename));
             multipart.addBodyPart(messageBodyPart);
@@ -51,11 +53,11 @@ public class Sender {
             message.setText("");
             message.setContent(multipart);
             Transport.send(message);
-        } catch (MessagingException | UnsupportedEncodingException mex) {
-            mex.printStackTrace();
+        } catch (Exception e) {
+            log.error(e);
         }
     }
-    public static String rfc5987_encode(final String s) throws UnsupportedEncodingException {
+    public static String rfc5987_encode(final String s) {
         final byte[] s_bytes = s.getBytes(StandardCharsets.UTF_8);
         final int len = s_bytes.length;
         final StringBuilder sb = new StringBuilder(len << 1);

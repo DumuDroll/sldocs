@@ -19,6 +19,6 @@ public class Dictionary {
     public static final String ASPIRANTS_DOCTORANTS = "Аспіранти, докторанти";
     public static final String BACHELORS = "Бакалаври";
     public static final String COURSE_PROJECTS_5_COURSE = "Курсові 5 курс";
-
+    public static final String RESULTS_FOLDER = "results/";
 
 }
