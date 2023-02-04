@@ -25,6 +25,6 @@ public class Department {
     private Faculty faculty;
 
     @OneToMany(mappedBy = "department")
-    private Set<Curriculum> curriculums = new HashSet<>();
+    private Set<StudyloadRow> studyloadRows = new HashSet<>();
 
 }

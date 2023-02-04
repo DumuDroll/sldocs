@@ -26,7 +26,7 @@ import static com.dddd.sldocs.core.general.utils.email.Sender.rfc5987_encode;
 @Log4j2
 @Controller
 public class IndexController {
-    private final CurriculumService curriculumService;
+    private final StudyloadRowService studyloadRowService;
     private final DepartmentService departmentService;
     private final DisciplineService disciplineService;
     private final FacultyService facultyService;
@@ -34,10 +34,10 @@ public class IndexController {
     private final SpecialtyService specialtyService;
 
 
-    public IndexController(CurriculumService curriculumService, DepartmentService departmentService,
+    public IndexController(StudyloadRowService studyloadRowService, DepartmentService departmentService,
                            DisciplineService disciplineService, FacultyService facultyService,
                            ProfessorService professorService, SpecialtyService specialtyService) {
-        this.curriculumService = curriculumService;
+        this.studyloadRowService = studyloadRowService;
         this.departmentService = departmentService;
         this.disciplineService = disciplineService;
         this.facultyService = facultyService;
@@ -92,7 +92,7 @@ public class IndexController {
 
     @GetMapping(path = "/deleteAll")
     public String deleteAll(Model model) {
-        curriculumService.deleteAll();
+        studyloadRowService.deleteAll();
         departmentService.deleteAll();
         disciplineService.deleteAll();
         facultyService.deleteAll();
@@ -104,7 +104,7 @@ public class IndexController {
 
     @GetMapping(path = "/deleteWithoutProfs")
     public String deleteWithoutProfs(Model model) {
-        curriculumService.deleteAll();
+        studyloadRowService.deleteAll();
         departmentService.deleteAll();
         disciplineService.deleteAll();
         facultyService.deleteAll();

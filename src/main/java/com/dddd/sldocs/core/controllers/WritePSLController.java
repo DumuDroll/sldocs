@@ -38,17 +38,17 @@ import java.util.Objects;
 @Log4j2
 public class WritePSLController {
 
-    private final PersonalLoadViewService pls_vmService;
+    private final PersonalLoadViewService plsVmService;
 
     private final CreationMetricService metricService;
     private final ProfessorService professorService;
     private final FacultyService facultyService;
-    private static final String pslFileName = "personal_study_load.xlsx";
+    private static final String PERSONAL_STUDY_LOAD_XLSX = "personal_study_load.xlsx";
     private static final String TIMES_NEW_ROMAN = "Times New Roman";
 
-    public WritePSLController(PersonalLoadViewService pls_vmService, ProfessorService professorService,
+    public WritePSLController(PersonalLoadViewService plsVmService, ProfessorService professorService,
                               FacultyService facultyService, CreationMetricService metricService) {
-        this.pls_vmService = pls_vmService;
+        this.plsVmService = plsVmService;
         this.professorService = professorService;
         this.facultyService = facultyService;
         this.metricService = metricService;
@@ -238,47 +238,26 @@ public class WritePSLController {
                     XSSFRow row;
                     XSSFCell cell;
 
-                    int last_vert_cell_sum;
+                    int lastVertCellSum;
                     int rownum;
                     for (Professor professor : professors) {
                         if (!professor.getName().equals("")) {
                             List<PersonalLoadView> personalLoadViewList;
-                            //Если препод не имеет нагрузки, то все равно лист создается
-//                            if (!pls_vmService.getPSL_VMData("1", professor.getName()).isEmpty()
-//                                    || !pls_vmService.getPSL_VMData("2", professor.getName()).isEmpty()) {
                             XSSFSheet sheet = workbook.cloneSheet(1, professor.getName());
                             row = sheet.getRow(2);
                             cell = row.getCell(0);
                             cell.setCellValue(professor.getName());
-                            cell.setCellStyle(style14Bold); //Изменил на жирный
+                            cell.setCellStyle(style14Bold);
 
                             cell = row.createCell(3);
-                            cell.setCellValue("Ставка " + professor.getStavka()); //В одну ячейку Ставка и значение
+                            cell.setCellValue("Ставка " + professor.getStavka());
                             cell.setCellStyle(style14);
 
-//                                cell = row.createCell(4);
-//                                cell.setCellValue(professor.getStavka());
-//                                cell.setCellStyle(style14);
-
                             cell = row.getCell(5);
-                            //Мне показалось это лишнее
-//                                if (!pls_vmService.getPSL_VMData("1", professor.getName()).isEmpty()) {
-//                                    personalLoadViewList = pls_vmService.getPSL_VMData("1", professor.getName());
-//                                } else {
-//                                    personalLoadViewList = pls_vmService.getPSL_VMData("2", professor.getName());
-//                                }
-                            CellRangeAddress cellRangeAddress = new CellRangeAddress(2, 2, 5, 19); //18 поменял на 19
+                            CellRangeAddress cellRangeAddress = new CellRangeAddress(2, 2, 5, 19);
                             sheet.addMergedRegion(cellRangeAddress);
-                            // без границ, как есть
-//                                RegionUtil.setBorderBottom(cell.getCellStyle().getBorderBottom(), cellRangeAddress, sheet);
-//                                RegionUtil.setBorderTop(cell.getCellStyle().getBorderTop(), cellRangeAddress, sheet);
-//                                RegionUtil.setBorderLeft(cell.getCellStyle().getBorderLeft(), cellRangeAddress, sheet);
-//                                RegionUtil.setBorderRight(cell.getCellStyle().getBorderRight(), cellRangeAddress, sheet);
-                            //Просто выводим номер кафедры
-//                                cell.setCellValue("Кафедра " + personalLoadViewList.get(0).getDepName()); // + " на " + personalLoadViewList.get(0).getYear());
                             cell.setCellValue("Кафедра програмної інженерії та інтелектуальних технологій управління");
-                            //cell.setCellStyle(style14);
-                            cell.getCellStyle().setFont(font14); //Просто 14 шрифт TimesNewRoman
+                            cell.getCellStyle().setFont(font14);
 
                             rownum = 4; //Поменялся пример -ОСЕНЬ -Норматив
                             //ОСІНЬ
@@ -293,11 +272,10 @@ public class WritePSLController {
                                     19  //last column  (0-based)
                             ));
                             // Добавляем строки нагрузки, если есть в осеннем семестре
-                            if (!pls_vmService.getPSL_VMData("1", professor.getName()).isEmpty()) {
-                                personalLoadViewList = pls_vmService.getPSL_VMData("1", professor.getName());
+                            if (!plsVmService.getPSL_VMData("1", professor.getName()).isEmpty()) {
+                                personalLoadViewList = plsVmService.getPSL_VMData("1", professor.getName());
                                 for (PersonalLoadView personalLoadView : personalLoadViewList) {
                                     row = sheet.createRow(rownum++);
-                                    //cell = row.createCell(0);
                                     cell = writeDisciplines(styleDiscHours, styleDiscName, styleDiscGroups, row, personalLoadView);//cell,
                                     cell.setCellFormula(Dictionary.SUM_E_START_OF_THE_FORMULA + rownum + ":S" + rownum + ")");
                                     cell.setCellStyle(styleDiscHours);
@@ -314,14 +292,13 @@ public class WritePSLController {
 
                             }
                             // Данные по студентам, которыми руководит преподаватель
-                            //row = sheet.createRow(rownum++);
                             String[] ends1 = {"КЕРІВНИЦТВО"};
                             rownum = writeKerivnictvo(styleDiscHours, professor, style12Bold, rownum, sheet, true, ends1);
                             String[] ends2 = {Dictionary.ASPIRANTS_DOCTORANTS, "Магістри професійні", Dictionary.BACHELORS, Dictionary.COURSE_PROJECTS_5_COURSE};
                             rownum = writeKerivnictvo(styleDiscHours, professor, style12RightAl, rownum, sheet, true, ends2);
 
 
-                            int autumn_sum = rownum;
+                            int autumnSum = rownum;
                             row = sheet.createRow(rownum++);
                             cell = row.createCell(0);
                             cell.setCellValue("Усього за осінь");
@@ -333,15 +310,15 @@ public class WritePSLController {
                                 cell.setCellStyle(styleThickBotTopBord);
                             }
                             String[] sums = {"E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S"};
-                            int cell_count = 4;
-                            last_vert_cell_sum = rownum - 1;
+                            int cellCount = 4;
+                            lastVertCellSum = rownum - 1;
                             for (String sum : sums) {
-                                cell = row.createCell(cell_count++);
-                                cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + "6:" + sum + last_vert_cell_sum + "),0)"); //7>>>6
+                                cell = row.createCell(cellCount++);
+                                cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + "6:" + sum + lastVertCellSum + "),0)"); //7>>>6
                                 cell.setCellStyle(styleThickBotTopBord);
                             }
-                            cell = row.createCell(cell_count);
-                            cell.setCellFormula("ROUND(SUM(T6:" + "T" + last_vert_cell_sum + "),0)");//7>>>6
+                            cell = row.createCell(cellCount);
+                            cell.setCellFormula("ROUND(SUM(T6:" + "T" + lastVertCellSum + "),0)");//7>>>6
                             cell.setCellStyle(styleThickBotTopRightBord);
 
                             //ВЕСНА
@@ -355,26 +332,12 @@ public class WritePSLController {
                                     0, //first column (0-based)
                                     19  //last column  (0-based)
                             ));
-                            //Строку норматив - убираем
-//                                row = sheet.createRow(rownum++);
-//                                cell = row.createCell(0);
-//                                cell.setCellValue("Норматив");
-//                                cell.setCellStyle(styleThickBotTopBord);
-//                                for (int k = 1; k < 19; k++) {
-//                                    cell = row.createCell(k);
-//                                    cell.setCellValue("");
-//                                    cell.setCellStyle(styleThickBotTopBord);
-//                                }
-//                                cell = row.createCell(19);
-//                                cell.setCellValue("");
-//                                cell.setCellStyle(styleThickBotTopRightBord);
                             // Добавляем строки нагрузки, если есть в осеннем семестре
-                            int first_sum_cell_spring = rownum + 1;
-                            if (pls_vmService.getPSL_VMData("2", professor.getName()).size() != 0) {
-                                personalLoadViewList = pls_vmService.getPSL_VMData("2", professor.getName());
+                            int firstSumCellSpring = rownum + 1;
+                            if (!plsVmService.getPSL_VMData("2", professor.getName()).isEmpty()) {
+                                personalLoadViewList = plsVmService.getPSL_VMData("2", professor.getName());
                                 for (PersonalLoadView personalLoadView : personalLoadViewList) {
                                     row = sheet.createRow(rownum++);
-                                    //cell = row.createCell(0);
                                     cell = writeDisciplines(styleDiscHours, styleDiscName, styleDiscGroups, row, personalLoadView);//, cell
                                     cell.setCellFormula(Dictionary.SUM_E_START_OF_THE_FORMULA + rownum + ":S" + rownum + ")");
                                     cell.setCellStyle(styleDiscHours);
@@ -403,15 +366,15 @@ public class WritePSLController {
                                 cell.setCellValue("");
                                 cell.setCellStyle(styleThickBotTopBord);
                             }
-                            cell_count = 4;
-                            last_vert_cell_sum = rownum - 1;
+                            cellCount = 4;
+                            lastVertCellSum = rownum - 1;
                             for (String sum : sums) {
-                                cell = row.createCell(cell_count++);
-                                cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + first_sum_cell_spring + ":" + sum + last_vert_cell_sum + "),0)");
+                                cell = row.createCell(cellCount++);
+                                cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + firstSumCellSpring + ":" + sum + lastVertCellSum + "),0)");
                                 cell.setCellStyle(styleThickBotTopBord);
                             }
-                            cell = row.createCell(cell_count);
-                            cell.setCellFormula("ROUND(SUM(T" + first_sum_cell_spring + ":" + "T" + last_vert_cell_sum + "),0)");
+                            cell = row.createCell(cellCount);
+                            cell.setCellFormula("ROUND(SUM(T" + firstSumCellSpring + ":" + "T" + lastVertCellSum + "),0)");
                             cell.setCellStyle(styleThickBotTopRightBord);
 
                             row = sheet.createRow(rownum++);
@@ -425,31 +388,30 @@ public class WritePSLController {
                                 cell.setCellValue("");
                                 cell.setCellStyle(styleThickBotBord);
                             }
-                            cell_count = 4;
+                            cellCount = 4;
                             for (String sum : sums) {
-                                cell = row.createCell(cell_count++);
-                                cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + (autumn_sum + 1) + "+" + sum + (rownum - 1) + "),0)");
+                                cell = row.createCell(cellCount++);
+                                cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + (autumnSum + 1) + "+" + sum + (rownum - 1) + "),0)");
                                 cell.setCellStyle(styleThickBotBord);
                             }
-                            cell = row.createCell(cell_count);
-                            cell.setCellFormula("ROUND(SUM(T" + (autumn_sum + 1) + "+" + "T" + (rownum - 1) + "),0)");
+                            cell = row.createCell(cellCount);
+                            cell.setCellFormula("ROUND(SUM(T" + (autumnSum + 1) + "+" + "T" + (rownum - 1) + "),0)");
                             cell.setCellStyle(styleThickBotTopRightBord);
 
                             if (!(professor.getPosada() == null || professor.getPosada().equals(""))) {
                                 row = sheet.createRow(rownum + 2);
-                                cell = row.createCell(cell_count++);
+                                cell = row.createCell(cellCount++);
                                 cell.setCellValue(getStandartHours(professor.getStavka(), professor.getPosada(), workbook));
-                                cell = row.createCell(cell_count);
+                                cell = row.createCell(cellCount);
                                 cell.setCellFormula("T" + rownum + "-T" + (rownum + 3));
                             }
                             sheet.setFitToPage(true);
                             sheet.getPrintSetup().setLandscape(true);
-//                           }
                         }
                     }
 
                     workbook.removeSheetAt(1);
-                    File someFile = new File(Dictionary.RESULTS_FOLDER + pslFileName);
+                    File someFile = new File(Dictionary.RESULTS_FOLDER + PERSONAL_STUDY_LOAD_XLSX);
                     try (FileOutputStream outputStream = new FileOutputStream(someFile)) {
                         workbook.write(outputStream);
                         List<Faculty> faculties = facultyService.listAll();
@@ -526,7 +488,7 @@ public class WritePSLController {
     private void writePSLforProf() throws IOException {
         List<Professor> professors = professorService.listAll();
         for (Professor professor : professors) {
-            File originalWb = new File(Dictionary.RESULTS_FOLDER + pslFileName);
+            File originalWb = new File(Dictionary.RESULTS_FOLDER + PERSONAL_STUDY_LOAD_XLSX);
             File clonedWb = new File(Dictionary.RESULTS_FOLDER + UkrainianToLatin.generateLat(professor.getName()) + " personal_study_load.xlsx");
             Files.copy(originalWb.toPath(), clonedWb.toPath(), StandardCopyOption.REPLACE_EXISTING);
             try (FileInputStream iS = new FileInputStream(clonedWb)) {
@@ -658,13 +620,11 @@ public class WritePSLController {
         cell.setCellValue(personalLoadView.getDname());
         cell.setCellStyle(styleName);
         cell = row.createCell(1);
-        //cell.setCellValue(personalLoadView.getCourse());
         if (!personalLoadView.getCourse().isEmpty()) {
             cell.setCellValue((int) Double.parseDouble(personalLoadView.getCourse()));
         }
         cell.setCellStyle(style);
         cell = row.createCell(2);
-        //cell.setCellValue(personalLoadView.getStudentsNumber());
         if (!personalLoadView.getStudentsNumber().isEmpty()) {
             cell.setCellValue((int) Double.parseDouble(personalLoadView.getStudentsNumber()));
         }

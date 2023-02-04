@@ -20,6 +20,6 @@ public class Specialty {
     private String code;
 
     @OneToMany(mappedBy = "specialty")
-    private Set<Curriculum> curriculums = new HashSet<>();
+    private Set<StudyloadRow> studyloadRows = new HashSet<>();
 
 }

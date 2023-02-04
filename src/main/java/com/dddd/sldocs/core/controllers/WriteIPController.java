@@ -529,7 +529,7 @@ public class WriteIPController {
             }
             for (int l = 3; l < 49; l++) {
                 switch (end.trim()) {
-                    case ("Аспіранти, докторанти"):
+                    case (Dictionary.ASPIRANTS_DOCTORANTS):
                         if (l == 5) {
                             cell = row.createCell(l);
                             cell.setCellStyle(style);
@@ -564,7 +564,7 @@ public class WriteIPController {
                             cell.setCellStyle(style);
                         }
                         break;
-                    case ("Бакалаври"):
+                    case (Dictionary.BACHELORS):
                         if (l == 5 && professor.getBachNum() != null && !professor.getBachNum().isEmpty()) {
                             cell = row.createCell(l);
                             cell.setCellValue((int) Double.parseDouble(professor.getBachNum()));
@@ -584,7 +584,7 @@ public class WriteIPController {
                             }
                         }
                         break;
-                    case ("Курсові 5 курс"):
+                    case (Dictionary.COURSE_PROJECTS_5_COURSE):
                         if (l == 5 && professor.getFifthCourseNum() != null && !professor.getFifthCourseNum().isEmpty()) {
                             cell = row.createCell(l);
                             cell.setCellValue((int) Double.parseDouble(professor.getFifthCourseNum()));

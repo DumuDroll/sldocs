@@ -33,6 +33,6 @@ public class Professor {
     private String masterScNum;
 
     @ManyToMany(mappedBy = "professors", fetch = FetchType.LAZY)
-    private Set<Curriculum> curriculums = new HashSet<>();
+    private Set<StudyloadRow> studyloadRows = new HashSet<>();
 
 }

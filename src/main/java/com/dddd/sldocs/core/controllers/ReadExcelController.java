@@ -28,7 +28,7 @@ import java.util.Objects;
 @Controller
 public class ReadExcelController {
 
-    private final CurriculumService curriculumService;
+    private final StudyloadRowService studyloadRowService;
 
     private final DepartmentService departmentService;
 
@@ -38,10 +38,10 @@ public class ReadExcelController {
 
     private final ProfessorService professorService;
 
-    public ReadExcelController(CurriculumService curriculumService, DepartmentService departmentService,
+    public ReadExcelController(StudyloadRowService studyloadRowService, DepartmentService departmentService,
                                DisciplineService disciplineService, FacultyService facultyService,
                                ProfessorService professorService) {
-        this.curriculumService = curriculumService;
+        this.studyloadRowService = studyloadRowService;
         this.departmentService = departmentService;
         this.disciplineService = disciplineService;
         this.facultyService = facultyService;
@@ -167,7 +167,7 @@ public class ReadExcelController {
         }
         int cols = sheet.getRow(0).getLastCellNum();
 
-        ArrayList<Object> arrayList = new ArrayList<>();
+        ArrayList<Object> excelRow = new ArrayList<>();
         ArrayList<Object> dep_fac_sem = new ArrayList<>();
         try {
             row = sheet.getRow(6);
@@ -210,57 +210,57 @@ public class ReadExcelController {
                 row = sheet.getRow(r);
                 for (int c = 0; c < cols + 1; c++) {
                     XSSFCell cell = row.getCell(c);
-                    readCell(arrayList, cell);
+                    readCell(excelRow, cell);
                 }
-                if (arrayList.get(5).toString().equals("асп")) {
+                if (excelRow.get(5).toString().equals("асп")) {
                     break;
                 }
-                studyLoad.getCurriculum().setCourse(arrayList.get(3).toString());
-                studyLoad.getCurriculum().setStudentsNumber(arrayList.get(4).toString());
-                studyLoad.getCurriculum().setSemester(dep_fac_sem.get(2).toString());
-                studyLoad.getCurriculum().setGroupNames(arrayList.get(5).toString());
-                studyLoad.getCurriculum().setNumberOfSubgroups(arrayList.get(7).toString());
-                studyLoad.getCurriculum().setLecHours(arrayList.get(17).toString());
-                studyLoad.getCurriculum().setConsultsHours(arrayList.get(18).toString());
-                studyLoad.getCurriculum().setLabHours(arrayList.get(19).toString());
-                studyLoad.getCurriculum().setPractHours(arrayList.get(20).toString());
-                studyLoad.getCurriculum().setIndTaskHours(arrayList.get(21).toString());
-                studyLoad.getCurriculum().setCpHours(arrayList.get(22).toString());
-                studyLoad.getCurriculum().setZalikHours(arrayList.get(23).toString());
-                studyLoad.getCurriculum().setExamHours(arrayList.get(24).toString());
-                studyLoad.getCurriculum().setDiplomaHours(arrayList.get(25).toString());
-                studyLoad.getCurriculum().setDecCell(arrayList.get(26).toString());
-                studyLoad.getCurriculum().setNdrs(arrayList.get(27).toString());
-                studyLoad.getCurriculum().setAspirantHours(arrayList.get(28).toString());
-                studyLoad.getCurriculum().setPractice(arrayList.get(29).toString());
-                studyLoad.getCurriculum().setOtherFormsHours(arrayList.get(31).toString());
-                studyLoad.getCurriculum().setYear(dep_fac_sem.get(3).toString());
-                studyLoad.getCurriculum().setDepartment(departmentService.findByName(dep_fac_sem.get(0).toString()));
+                studyLoad.getStudyloadRow().setCourse(excelRow.get(3).toString());
+                studyLoad.getStudyloadRow().setStudentsNumber(excelRow.get(4).toString());
+                studyLoad.getStudyloadRow().setSemester(dep_fac_sem.get(2).toString());
+                studyLoad.getStudyloadRow().setGroupNames(excelRow.get(5).toString());
+                studyLoad.getStudyloadRow().setNumberOfSubgroups(excelRow.get(7).toString());
+                studyLoad.getStudyloadRow().setLecHours(excelRow.get(17).toString());
+                studyLoad.getStudyloadRow().setConsultsHours(excelRow.get(18).toString());
+                studyLoad.getStudyloadRow().setLabHours(excelRow.get(19).toString());
+                studyLoad.getStudyloadRow().setPractHours(excelRow.get(20).toString());
+                studyLoad.getStudyloadRow().setIndTaskHours(excelRow.get(21).toString());
+                studyLoad.getStudyloadRow().setCpHours(excelRow.get(22).toString());
+                studyLoad.getStudyloadRow().setZalikHours(excelRow.get(23).toString());
+                studyLoad.getStudyloadRow().setExamHours(excelRow.get(24).toString());
+                studyLoad.getStudyloadRow().setDiplomaHours(excelRow.get(25).toString());
+                studyLoad.getStudyloadRow().setDecCell(excelRow.get(26).toString());
+                studyLoad.getStudyloadRow().setNdrs(excelRow.get(27).toString());
+                studyLoad.getStudyloadRow().setAspirantHours(excelRow.get(28).toString());
+                studyLoad.getStudyloadRow().setPractice(excelRow.get(29).toString());
+                studyLoad.getStudyloadRow().setOtherFormsHours(excelRow.get(31).toString());
+                studyLoad.getStudyloadRow().setYear(dep_fac_sem.get(3).toString());
+                studyLoad.getStudyloadRow().setDepartment(departmentService.findByName(dep_fac_sem.get(0).toString()));
 
-                if (professorService.findByName(arrayList.get(36).toString().trim()) == null) {
-                    if (!(arrayList.get(36).toString().equals("") || arrayList.get(36).toString().equals("курсові"))) {
-                        studyLoad.getProfessor().setName(arrayList.get(36).toString().trim());
+                if (professorService.findByName(excelRow.get(36).toString().trim()) == null) {
+                    if (!(excelRow.get(36).toString().equals("") || excelRow.get(36).toString().equals("курсові"))) {
+                        studyLoad.getProfessor().setName(excelRow.get(36).toString().trim());
                         professorService.save(studyLoad.getProfessor());
-                        studyLoad.getCurriculum().getProfessors().add(studyLoad.getProfessor());
+                        studyLoad.getStudyloadRow().getProfessors().add(studyLoad.getProfessor());
                     }
                 } else {
-                    studyLoad.getCurriculum().getProfessors().add(professorService.findByName(arrayList.get(36).toString()));
+                    studyLoad.getStudyloadRow().getProfessors().add(professorService.findByName(excelRow.get(36).toString()));
                 }
 
-                if (disciplineService.findByName(arrayList.get(1).toString()) == null) {
-                    studyLoad.getDiscipline().setName(arrayList.get(1).toString());
+                if (disciplineService.findByName(excelRow.get(1).toString()) == null) {
+                    studyLoad.getDiscipline().setName(excelRow.get(1).toString());
                     disciplineService.save(studyLoad.getDiscipline());
-                    studyLoad.getCurriculum().getDisciplines().add(studyLoad.getDiscipline());
+                    studyLoad.getStudyloadRow().getDisciplines().add(studyLoad.getDiscipline());
                 } else {
-                    studyLoad.getCurriculum().getDisciplines().add(disciplineService.findByName(arrayList.get(1).toString()));
+                    studyLoad.getStudyloadRow().getDisciplines().add(disciplineService.findByName(excelRow.get(1).toString()));
                 }
 
 
-                curriculumService.save(studyLoad.getCurriculum());
-                arrayList = new ArrayList<>();
+                studyloadRowService.save(studyLoad.getStudyloadRow());
+                excelRow = new ArrayList<>();
                 studyLoad = new StudyLoad();
             }
-        } catch (NullPointerException ex) {
+        } catch (Exception ex) {
             log.error(ex);
         }
     }

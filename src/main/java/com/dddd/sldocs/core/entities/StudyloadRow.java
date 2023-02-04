@@ -10,8 +10,8 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "curriculum")
-public class Curriculum {
+@Table(name = "studyload_row")
+public class StudyloadRow {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,16 +41,16 @@ public class Curriculum {
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
-            name = "curriculum_discipline",
-            joinColumns = @JoinColumn(name = "curriculum_id"),
+            name = "studyload_row_discipline",
+            joinColumns = @JoinColumn(name = "studyload_row_id"),
             inverseJoinColumns = @JoinColumn(name = "discipline_id")
     )
     private Set<Discipline> disciplines = new HashSet<>();
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
-            name = "curriculum_professor",
-            joinColumns = @JoinColumn(name = "curriculum_id"),
+            name = "studyload_row_professor",
+            joinColumns = @JoinColumn(name = "studyload_row_id"),
             inverseJoinColumns = @JoinColumn(name = "professor_id")
     )
     private Set<Professor> professors = new HashSet<>();

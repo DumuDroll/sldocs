@@ -23,4 +23,10 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="2023/02/04_1" author="dddd">
+        <renameTable oldTableName="curriculum" newTableName="studyload_row"/>
+        <renameTable oldTableName="curriculum_discipline" newTableName="studyload_row_discipline"/>
+        <renameTable oldTableName="curriculum_professor" newTableName="studyload_row_professor"/>
+    </changeSet>
+
 </databaseChangeLog>

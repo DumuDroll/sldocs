@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class StudyLoad {
 
-    private Curriculum curriculum;
+    private StudyloadRow studyloadRow;
     private Department department;
     private Discipline discipline;
     private Faculty faculty;
@@ -16,7 +16,7 @@ public class StudyLoad {
 
 
     public StudyLoad() {
-        curriculum = new Curriculum();
+        studyloadRow = new StudyloadRow();
         department = new Department();
         discipline = new Discipline();
         faculty = new Faculty();

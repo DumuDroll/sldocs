@@ -22,6 +22,6 @@ public class Discipline {
     private String shortName;
 
     @ManyToMany(mappedBy = "disciplines", fetch = FetchType.LAZY)
-    private Set<Curriculum> curriculums = new HashSet<>();
+    private Set<StudyloadRow> studyloadRows = new HashSet<>();
 
 }
