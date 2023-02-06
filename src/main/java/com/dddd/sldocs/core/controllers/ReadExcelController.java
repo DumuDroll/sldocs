@@ -244,15 +244,15 @@ public class ReadExcelController {
                         studyLoad.getStudyloadRow().setTeacher(studyLoad.getTeacher());
                     }
                 } else {
-                    studyLoad.getStudyloadRow().setTeacher(teacherService.findByName(excelRow.get(36).toString()));
+                    studyLoad.getStudyloadRow().setTeacher(teacherService.findByName(excelRow.get(36).toString().trim()));
                 }
 
-                if (disciplineService.findByName(excelRow.get(1).toString()) == null) {
-                    studyLoad.getDiscipline().setName(excelRow.get(1).toString());
+                if (disciplineService.findByName(excelRow.get(1).toString().trim()) == null) {
+                    studyLoad.getDiscipline().setName(excelRow.get(1).toString().trim());
                     disciplineService.save(studyLoad.getDiscipline());
                     studyLoad.getStudyloadRow().setDiscipline(studyLoad.getDiscipline());
                 } else {
-                    studyLoad.getStudyloadRow().setDiscipline(disciplineService.findByName(excelRow.get(1).toString()));
+                    studyLoad.getStudyloadRow().setDiscipline(disciplineService.findByName(excelRow.get(1).toString().trim()));
                 }
 
 
