@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "EAS_VM")
+@Table(name = "eas_vm")
 public class EdAsStView {
 
     @Id

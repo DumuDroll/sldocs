@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -38,22 +36,13 @@ public class StudyloadRow {
     private String studentsNumber;
     private String course;
 
+    @ManyToOne
+    @JoinColumn(name = "teacher_id", referencedColumnName = "id")
+    private Teacher teacher;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "studyload_row_discipline",
-            joinColumns = @JoinColumn(name = "studyload_row_id"),
-            inverseJoinColumns = @JoinColumn(name = "discipline_id")
-    )
-    private Set<Discipline> disciplines = new HashSet<>();
-
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "studyload_row_teacher",
-            joinColumns = @JoinColumn(name = "studyload_row_id"),
-            inverseJoinColumns = @JoinColumn(name = "teacher_id")
-    )
-    private Set<Teacher> teachers = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "discipline_id", referencedColumnName = "id")
+    private Discipline discipline;
 
     @ManyToOne
     @JoinColumn(name = "specialty_id", referencedColumnName = "id")

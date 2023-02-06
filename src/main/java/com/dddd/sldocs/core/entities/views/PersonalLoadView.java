@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "PSL_VM")
+@Table(name = "psl_vm")
 public class PersonalLoadView {
 
     @Id

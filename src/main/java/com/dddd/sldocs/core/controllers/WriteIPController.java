@@ -38,16 +38,16 @@ import java.util.Objects;
 @Controller
 @Log4j2
 public class WriteIPController {
-    private final PersonalLoadViewService pls_vmService;
+    private final PersonalLoadViewService plsVmService;
     private final CreationMetricService metricService;
     private final TeacherService teacherService;
     private final FacultyService facultyService;
-    private double total_sum;
+    private double totalSum;
     private static final String TIMES_NEW_ROMAN = "Times New Roman";
 
-    public WriteIPController(PersonalLoadViewService pls_vmService, TeacherService teacherService,
+    public WriteIPController(PersonalLoadViewService plsVmService, TeacherService teacherService,
                              FacultyService facultyService, CreationMetricService metricService) {
-        this.pls_vmService = pls_vmService;
+        this.plsVmService = plsVmService;
         this.teacherService = teacherService;
         this.facultyService = facultyService;
         this.metricService = metricService;
@@ -74,11 +74,11 @@ public class WriteIPController {
             List<Teacher> teachers = teacherService.listAll();
             XSSFRow row;
             XSSFCell cell;
-            int last_vert_cell_sum;
+            int lastVertCellSum;
             int rownum;
             for (Teacher teacher : teachers) {
                 if (!teacher.getName().equals("")) {
-                    total_sum = 0;
+                    totalSum = 0;
                     List<PersonalLoadView> personalLoadViewList;
                     try (InputStream iS = Files.newInputStream(new File("src/main/resources/IndPlanExample.xlsx").toPath())) {
 
@@ -260,12 +260,12 @@ public class WriteIPController {
 
                             XSSFCellStyle rowAutoHeightStyle = workbook.createCellStyle();
                             rowAutoHeightStyle.setWrapText(true);
-                            if (!pls_vmService.getPSL_VMData("1", teacher.getName()).isEmpty()
-                                    || !pls_vmService.getPSL_VMData("2", teacher.getName()).isEmpty()) {
-                                if (!pls_vmService.getPSL_VMData("1", teacher.getName()).isEmpty()) {
-                                    personalLoadViewList = pls_vmService.getPSL_VMData("1", teacher.getName());
+                            if (!plsVmService.getPSL_VMData("1", teacher.getName()).isEmpty()
+                                    || !plsVmService.getPSL_VMData("2", teacher.getName()).isEmpty()) {
+                                if (!plsVmService.getPSL_VMData("1", teacher.getName()).isEmpty()) {
+                                    personalLoadViewList = plsVmService.getPSL_VMData("1", teacher.getName());
                                 } else {
-                                    personalLoadViewList = pls_vmService.getPSL_VMData("2", teacher.getName());
+                                    personalLoadViewList = plsVmService.getPSL_VMData("2", teacher.getName());
                                 }
                                 XSSFSheet sheet = workbook.getSheetAt(0);
                                 row = sheet.getRow(8);
@@ -311,9 +311,9 @@ public class WriteIPController {
 
                                 rownum = 4;
                                 sheet = workbook.getSheetAt(2);
-                                if (!pls_vmService.getPSL_VMData("1", teacher.getName()).isEmpty()) {
+                                if (!plsVmService.getPSL_VMData("1", teacher.getName()).isEmpty()) {
                                     personalLoadViewList.clear();
-                                    personalLoadViewList = pls_vmService.getPSL_VMData("1", teacher.getName());
+                                    personalLoadViewList = plsVmService.getPSL_VMData("1", teacher.getName());
                                     rownum = writeHours(cell, rownum, personalLoadViewList, style, rowAutoHeightStyle, sheet);
                                 }
                                 String[] ends1 = {"КЕРІВНИЦТВО"};
@@ -338,10 +338,10 @@ public class WriteIPController {
                                         "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO",
                                         "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AW"};
                                 int cellCount = 7;
-                                last_vert_cell_sum = rownum - 1;
+                                lastVertCellSum = rownum - 1;
                                 for (String sum : sums) {
                                     cell = row.createCell(cellCount++);
-                                    cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + "5:" + sum + last_vert_cell_sum + "),0)");
+                                    cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + "5:" + sum + lastVertCellSum + "),0)");
                                     cell.setCellStyle(style12ThickBotTop);
                                 }
                                 cell = row.createCell(cellCount++);
@@ -356,9 +356,9 @@ public class WriteIPController {
                                         "+AE" + rownum + "+AG" + rownum + "+AI" + rownum + "+AK" + rownum + "+AM" + rownum + "+AO" + rownum +
                                         "+AQ" + rownum + "+AS" + rownum + "+AU" + rownum + "+AW" + rownum);
 
-                                if (pls_vmService.getPSL_VMData("2", teacher.getName()).size() != 0) {
+                                if (!plsVmService.getPSL_VMData("2", teacher.getName()).isEmpty()) {
                                     personalLoadViewList.clear();
-                                    personalLoadViewList = pls_vmService.getPSL_VMData("2", teacher.getName());
+                                    personalLoadViewList = plsVmService.getPSL_VMData("2", teacher.getName());
 
                                     rownum = writeHours(cell, rownum, personalLoadViewList, style, rowAutoHeightStyle, sheet);
                                 }
@@ -378,10 +378,10 @@ public class WriteIPController {
                                 RegionUtil.setBorderLeft(cell.getCellStyle().getBorderLeft(), cellRangeAddress, sheet);
                                 RegionUtil.setBorderRight(cell.getCellStyle().getBorderRight(), cellRangeAddress, sheet);
                                 cellCount = 7;
-                                last_vert_cell_sum = rownum - 1;
+                                lastVertCellSum = rownum - 1;
                                 for (String sum : sums) {
                                     cell = row.createCell(cellCount++);
-                                    cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + (autumnSum + 1) + ":" + sum + last_vert_cell_sum + "),0)");
+                                    cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + (autumnSum + 1) + ":" + sum + lastVertCellSum + "),0)");
                                     cell.setCellStyle(style12ThickBotTop);
                                 }
                                 cell = row.createCell(cellCount++);
@@ -463,7 +463,7 @@ public class WriteIPController {
                                 sheet = workbook.getSheetAt(1);
                                 row = sheet.getRow(14);
                                 cell = row.createCell(3);
-                                cell.setCellValue((int) total_sum);
+                                cell.setCellValue((int) totalSum);
                                 cell.setCellStyle(style14B);
                                 sheet.setFitToPage(true);
                                 sheet.getPrintSetup().setLandscape(true);
@@ -650,83 +650,83 @@ public class WriteIPController {
             cell = row.createCell(7);
             if (!personalLoadView.getLecHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getLecHours()));
-                total_sum += Double.parseDouble(personalLoadView.getLecHours());
+                totalSum += Double.parseDouble(personalLoadView.getLecHours());
             }
             cell.setCellStyle(style);
 
             cell = row.createCell(9);
             if (!personalLoadView.getConsultHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getConsultHours()));
-                total_sum += Double.parseDouble(personalLoadView.getConsultHours());
+                totalSum += Double.parseDouble(personalLoadView.getConsultHours());
             }
             cell.setCellStyle(style);
 
             cell = row.createCell(11);
             if (!personalLoadView.getLabHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getLabHours()));
-                total_sum += Double.parseDouble(personalLoadView.getLabHours());
+                totalSum += Double.parseDouble(personalLoadView.getLabHours());
             }
             cell.setCellStyle(style);
 
             cell = row.createCell(13);
             if (!personalLoadView.getPractHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getPractHours()));
-                total_sum += Double.parseDouble(personalLoadView.getPractHours());
+                totalSum += Double.parseDouble(personalLoadView.getPractHours());
             }
             cell.setCellStyle(style);
 
             cell = row.createCell(15);
             if (!personalLoadView.getIndTaskHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getIndTaskHours()));
-                total_sum += Double.parseDouble(personalLoadView.getIndTaskHours());
+                totalSum += Double.parseDouble(personalLoadView.getIndTaskHours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(17);
             if (!personalLoadView.getCpHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getCpHours()));
-                total_sum += Double.parseDouble(personalLoadView.getCpHours());
+                totalSum += Double.parseDouble(personalLoadView.getCpHours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(19);
             if (!personalLoadView.getZalikHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getZalikHours()));
-                total_sum += Double.parseDouble(personalLoadView.getZalikHours());
+                totalSum += Double.parseDouble(personalLoadView.getZalikHours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(21);
             if (!personalLoadView.getExamHours().isEmpty()) {
                 cell.setCellValue((int) Math.round(Double.parseDouble(personalLoadView.getExamHours())));
-                total_sum += Math.round(Double.parseDouble(personalLoadView.getExamHours()));
+                totalSum += Math.round(Double.parseDouble(personalLoadView.getExamHours()));
             }
             cell.setCellStyle(style);
             cell = row.createCell(23);
             if (!personalLoadView.getDiplomaHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getDiplomaHours()));
-                total_sum += Double.parseDouble(personalLoadView.getDiplomaHours());
+                totalSum += Double.parseDouble(personalLoadView.getDiplomaHours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(25);
             if (!personalLoadView.getDecCell().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getDecCell()));
-                total_sum += Double.parseDouble(personalLoadView.getDecCell());
+                totalSum += Double.parseDouble(personalLoadView.getDecCell());
             }
             cell.setCellStyle(style);
             cell = row.createCell(27);
             if (!personalLoadView.getNdrs().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getNdrs()));
-                total_sum += Double.parseDouble(personalLoadView.getNdrs());
+                totalSum += Double.parseDouble(personalLoadView.getNdrs());
             }
             cell.setCellStyle(style);
             cell = row.createCell(29);
             if (!personalLoadView.getAspirantHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getAspirantHours()));
-                total_sum += Double.parseDouble(personalLoadView.getAspirantHours());
+                totalSum += Double.parseDouble(personalLoadView.getAspirantHours());
             }
             cell.setCellStyle(style);
             cell = row.createCell(31);
             if (!personalLoadView.getPractice().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getPractice()));
-                total_sum += Double.parseDouble(personalLoadView.getPractice());
+                totalSum += Double.parseDouble(personalLoadView.getPractice());
             }
             cell.setCellStyle(style);
             cell = row.createCell(33);
@@ -734,7 +734,7 @@ public class WriteIPController {
             cell = row.createCell(35);
             if (!personalLoadView.getOtherFormsHours().isEmpty()) {
                 cell.setCellValue(Double.parseDouble(personalLoadView.getOtherFormsHours()));
-                total_sum += Double.parseDouble(personalLoadView.getOtherFormsHours());
+                totalSum += Double.parseDouble(personalLoadView.getOtherFormsHours());
             }
             cell.setCellStyle(style);
 

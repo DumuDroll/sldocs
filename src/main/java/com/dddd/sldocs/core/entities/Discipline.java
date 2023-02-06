@@ -21,7 +21,7 @@ public class Discipline {
     private String name;
     private String shortName;
 
-    @ManyToMany(mappedBy = "disciplines", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "discipline")
     private Set<StudyloadRow> studyloadRows = new HashSet<>();
 
 }

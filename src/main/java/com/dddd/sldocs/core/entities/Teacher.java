@@ -32,7 +32,7 @@ public class Teacher {
     private String masterProfNum;
     private String masterScNum;
 
-    @ManyToMany(mappedBy = "teachers", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "teacher")
     private Set<StudyloadRow> studyloadRows = new HashSet<>();
 
 }

@@ -32,9 +32,91 @@
     <changeSet id="2023/02/04_2" author="dddd">
         <renameTable oldTableName="professor" newTableName="teacher"/>
         <renameTable oldTableName="studyload_row_professor" newTableName="studyload_row_teacher"/>
-        <renameColumn columnDataType="int" tableName="creation_metric" oldColumnName="professor_number" newColumnName="teacher_number"/>
+        <renameColumn columnDataType="int" tableName="creation_metric" oldColumnName="professor_number"
+                      newColumnName="teacher_number"/>
         <dropColumn tableName="studyload_row" columnName="consult_hours"/>
     </changeSet>
 
+    <changeSet id="2023/02/05_1" author="dddd">
+        <dropTable tableName="studyload_row_teacher"/>
+        <dropTable tableName="studyload_row_discipline"/>
+        <addColumn tableName="studyload_row">
+            <column name="discipline_id" type="bigint"/>
+            <column name="teacher_id" type="bigint"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="studyload_row" baseColumnNames="discipline_id"
+                                 constraintName="dicsipline_id_fk"
+                                 referencedTableName="discipline"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="studyload_row" baseColumnNames="teacher_id"
+                                 constraintName="teacher_id_fk" referencedTableName="teacher"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="2023/02/05_2" author="dddd">
+        <createView viewName="eas_vm" replaceIfExists="true">
+            select `s`.`id`                  as `id`,
+                   `s`.`semester`            as `csem`,
+                   `s`.`course`              as `ccor`,
+                   `d`.`name`                as `dname`,
+                   `s`.`group_names`         as `group_names`,
+                   `s`.`lec_hours`           as `lec_hours`,
+                   `s`.`lab_hours`           as `lab_hours`,
+                   `t`.`name`                as `pname`,
+                   `s`.`pract_hours`         as `pract_hours`,
+                   `s`.`note`                as `note`,
+                   `s`.`number_of_subgroups` as `number_of_subgroups`,
+                   `s`.`year`                as `year`
+            from ((`discipline` `d`
+                join `studyload_row` `s` on
+                ((`d`.`id` = `s`.`discipline_id`)))
+                join `teacher` `t` on
+                ((`t`.`id` = `s`.`teacher_id`)))
+                order by `d`.`name`,
+                char_length(`s`.`group_names`);
+        </createView>
+        <createView viewName="psl_vm" replaceIfExists="true">
+            select `s`.`id`                  as `id`,
+                   `s`.`year`                as `year`,
+                   `s`.`course`              as `course`,
+                   `s`.`semester`            as `csem`,
+                   `s`.`number_of_subgroups` as `number_of_subgroups`,
+                   `s`.`students_number`     as `students_number`,
+                   `s`.`group_names`         as `group_names`,
+                   `s`.`lec_hours`           as `lec_hours`,
+                   `s`.`consults_hours`      as `consult_hours`,
+                   `s`.`lab_hours`           as `lab_hours`,
+                   `s`.`pract_hours`         as `pract_hours`,
+                   `s`.`ind_task_hours`      as `ind_task_hours`,
+                   `s`.`cp_hours`            as `cp_hours`,
+                   `s`.`zalik_hours`         as `zalik_hours`,
+                   `s`.`exam_hours`          as `exam_hours`,
+                   `s`.`diploma_hours`       as `diploma_hours`,
+                   `s`.`dec_cell`            as `dec_cell`,
+                   `s`.`ndrs`                as `ndrs`,
+                   `s`.`practice`            as `practice`,
+                   `s`.`aspirant_hours`      as `aspirant_hours`,
+                   `dep`.`name`              as `dep_name`,
+                   `s`.`other_forms_hours`   as `other_forms_hours`,
+                   `t`.`name`                as `pname`,
+                   `d`.`name`                as `dname`,
+                   `f`.`name`                as `fac_name`,
+                   `t`.`nauk_stupin`         as `nauk_stupin`,
+                   `t`.`posada`              as `posada`,
+                   `t`.`vch_zvana`           as `vch_zvana`,
+                   `t`.`stavka`              as `stavka`
+            from ((((`teacher` `t`
+                join `studyload_row` `s` on
+                ((`t`.`id` = `s`.`teacher_id`)))
+                join `discipline` `d` on
+                ((`d`.`id` = `s`.`discipline_id`)))
+                join `department` `dep` on
+                ((`dep`.`id` = `s`.`department_id`)))
+                join `faculty` `f` on
+                ((`dep`.`faculty_id` = `f`.`id`)))
+                order by `d`.`name`,
+                char_length(`s`.`group_names`);
+        </createView>
+    </changeSet>
 
 </databaseChangeLog>

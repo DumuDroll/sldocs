@@ -241,18 +241,18 @@ public class ReadExcelController {
                     if (!(excelRow.get(36).toString().equals("") || excelRow.get(36).toString().equals("курсові"))) {
                         studyLoad.getTeacher().setName(excelRow.get(36).toString().trim());
                         teacherService.save(studyLoad.getTeacher());
-                        studyLoad.getStudyloadRow().getTeachers().add(studyLoad.getTeacher());
+                        studyLoad.getStudyloadRow().setTeacher(studyLoad.getTeacher());
                     }
                 } else {
-                    studyLoad.getStudyloadRow().getTeachers().add(teacherService.findByName(excelRow.get(36).toString()));
+                    studyLoad.getStudyloadRow().setTeacher(teacherService.findByName(excelRow.get(36).toString()));
                 }
 
                 if (disciplineService.findByName(excelRow.get(1).toString()) == null) {
                     studyLoad.getDiscipline().setName(excelRow.get(1).toString());
                     disciplineService.save(studyLoad.getDiscipline());
-                    studyLoad.getStudyloadRow().getDisciplines().add(studyLoad.getDiscipline());
+                    studyLoad.getStudyloadRow().setDiscipline(studyLoad.getDiscipline());
                 } else {
-                    studyLoad.getStudyloadRow().getDisciplines().add(disciplineService.findByName(excelRow.get(1).toString()));
+                    studyLoad.getStudyloadRow().setDiscipline(disciplineService.findByName(excelRow.get(1).toString()));
                 }
 
 
