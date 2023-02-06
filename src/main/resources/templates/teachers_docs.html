@@ -20,8 +20,8 @@
             <a href=#>Викладачі</a>
             <input type="checkbox" id="drop-1"/>
             <ul>
-                <li><a href="/professors">Перевірити зчитаних з ППС</a></li>
-                <li><a href="/professors/docs">Розіслати документи</a></li>
+                <li><a href="/teachers">Перевірити зчитаних з ППС</a></li>
+                <li><a href="/teachers/docs">Розіслати документи</a></li>
             </ul>
         </li>
         <li sec:authorize="hasAnyAuthority('ADMIN')">
@@ -53,10 +53,10 @@
 </div>
 <div align="center">
     <p>Надіслати усім заповненим або окремим викладачам</p>
-    <form th:action="@{/professor/sendPslToAll}" method="post">
+    <form th:action="@{/teacher/sendPslToAll}" method="post">
         <input type="submit" value="Надіслати навантаження усім" onclick="blockW()"/>
     </form>
-    <form th:action="@{/professor/sendIpToAll}" method="post">
+    <form th:action="@{/teacher/sendIpToAll}" method="post">
         <input type="submit" value="Надіслати індивідуальні плани усім" onclick="blockW()"/>
     </form>
 <p></p>
@@ -69,15 +69,15 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="professor : ${professors}">
-            <form th:action="@{/professor/sendIpTo}" method="post">
-                <input type="hidden" th:name="name" th:value="*{professor.name}"/>
-                <input type="hidden" th:name="email" th:value="*{professor.getEmailAddress}"/>
-                <td th:text="*{professor.name}"></td>
-                <td th:text="*{professor.getEmailAddress}"></td>
-                <td th:text="*{professor.getEmailedDate}"></td>
+        <tr th:each="teacher : ${teachers}">
+            <form th:action="@{/teacher/sendIpTo}" method="post">
+                <input type="hidden" th:name="name" th:value="*{teacher.name}"/>
+                <input type="hidden" th:name="email" th:value="*{teacher.getEmailAddress}"/>
+                <td th:text="*{teacher.name}"></td>
+                <td th:text="*{teacher.getEmailAddress}"></td>
+                <td th:text="*{teacher.getEmailedDate}"></td>
                 <td><input type="submit" value="Надіслати індивідуальний план" onclick="blockW()"/></td>
-                <td><input type="submit" formaction="/professor/sendPslTo" value="Надіслати навантаження" onclick="blockW()"/></td>
+                <td><input type="submit" formaction="/teacher/sendPslTo" value="Надіслати навантаження" onclick="blockW()"/></td>
             </form>
         </tr>
 

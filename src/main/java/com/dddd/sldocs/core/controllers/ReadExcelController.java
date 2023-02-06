@@ -1,6 +1,6 @@
 package com.dddd.sldocs.core.controllers;
 
-import com.dddd.sldocs.core.entities.Professor;
+import com.dddd.sldocs.core.entities.Teacher;
 import com.dddd.sldocs.core.entities.StudyLoad;
 import com.dddd.sldocs.core.general.Dictionary;
 import com.dddd.sldocs.core.services.*;
@@ -36,16 +36,16 @@ public class ReadExcelController {
 
     private final FacultyService facultyService;
 
-    private final ProfessorService professorService;
+    private final TeacherService teacherService;
 
     public ReadExcelController(StudyloadRowService studyloadRowService, DepartmentService departmentService,
                                DisciplineService disciplineService, FacultyService facultyService,
-                               ProfessorService professorService) {
+                               TeacherService teacherService) {
         this.studyloadRowService = studyloadRowService;
         this.departmentService = departmentService;
         this.disciplineService = disciplineService;
         this.facultyService = facultyService;
-        this.professorService = professorService;
+        this.teacherService = teacherService;
     }
 
     @PostMapping("/uploadObs")
@@ -168,25 +168,25 @@ public class ReadExcelController {
         int cols = sheet.getRow(0).getLastCellNum();
 
         ArrayList<Object> excelRow = new ArrayList<>();
-        ArrayList<Object> dep_fac_sem = new ArrayList<>();
+        ArrayList<Object> depFacSem = new ArrayList<>();
         try {
             row = sheet.getRow(6);
-            dep_fac_sem.add(row.getCell(0));
-            dep_fac_sem.add(row.getCell(17));
+            depFacSem.add(row.getCell(0));
+            depFacSem.add(row.getCell(17));
             if (row.getCell(32).toString().equals("ОСІННІЙ")) {
-                dep_fac_sem.add("1");
+                depFacSem.add("1");
             } else {
-                dep_fac_sem.add("2");
+                depFacSem.add("2");
             }
 
             StringBuilder stringBuilder = new StringBuilder();
             for (int p = 0; p < 2; p++) {
-                String[] values = dep_fac_sem.get(p).toString().split(Dictionary.SPACE_REGEX);
+                String[] values = depFacSem.get(p).toString().split(Dictionary.SPACE_REGEX);
 
                 for (int i = 1; i < values.length; i++) {
                     stringBuilder.append(values[i]).append(" ");
                 }
-                dep_fac_sem.set(p, stringBuilder);
+                depFacSem.set(p, stringBuilder);
                 stringBuilder = new StringBuilder();
             }
             row = sheet.getRow(3);
@@ -194,12 +194,12 @@ public class ReadExcelController {
             for (int pp = 0; pp < row.getLastCellNum(); pp++) {
                 if ((row.getCell(pp) != null) && !(row.getCell(pp).getStringCellValue().equals(""))) {
                     values = row.getCell(pp).getStringCellValue().split(Dictionary.SPACE_REGEX);
-                    dep_fac_sem.add(values[6]);
+                    depFacSem.add(values[6]);
                 }
             }
-            if (facultyService.findByName(dep_fac_sem.get(1).toString()) == null) {
-                studyLoad.getDepartment().setName(dep_fac_sem.get(0).toString());
-                studyLoad.getFaculty().setName(dep_fac_sem.get(1).toString());
+            if (facultyService.findByName(depFacSem.get(1).toString()) == null) {
+                studyLoad.getDepartment().setName(depFacSem.get(0).toString());
+                studyLoad.getFaculty().setName(depFacSem.get(1).toString());
                 studyLoad.getFaculty().getDepartments().add(studyLoad.getDepartment());
                 studyLoad.getDepartment().setFaculty(studyLoad.getFaculty());
                 facultyService.save(studyLoad.getFaculty());
@@ -217,7 +217,7 @@ public class ReadExcelController {
                 }
                 studyLoad.getStudyloadRow().setCourse(excelRow.get(3).toString());
                 studyLoad.getStudyloadRow().setStudentsNumber(excelRow.get(4).toString());
-                studyLoad.getStudyloadRow().setSemester(dep_fac_sem.get(2).toString());
+                studyLoad.getStudyloadRow().setSemester(depFacSem.get(2).toString());
                 studyLoad.getStudyloadRow().setGroupNames(excelRow.get(5).toString());
                 studyLoad.getStudyloadRow().setNumberOfSubgroups(excelRow.get(7).toString());
                 studyLoad.getStudyloadRow().setLecHours(excelRow.get(17).toString());
@@ -234,17 +234,17 @@ public class ReadExcelController {
                 studyLoad.getStudyloadRow().setAspirantHours(excelRow.get(28).toString());
                 studyLoad.getStudyloadRow().setPractice(excelRow.get(29).toString());
                 studyLoad.getStudyloadRow().setOtherFormsHours(excelRow.get(31).toString());
-                studyLoad.getStudyloadRow().setYear(dep_fac_sem.get(3).toString());
-                studyLoad.getStudyloadRow().setDepartment(departmentService.findByName(dep_fac_sem.get(0).toString()));
+                studyLoad.getStudyloadRow().setYear(depFacSem.get(3).toString());
+                studyLoad.getStudyloadRow().setDepartment(departmentService.findByName(depFacSem.get(0).toString()));
 
-                if (professorService.findByName(excelRow.get(36).toString().trim()) == null) {
+                if (teacherService.findByName(excelRow.get(36).toString().trim()) == null) {
                     if (!(excelRow.get(36).toString().equals("") || excelRow.get(36).toString().equals("курсові"))) {
-                        studyLoad.getProfessor().setName(excelRow.get(36).toString().trim());
-                        professorService.save(studyLoad.getProfessor());
-                        studyLoad.getStudyloadRow().getProfessors().add(studyLoad.getProfessor());
+                        studyLoad.getTeacher().setName(excelRow.get(36).toString().trim());
+                        teacherService.save(studyLoad.getTeacher());
+                        studyLoad.getStudyloadRow().getTeachers().add(studyLoad.getTeacher());
                     }
                 } else {
-                    studyLoad.getStudyloadRow().getProfessors().add(professorService.findByName(excelRow.get(36).toString()));
+                    studyLoad.getStudyloadRow().getTeachers().add(teacherService.findByName(excelRow.get(36).toString()));
                 }
 
                 if (disciplineService.findByName(excelRow.get(1).toString()) == null) {
@@ -291,20 +291,20 @@ public class ReadExcelController {
             }
 
 
-            Professor professor = professorService.findByName(arrayList.get(1).toString().trim());
+            Teacher teacher = teacherService.findByName(arrayList.get(1).toString().trim());
 
-            if (professor == null) {
-                professor = new Professor();
-                professor.setName(arrayList.get(1).toString());
+            if (teacher == null) {
+                teacher = new Teacher();
+                teacher.setName(arrayList.get(1).toString());
             }
-            professor.setFullName(arrayList.get(2).toString());
-            professor.setStavka(arrayList.get(3).toString());
-            professor.setPosada(arrayList.get(4).toString());
-            professor.setNaukStupin(arrayList.get(5).toString());
-            professor.setVchZvana(arrayList.get(6).toString());
-            professor.setNote(arrayList.get(7).toString());
-            professor.setEmailAddress(arrayList.get(8).toString());
-            professorService.save(professor);
+            teacher.setFullName(arrayList.get(2).toString());
+            teacher.setStavka(arrayList.get(3).toString());
+            teacher.setPosada(arrayList.get(4).toString());
+            teacher.setNaukStupin(arrayList.get(5).toString());
+            teacher.setVchZvana(arrayList.get(6).toString());
+            teacher.setNote(arrayList.get(7).toString());
+            teacher.setEmailAddress(arrayList.get(8).toString());
+            teacherService.save(teacher);
             arrayList = new ArrayList<>();
         }
 
@@ -336,17 +336,17 @@ public class ReadExcelController {
             }
 
 
-            Professor professor = professorService.findByName(arrayList.get(1).toString().trim());
+            Teacher teacher = teacherService.findByName(arrayList.get(1).toString().trim());
 
-            if (professor == null) {
-                professor = new Professor();
-                professor.setName(arrayList.get(1).toString());
+            if (teacher == null) {
+                teacher = new Teacher();
+                teacher.setName(arrayList.get(1).toString());
             }
-            professor.setBachNum(arrayList.get(4).toString());
-            professor.setFifthCourseNum(arrayList.get(5).toString());
-            professor.setMasterProfNum(arrayList.get(6).toString());
-            professor.setMasterScNum(arrayList.get(7).toString());
-            professorService.save(professor);
+            teacher.setBachNum(arrayList.get(4).toString());
+            teacher.setFifthCourseNum(arrayList.get(5).toString());
+            teacher.setMasterProfNum(arrayList.get(6).toString());
+            teacher.setMasterScNum(arrayList.get(7).toString());
+            teacherService.save(teacher);
             arrayList = new ArrayList<>();
         }
 

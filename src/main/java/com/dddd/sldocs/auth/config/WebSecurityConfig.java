@@ -46,8 +46,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login_error_disabled", "login_error", "/login_error_bad_credentials",
                         "/login", "/registration", "/resources/templates/registration.html", "/resources/**",
                         "/css/**").permitAll()
-                .antMatchers("/professor/downloadIp").hasAnyAuthority("USER")
-                .antMatchers("/professor/downloadPsl").hasAnyAuthority("USER")
+                .antMatchers("/teacher/downloadIp").hasAnyAuthority("USER")
+                .antMatchers("/teacher/downloadPsl").hasAnyAuthority("USER")
                 .antMatchers("/**").hasAnyAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()

@@ -2,14 +2,14 @@ package com.dddd.sldocs.core.controllers;
 
 import com.dddd.sldocs.core.entities.CreationMetric;
 import com.dddd.sldocs.core.entities.Faculty;
-import com.dddd.sldocs.core.entities.Professor;
+import com.dddd.sldocs.core.entities.Teacher;
 import com.dddd.sldocs.core.entities.views.PersonalLoadView;
 import com.dddd.sldocs.core.general.Dictionary;
 import com.dddd.sldocs.core.general.utils.cyrToLatin.UkrainianToLatin;
 import com.dddd.sldocs.core.services.CreationMetricService;
 import com.dddd.sldocs.core.services.FacultyService;
 import com.dddd.sldocs.core.services.PersonalLoadViewService;
-import com.dddd.sldocs.core.services.ProfessorService;
+import com.dddd.sldocs.core.services.TeacherService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -40,15 +40,15 @@ import java.util.Objects;
 public class WriteIPController {
     private final PersonalLoadViewService pls_vmService;
     private final CreationMetricService metricService;
-    private final ProfessorService professorService;
+    private final TeacherService teacherService;
     private final FacultyService facultyService;
     private double total_sum;
     private static final String TIMES_NEW_ROMAN = "Times New Roman";
 
-    public WriteIPController(PersonalLoadViewService pls_vmService, ProfessorService professorService,
+    public WriteIPController(PersonalLoadViewService pls_vmService, TeacherService teacherService,
                              FacultyService facultyService, CreationMetricService metricService) {
         this.pls_vmService = pls_vmService;
-        this.professorService = professorService;
+        this.teacherService = teacherService;
         this.facultyService = facultyService;
         this.metricService = metricService;
     }
@@ -71,13 +71,13 @@ public class WriteIPController {
     public String createExcel() {
         long startTime = System.currentTimeMillis();
         try {
-            List<Professor> professors = professorService.listAll();
+            List<Teacher> teachers = teacherService.listAll();
             XSSFRow row;
             XSSFCell cell;
             int last_vert_cell_sum;
             int rownum;
-            for (Professor professor : professors) {
-                if (!professor.getName().equals("")) {
+            for (Teacher teacher : teachers) {
+                if (!teacher.getName().equals("")) {
                     total_sum = 0;
                     List<PersonalLoadView> personalLoadViewList;
                     try (InputStream iS = Files.newInputStream(new File("src/main/resources/IndPlanExample.xlsx").toPath())) {
@@ -260,12 +260,12 @@ public class WriteIPController {
 
                             XSSFCellStyle rowAutoHeightStyle = workbook.createCellStyle();
                             rowAutoHeightStyle.setWrapText(true);
-                            if (!pls_vmService.getPSL_VMData("1", professor.getName()).isEmpty()
-                                    || !pls_vmService.getPSL_VMData("2", professor.getName()).isEmpty()) {
-                                if (!pls_vmService.getPSL_VMData("1", professor.getName()).isEmpty()) {
-                                    personalLoadViewList = pls_vmService.getPSL_VMData("1", professor.getName());
+                            if (!pls_vmService.getPSL_VMData("1", teacher.getName()).isEmpty()
+                                    || !pls_vmService.getPSL_VMData("2", teacher.getName()).isEmpty()) {
+                                if (!pls_vmService.getPSL_VMData("1", teacher.getName()).isEmpty()) {
+                                    personalLoadViewList = pls_vmService.getPSL_VMData("1", teacher.getName());
                                 } else {
-                                    personalLoadViewList = pls_vmService.getPSL_VMData("2", professor.getName());
+                                    personalLoadViewList = pls_vmService.getPSL_VMData("2", teacher.getName());
                                 }
                                 XSSFSheet sheet = workbook.getSheetAt(0);
                                 row = sheet.getRow(8);
@@ -278,25 +278,25 @@ public class WriteIPController {
                                 cell.setCellStyle(style16Bot);
                                 row = sheet.getRow(23);
                                 cell = row.getCell(0);
-                                cell.setCellValue(professor.getFullName());
+                                cell.setCellValue(teacher.getFullName());
                                 row = sheet.getRow(33);
                                 cell = row.getCell(0);
                                 cell.setCellValue(personalLoadViewList.get(0).getYear());
                                 cell.setCellStyle(style12BI);
                                 cell = row.getCell(1);
-                                cell.setCellValue(professor.getPosada());
+                                cell.setCellValue(teacher.getPosada());
                                 cell.setCellStyle(style12BI);
                                 cell = row.getCell(2);
-                                cell.setCellValue(professor.getNaukStupin());
+                                cell.setCellValue(teacher.getNaukStupin());
                                 cell.setCellStyle(style12BI);
                                 cell = row.getCell(3);
-                                cell.setCellValue(professor.getVchZvana());
+                                cell.setCellValue(teacher.getVchZvana());
                                 cell.setCellStyle(style12BI);
                                 cell = row.getCell(4);
-                                cell.setCellValue(professor.getStavka());
+                                cell.setCellValue(teacher.getStavka());
                                 cell.setCellStyle(style12BI);
                                 cell = row.getCell(5);
-                                cell.setCellValue(professor.getNote());
+                                cell.setCellValue(teacher.getNote());
                                 cell.setCellStyle(style12BI);
 
                                 sheet = workbook.getSheetAt(4);
@@ -311,18 +311,18 @@ public class WriteIPController {
 
                                 rownum = 4;
                                 sheet = workbook.getSheetAt(2);
-                                if (!pls_vmService.getPSL_VMData("1", professor.getName()).isEmpty()) {
+                                if (!pls_vmService.getPSL_VMData("1", teacher.getName()).isEmpty()) {
                                     personalLoadViewList.clear();
-                                    personalLoadViewList = pls_vmService.getPSL_VMData("1", professor.getName());
+                                    personalLoadViewList = pls_vmService.getPSL_VMData("1", teacher.getName());
                                     rownum = writeHours(cell, rownum, personalLoadViewList, style, rowAutoHeightStyle, sheet);
                                 }
                                 String[] ends1 = {"КЕРІВНИЦТВО"};
-                                rownum = writeKerivnictvo(rownum, professor, style, style12Bold, sheet, true, ends1);
+                                rownum = writeKerivnictvo(rownum, teacher, style, style12Bold, sheet, true, ends1);
                                 String[] ends2 = {"              Аспіранти, докторанти", "                  Магістри професійні",
                                         "                  Бакалаври", "                  Курсові 5 курс"};
-                                rownum = writeKerivnictvo(rownum, professor, style, style12, sheet, true, ends2);
+                                rownum = writeKerivnictvo(rownum, teacher, style, style12, sheet, true, ends2);
                                 row = sheet.createRow(rownum++);
-                                int autumn_sum = rownum;
+                                int autumnSum = rownum;
                                 CellRangeAddress cellRangeAddress = new CellRangeAddress(rownum - 1, rownum - 1, 1, 6);
                                 sheet.addMergedRegion(cellRangeAddress);
                                 cell = row.createCell(1);
@@ -337,37 +337,37 @@ public class WriteIPController {
                                         "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "AB", "AC", "AD",
                                         "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO",
                                         "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AW"};
-                                int cell_count = 7;
+                                int cellCount = 7;
                                 last_vert_cell_sum = rownum - 1;
                                 for (String sum : sums) {
-                                    cell = row.createCell(cell_count++);
+                                    cell = row.createCell(cellCount++);
                                     cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + "5:" + sum + last_vert_cell_sum + "),0)");
                                     cell.setCellStyle(style12ThickBotTop);
                                 }
-                                cell = row.createCell(cell_count++);
+                                cell = row.createCell(cellCount++);
                                 cell.setCellFormula("H" + rownum + "+J" + rownum + "+L" + rownum + "+N" + rownum + "+P" + rownum +
                                         "+R" + rownum + "+T" + rownum + "+V" + rownum + "+X" + rownum + "+Z" + rownum +
                                         "+AB" + rownum + "+AD" + rownum + "+AF" + rownum + "+AH" + rownum + "+AL" + rownum + "+AJ" + rownum +
                                         "+AN" + rownum + "+AP" + rownum + "+AR" + rownum + "+AT" + rownum + "+AV" + rownum);
                                 cell.setCellStyle(style12ThickBotTop);
-                                cell = row.createCell(cell_count);
+                                cell = row.createCell(cellCount);
                                 cell.setCellFormula("I" + rownum + "+K" + rownum + "+M" + rownum + "+O" + rownum + "+Q" + rownum +
                                         "+S" + rownum + "+U" + rownum + "+W" + rownum + "+Y" + rownum + "+AA" + rownum + "+AC" + rownum +
                                         "+AE" + rownum + "+AG" + rownum + "+AI" + rownum + "+AK" + rownum + "+AM" + rownum + "+AO" + rownum +
                                         "+AQ" + rownum + "+AS" + rownum + "+AU" + rownum + "+AW" + rownum);
 
-                                if (pls_vmService.getPSL_VMData("2", professor.getName()).size() != 0) {
+                                if (pls_vmService.getPSL_VMData("2", teacher.getName()).size() != 0) {
                                     personalLoadViewList.clear();
-                                    personalLoadViewList = pls_vmService.getPSL_VMData("2", professor.getName());
+                                    personalLoadViewList = pls_vmService.getPSL_VMData("2", teacher.getName());
 
                                     rownum = writeHours(cell, rownum, personalLoadViewList, style, rowAutoHeightStyle, sheet);
                                 }
                                 ends2 = new String[]{"              Аспіранти, докторанти", "                  Магістри наукові",
                                         "                  Бакалаври", "                  Курсові 5 курс"};
-                                rownum = writeKerivnictvo(rownum, professor, style, style12Bold, sheet, false, ends1);
-                                rownum = writeKerivnictvo(rownum, professor, style, style12, sheet, false, ends2);
+                                rownum = writeKerivnictvo(rownum, teacher, style, style12Bold, sheet, false, ends1);
+                                rownum = writeKerivnictvo(rownum, teacher, style, style12, sheet, false, ends2);
                                 row = sheet.createRow(rownum++);
-                                int spring_sum = rownum;
+                                int springSum = rownum;
                                 cellRangeAddress = new CellRangeAddress(rownum - 1, rownum - 1, 1, 6);
                                 sheet.addMergedRegion(cellRangeAddress);
                                 cell = row.createCell(1);
@@ -377,20 +377,20 @@ public class WriteIPController {
                                 RegionUtil.setBorderTop(cell.getCellStyle().getBorderTop(), cellRangeAddress, sheet);
                                 RegionUtil.setBorderLeft(cell.getCellStyle().getBorderLeft(), cellRangeAddress, sheet);
                                 RegionUtil.setBorderRight(cell.getCellStyle().getBorderRight(), cellRangeAddress, sheet);
-                                cell_count = 7;
+                                cellCount = 7;
                                 last_vert_cell_sum = rownum - 1;
                                 for (String sum : sums) {
-                                    cell = row.createCell(cell_count++);
-                                    cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + (autumn_sum + 1) + ":" + sum + last_vert_cell_sum + "),0)");
+                                    cell = row.createCell(cellCount++);
+                                    cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + (autumnSum + 1) + ":" + sum + last_vert_cell_sum + "),0)");
                                     cell.setCellStyle(style12ThickBotTop);
                                 }
-                                cell = row.createCell(cell_count++);
+                                cell = row.createCell(cellCount++);
                                 cell.setCellFormula("H" + rownum + "+J" + rownum + "+L" + rownum + "+N" + rownum + "+P" + rownum +
                                         "+R" + rownum + "+T" + rownum + "+V" + rownum + "+X" + rownum + "+Z" + rownum +
                                         "+AB" + rownum + "+AD" + rownum + "+AF" + rownum + "+AH" + rownum + "+AL" + rownum + "+AJ" + rownum +
                                         "+AN" + rownum + "+AP" + rownum + "+AR" + rownum + "+AT" + rownum + "+AV" + rownum);
                                 cell.setCellStyle(style12ThickBotTop);
-                                cell = row.createCell(cell_count);
+                                cell = row.createCell(cellCount);
                                 cell.setCellFormula("I" + rownum + "+K" + rownum + "+M" + rownum + "+O" + rownum + "+Q" + rownum +
                                         "+S" + rownum + "+U" + rownum + "+W" + rownum + "+Y" + rownum + "+AA" + rownum + "+AC" + rownum +
                                         "+AE" + rownum + "+AG" + rownum + "+AI" + rownum + "+AK" + rownum + "+AM" + rownum + "+AO" + rownum +
@@ -407,19 +407,19 @@ public class WriteIPController {
                                 RegionUtil.setBorderTop(cell.getCellStyle().getBorderTop(), cellRangeAddress, sheet);
                                 RegionUtil.setBorderLeft(cell.getCellStyle().getBorderLeft(), cellRangeAddress, sheet);
                                 RegionUtil.setBorderRight(cell.getCellStyle().getBorderRight(), cellRangeAddress, sheet);
-                                cell_count = 7;
+                                cellCount = 7;
                                 for (String sum : sums) {
-                                    cell = row.createCell(cell_count++);
-                                    cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + autumn_sum + "+" + sum + spring_sum + "),0)");
+                                    cell = row.createCell(cellCount++);
+                                    cell.setCellFormula(Dictionary.ROUND_SUM_START_OF_THE_FORMULA + sum + autumnSum + "+" + sum + springSum + "),0)");
                                     cell.setCellStyle(style12ThickBotTop);
                                 }
-                                cell = row.createCell(cell_count++);
+                                cell = row.createCell(cellCount++);
                                 cell.setCellFormula("H" + rownum + "+J" + rownum + "+L" + rownum + "+N" + rownum + "+P" + rownum +
                                         "+R" + rownum + "+T" + rownum + "+V" + rownum + "+X" + rownum + "+Z" + rownum +
                                         "+AB" + rownum + "+AD" + rownum + "+AF" + rownum + "+AH" + rownum + "+AL" + rownum + "+AJ" + rownum +
                                         "+AN" + rownum + "+AP" + rownum + "+AR" + rownum + "+AT" + rownum + "+AV" + rownum);
                                 cell.setCellStyle(style12ThickBotTop);
-                                cell = row.createCell(cell_count);
+                                cell = row.createCell(cellCount);
                                 cell.setCellFormula("I" + rownum + "+K" + rownum + "+M" + rownum + "+O" + rownum + "+Q" + rownum +
                                         "+S" + rownum + "+U" + rownum + "+W" + rownum + "+Y" + rownum + "+AA" + rownum + "+AC" + rownum +
                                         "+AE" + rownum + "+AG" + rownum + "+AI" + rownum + "+AK" + rownum + "+AM" + rownum + "+AO" + rownum +
@@ -451,7 +451,7 @@ public class WriteIPController {
                                 }
                                 row = sheet.createRow(rownum);
                                 cell = row.createCell(2);
-                                cell.setCellValue(professor.getName());
+                                cell.setCellValue(teacher.getName());
                                 cell.setCellStyle(style12I);
                                 for (int c = 3; c < 51; c++) {
                                     row.createCell(c);
@@ -472,13 +472,13 @@ public class WriteIPController {
                                 cell.setCellFormula("SUM(D15:D18)");
                                 cell.setCellStyle(style14Bot);
                             }
-                            File someFile = new File(Dictionary.RESULTS_FOLDER + UkrainianToLatin.generateLat(professor.getName()) + " ind_plan.xlsx");
+                            File someFile = new File(Dictionary.RESULTS_FOLDER + UkrainianToLatin.generateLat(teacher.getName()) + " ind_plan.xlsx");
                             try (FileOutputStream outputStream = new FileOutputStream(someFile)) {
 
                                 workbook.write(outputStream);
 
-                                professor.setIpFilename(someFile.getName());
-                                professorService.save(professor);
+                                teacher.setIpFilename(someFile.getName());
+                                teacherService.save(teacher);
                             } catch (Exception e) {
                                 log.error(e);
                             }
@@ -495,9 +495,9 @@ public class WriteIPController {
             facultyService.save(faculty);
 
             CreationMetric cr = new CreationMetric();
-            cr.setProfessorNumber(professors.size());
+            cr.setTeacherNumber(teachers.size());
             cr.setTimeToForm((System.currentTimeMillis() - startTime));
-            log.info("Number of professors: [{}]    Creation time: [{}]", cr.getProfessorNumber() + 200, cr.getTimeToForm());
+            log.info("Number of teachers: [{}]    Creation time: [{}]", cr.getTeacherNumber() + 200, cr.getTimeToForm());
             metricService.save(cr);
         } catch (Exception e) {
             log.error(e);
@@ -512,7 +512,7 @@ public class WriteIPController {
         return row.getCell(cellNum).getStringCellValue();
     }
 
-    private int writeKerivnictvo(int rownum, Professor professor, CellStyle style, CellStyle style12Bold, XSSFSheet sheet, boolean autumn, String[] ends1) {
+    private int writeKerivnictvo(int rownum, Teacher teacher, CellStyle style, CellStyle style12Bold, XSSFSheet sheet, boolean autumn, String[] ends1) {
         XSSFRow row;
         XSSFCell cell;
         for (String end : ends1) {
@@ -541,9 +541,9 @@ public class WriteIPController {
                         }
                         break;
                     case ("Магістри професійні"):
-                        if (l == 5 && professor.getMasterProfNum() != null && !professor.getMasterProfNum().isEmpty()) {
+                        if (l == 5 && teacher.getMasterProfNum() != null && !teacher.getMasterProfNum().isEmpty()) {
                             cell = row.createCell(l);
-                            cell.setCellValue((int) Double.parseDouble(professor.getMasterProfNum()));
+                            cell.setCellValue((int) Double.parseDouble(teacher.getMasterProfNum()));
                             cell.setCellStyle(style);
                         }
                         if (l == 23) {
@@ -553,9 +553,9 @@ public class WriteIPController {
                         }
                         break;
                     case ("Магістри наукові"):
-                        if (l == 5 && professor.getMasterScNum() != null && !professor.getMasterScNum().isEmpty()) {
+                        if (l == 5 && teacher.getMasterScNum() != null && !teacher.getMasterScNum().isEmpty()) {
                             cell = row.createCell(l);
-                            cell.setCellValue((int) Double.parseDouble(professor.getMasterScNum()));
+                            cell.setCellValue((int) Double.parseDouble(teacher.getMasterScNum()));
                             cell.setCellStyle(style);
                         }
                         if (l == 23) {
@@ -565,9 +565,9 @@ public class WriteIPController {
                         }
                         break;
                     case (Dictionary.BACHELORS):
-                        if (l == 5 && professor.getBachNum() != null && !professor.getBachNum().isEmpty()) {
+                        if (l == 5 && teacher.getBachNum() != null && !teacher.getBachNum().isEmpty()) {
                             cell = row.createCell(l);
-                            cell.setCellValue((int) Double.parseDouble(professor.getBachNum()));
+                            cell.setCellValue((int) Double.parseDouble(teacher.getBachNum()));
                             cell.setCellStyle(style);
                         }
                         if (autumn) {
@@ -585,9 +585,9 @@ public class WriteIPController {
                         }
                         break;
                     case (Dictionary.COURSE_PROJECTS_5_COURSE):
-                        if (l == 5 && professor.getFifthCourseNum() != null && !professor.getFifthCourseNum().isEmpty()) {
+                        if (l == 5 && teacher.getFifthCourseNum() != null && !teacher.getFifthCourseNum().isEmpty()) {
                             cell = row.createCell(l);
-                            cell.setCellValue((int) Double.parseDouble(professor.getFifthCourseNum()));
+                            cell.setCellValue((int) Double.parseDouble(teacher.getFifthCourseNum()));
                             cell.setCellStyle(style);
                         }
                         if (l == 17) {

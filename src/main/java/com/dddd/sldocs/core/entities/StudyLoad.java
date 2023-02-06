@@ -11,7 +11,7 @@ public class StudyLoad {
     private Department department;
     private Discipline discipline;
     private Faculty faculty;
-    private Professor professor;
+    private Teacher teacher;
     private Specialty specialty;
 
 
@@ -20,7 +20,7 @@ public class StudyLoad {
         department = new Department();
         discipline = new Discipline();
         faculty = new Faculty();
-        professor = new Professor();
+        teacher = new Teacher();
         specialty = new Specialty();
     }
 

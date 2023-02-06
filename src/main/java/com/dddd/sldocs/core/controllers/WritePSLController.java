@@ -2,14 +2,14 @@ package com.dddd.sldocs.core.controllers;
 
 import com.dddd.sldocs.core.entities.CreationMetric;
 import com.dddd.sldocs.core.entities.Faculty;
-import com.dddd.sldocs.core.entities.Professor;
+import com.dddd.sldocs.core.entities.Teacher;
 import com.dddd.sldocs.core.entities.views.PersonalLoadView;
 import com.dddd.sldocs.core.general.Dictionary;
 import com.dddd.sldocs.core.general.utils.cyrToLatin.UkrainianToLatin;
 import com.dddd.sldocs.core.services.CreationMetricService;
 import com.dddd.sldocs.core.services.FacultyService;
 import com.dddd.sldocs.core.services.PersonalLoadViewService;
-import com.dddd.sldocs.core.services.ProfessorService;
+import com.dddd.sldocs.core.services.TeacherService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -41,15 +41,15 @@ public class WritePSLController {
     private final PersonalLoadViewService plsVmService;
 
     private final CreationMetricService metricService;
-    private final ProfessorService professorService;
+    private final TeacherService teacherService;
     private final FacultyService facultyService;
     private static final String PERSONAL_STUDY_LOAD_XLSX = "personal_study_load.xlsx";
     private static final String TIMES_NEW_ROMAN = "Times New Roman";
 
-    public WritePSLController(PersonalLoadViewService plsVmService, ProfessorService professorService,
+    public WritePSLController(PersonalLoadViewService plsVmService, TeacherService teacherService,
                               FacultyService facultyService, CreationMetricService metricService) {
         this.plsVmService = plsVmService;
-        this.professorService = professorService;
+        this.teacherService = teacherService;
         this.facultyService = facultyService;
         this.metricService = metricService;
     }
@@ -232,25 +232,25 @@ public class WritePSLController {
                     XSSFCellStyle rowAutoHeightStyle = workbook.createCellStyle();
                     rowAutoHeightStyle.setWrapText(true);
 
-                    List<Professor> professors = professorService.listAll();
-                    professors.sort(Comparator.comparing(Professor::getFullName, Comparator.nullsLast(Comparator.naturalOrder())));
+                    List<Teacher> teachers = teacherService.listAll();
+                    teachers.sort(Comparator.comparing(Teacher::getFullName, Comparator.nullsLast(Comparator.naturalOrder())));
 
                     XSSFRow row;
                     XSSFCell cell;
 
                     int lastVertCellSum;
                     int rownum;
-                    for (Professor professor : professors) {
-                        if (!professor.getName().equals("")) {
+                    for (Teacher teacher : teachers) {
+                        if (!teacher.getName().equals("")) {
                             List<PersonalLoadView> personalLoadViewList;
-                            XSSFSheet sheet = workbook.cloneSheet(1, professor.getName());
+                            XSSFSheet sheet = workbook.cloneSheet(1, teacher.getName());
                             row = sheet.getRow(2);
                             cell = row.getCell(0);
-                            cell.setCellValue(professor.getName());
+                            cell.setCellValue(teacher.getName());
                             cell.setCellStyle(style14Bold);
 
                             cell = row.createCell(3);
-                            cell.setCellValue("Ставка " + professor.getStavka());
+                            cell.setCellValue("Ставка " + teacher.getStavka());
                             cell.setCellStyle(style14);
 
                             cell = row.getCell(5);
@@ -272,8 +272,8 @@ public class WritePSLController {
                                     19  //last column  (0-based)
                             ));
                             // Добавляем строки нагрузки, если есть в осеннем семестре
-                            if (!plsVmService.getPSL_VMData("1", professor.getName()).isEmpty()) {
-                                personalLoadViewList = plsVmService.getPSL_VMData("1", professor.getName());
+                            if (!plsVmService.getPSL_VMData("1", teacher.getName()).isEmpty()) {
+                                personalLoadViewList = plsVmService.getPSL_VMData("1", teacher.getName());
                                 for (PersonalLoadView personalLoadView : personalLoadViewList) {
                                     row = sheet.createRow(rownum++);
                                     cell = writeDisciplines(styleDiscHours, styleDiscName, styleDiscGroups, row, personalLoadView);//cell,
@@ -293,9 +293,9 @@ public class WritePSLController {
                             }
                             // Данные по студентам, которыми руководит преподаватель
                             String[] ends1 = {"КЕРІВНИЦТВО"};
-                            rownum = writeKerivnictvo(styleDiscHours, professor, style12Bold, rownum, sheet, true, ends1);
+                            rownum = writeKerivnictvo(styleDiscHours, teacher, style12Bold, rownum, sheet, true, ends1);
                             String[] ends2 = {Dictionary.ASPIRANTS_DOCTORANTS, "Магістри професійні", Dictionary.BACHELORS, Dictionary.COURSE_PROJECTS_5_COURSE};
-                            rownum = writeKerivnictvo(styleDiscHours, professor, style12RightAl, rownum, sheet, true, ends2);
+                            rownum = writeKerivnictvo(styleDiscHours, teacher, style12RightAl, rownum, sheet, true, ends2);
 
 
                             int autumnSum = rownum;
@@ -334,8 +334,8 @@ public class WritePSLController {
                             ));
                             // Добавляем строки нагрузки, если есть в осеннем семестре
                             int firstSumCellSpring = rownum + 1;
-                            if (!plsVmService.getPSL_VMData("2", professor.getName()).isEmpty()) {
-                                personalLoadViewList = plsVmService.getPSL_VMData("2", professor.getName());
+                            if (!plsVmService.getPSL_VMData("2", teacher.getName()).isEmpty()) {
+                                personalLoadViewList = plsVmService.getPSL_VMData("2", teacher.getName());
                                 for (PersonalLoadView personalLoadView : personalLoadViewList) {
                                     row = sheet.createRow(rownum++);
                                     cell = writeDisciplines(styleDiscHours, styleDiscName, styleDiscGroups, row, personalLoadView);//, cell
@@ -353,8 +353,8 @@ public class WritePSLController {
                             }
                             // Данные по студентам, которыми руководит преподаватель
                             ends2 = new String[]{Dictionary.ASPIRANTS_DOCTORANTS, "Магістри наукові", Dictionary.BACHELORS, Dictionary.COURSE_PROJECTS_5_COURSE};
-                            rownum = writeKerivnictvo(styleDiscHours, professor, style12Bold, rownum, sheet, false, ends1);
-                            rownum = writeKerivnictvo(styleDiscHours, professor, style12RightAl, rownum, sheet, false, ends2);
+                            rownum = writeKerivnictvo(styleDiscHours, teacher, style12Bold, rownum, sheet, false, ends1);
+                            rownum = writeKerivnictvo(styleDiscHours, teacher, style12RightAl, rownum, sheet, false, ends2);
 
                             row = sheet.createRow(rownum++);
                             cell = row.createCell(0);
@@ -398,10 +398,10 @@ public class WritePSLController {
                             cell.setCellFormula("ROUND(SUM(T" + (autumnSum + 1) + "+" + "T" + (rownum - 1) + "),0)");
                             cell.setCellStyle(styleThickBotTopRightBord);
 
-                            if (!(professor.getPosada() == null || professor.getPosada().equals(""))) {
+                            if (!(teacher.getPosada() == null || teacher.getPosada().equals(""))) {
                                 row = sheet.createRow(rownum + 2);
                                 cell = row.createCell(cellCount++);
-                                cell.setCellValue(getStandartHours(professor.getStavka(), professor.getPosada(), workbook));
+                                cell.setCellValue(getStandartHours(teacher.getStavka(), teacher.getPosada(), workbook));
                                 cell = row.createCell(cellCount);
                                 cell.setCellFormula("T" + rownum + "-T" + (rownum + 3));
                             }
@@ -422,9 +422,9 @@ public class WritePSLController {
                         log.error(e);
                     }
                     CreationMetric cr = new CreationMetric();
-                    cr.setProfessorNumber(professors.size());
+                    cr.setTeacherNumber(teachers.size());
                     cr.setTimeToForm((System.currentTimeMillis() - startTime));
-                    log.info("Number of professors: [{}]    Creation time: [{}]", cr.getProfessorNumber() + 100, cr.getTimeToForm());
+                    log.info("Number of teachers: [{}]    Creation time: [{}]", cr.getTeacherNumber() + 100, cr.getTimeToForm());
                     metricService.save(cr);
                 } catch (Exception e) {
                     log.error(e);
@@ -486,26 +486,26 @@ public class WritePSLController {
     }
 
     private void writePSLforProf() throws IOException {
-        List<Professor> professors = professorService.listAll();
-        for (Professor professor : professors) {
+        List<Teacher> teachers = teacherService.listAll();
+        for (Teacher teacher : teachers) {
             File originalWb = new File(Dictionary.RESULTS_FOLDER + PERSONAL_STUDY_LOAD_XLSX);
-            File clonedWb = new File(Dictionary.RESULTS_FOLDER + UkrainianToLatin.generateLat(professor.getName()) + " personal_study_load.xlsx");
+            File clonedWb = new File(Dictionary.RESULTS_FOLDER + UkrainianToLatin.generateLat(teacher.getName()) + " personal_study_load.xlsx");
             Files.copy(originalWb.toPath(), clonedWb.toPath(), StandardCopyOption.REPLACE_EXISTING);
             try (FileInputStream iS = new FileInputStream(clonedWb)) {
 
                 XSSFWorkbookFactory wbF = new XSSFWorkbookFactory();
                 try (XSSFWorkbook workbook = wbF.create(iS)) {
                     while (workbook.getNumberOfSheets() > 1) {
-                        if (!professor.getName().equals(workbook.getSheetAt(0).getSheetName())) {
+                        if (!teacher.getName().equals(workbook.getSheetAt(0).getSheetName())) {
                             workbook.removeSheetAt(0);
-                        } else if (!professor.getName().equals(workbook.getSheetAt(1).getSheetName())) {
+                        } else if (!teacher.getName().equals(workbook.getSheetAt(1).getSheetName())) {
                             workbook.removeSheetAt(1);
                         }
                     }
                     try (FileOutputStream outputStream = new FileOutputStream(clonedWb)) {
                         workbook.write(outputStream);
-                        professor.setPslFilename(clonedWb.getName());
-                        professorService.save(professor);
+                        teacher.setPslFilename(clonedWb.getName());
+                        teacherService.save(teacher);
                     } catch (Exception e) {
                         log.error(e);
                     }
@@ -519,7 +519,7 @@ public class WritePSLController {
     }
 
 
-    private int writeKerivnictvo(CellStyle style, Professor professor, CellStyle styleBold, int rownum, XSSFSheet sheet, boolean autumn, String[] endsKer) {
+    private int writeKerivnictvo(CellStyle style, Teacher teacher, CellStyle styleBold, int rownum, XSSFSheet sheet, boolean autumn, String[] endsKer) {
         XSSFRow row;
         XSSFCell cell;
         for (String end : endsKer) {
@@ -545,9 +545,9 @@ public class WritePSLController {
                         }
                         break;
                     case ("Магістри професійні"):
-                        if (l == 2 && professor.getMasterProfNum() != null && !professor.getMasterProfNum().isEmpty()) {
+                        if (l == 2 && teacher.getMasterProfNum() != null && !teacher.getMasterProfNum().isEmpty()) {
                             cell = row.createCell(l);
-                            cell.setCellValue((int) Double.parseDouble(professor.getMasterProfNum()));
+                            cell.setCellValue((int) Double.parseDouble(teacher.getMasterProfNum()));
                             cell.setCellStyle(style);
                         }
                         if (l == 12) {
@@ -557,9 +557,9 @@ public class WritePSLController {
                         }
                         break;
                     case ("Магістри наукові"):
-                        if (l == 2 && professor.getMasterScNum() != null && !professor.getMasterScNum().isEmpty()) {
+                        if (l == 2 && teacher.getMasterScNum() != null && !teacher.getMasterScNum().isEmpty()) {
                             cell = row.createCell(l);
-                            cell.setCellValue((int) Double.parseDouble(professor.getMasterScNum()));
+                            cell.setCellValue((int) Double.parseDouble(teacher.getMasterScNum()));
                             cell.setCellStyle(style);
                         }
                         if (l == 12) {
@@ -569,9 +569,9 @@ public class WritePSLController {
                         }
                         break;
                     case (Dictionary.BACHELORS):
-                        if (l == 2 && professor.getBachNum() != null && !professor.getBachNum().isEmpty()) {
+                        if (l == 2 && teacher.getBachNum() != null && !teacher.getBachNum().isEmpty()) {
                             cell = row.createCell(l);
-                            cell.setCellValue((int) Double.parseDouble(professor.getBachNum()));
+                            cell.setCellValue((int) Double.parseDouble(teacher.getBachNum()));
                             cell.setCellStyle(style);
                         }
                         if (autumn) {
@@ -589,9 +589,9 @@ public class WritePSLController {
                         }
                         break;
                     case (Dictionary.COURSE_PROJECTS_5_COURSE):
-                        if (l == 2 && professor.getFifthCourseNum() != null && !professor.getFifthCourseNum().isEmpty()) {
+                        if (l == 2 && teacher.getFifthCourseNum() != null && !teacher.getFifthCourseNum().isEmpty()) {
                             cell = row.createCell(l);
-                            cell.setCellValue((int) Double.parseDouble(professor.getFifthCourseNum()));
+                            cell.setCellValue((int) Double.parseDouble(teacher.getFifthCourseNum()));
                             cell.setCellStyle(style);
                         }
                         if (l == 9) {

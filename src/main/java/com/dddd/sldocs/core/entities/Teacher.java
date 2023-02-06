@@ -10,8 +10,8 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "professor")
-public class Professor {
+@Table(name = "teacher")
+public class Teacher {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class Professor {
     private String masterProfNum;
     private String masterScNum;
 
-    @ManyToMany(mappedBy = "professors", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "teachers", fetch = FetchType.LAZY)
     private Set<StudyloadRow> studyloadRows = new HashSet<>();
 
 }

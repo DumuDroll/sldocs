@@ -29,4 +29,12 @@
         <renameTable oldTableName="curriculum_professor" newTableName="studyload_row_professor"/>
     </changeSet>
 
+    <changeSet id="2023/02/04_2" author="dddd">
+        <renameTable oldTableName="professor" newTableName="teacher"/>
+        <renameTable oldTableName="studyload_row_professor" newTableName="studyload_row_teacher"/>
+        <renameColumn columnDataType="int" tableName="creation_metric" oldColumnName="professor_number" newColumnName="teacher_number"/>
+        <dropColumn tableName="studyload_row" columnName="consult_hours"/>
+    </changeSet>
+
+
 </databaseChangeLog>

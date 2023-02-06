@@ -14,6 +14,6 @@ public class CreationMetric {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int professorNumber;
+    private int teacherNumber;
     private double timeToForm;
 }

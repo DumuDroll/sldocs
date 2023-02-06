@@ -20,8 +20,8 @@
             <a href=#>Викладачі</a>
             <input type="checkbox" id="drop-1"/>
             <ul>
-                <li><a href="/professors">Перевірити зчитаних з ППС</a></li>
-                <li><a href="/professors/docs">Розіслати документи</a></li>
+                <li><a href="/teachers">Перевірити зчитаних з ППС</a></li>
+                <li><a href="/teachers/docs">Розіслати документи</a></li>
             </ul>
         </li>
         <li sec:authorize="hasAnyAuthority('ADMIN')">
@@ -89,7 +89,7 @@
     </form>
 
     <p>4. Перевірте зчитане з ППС</p>
-    <a href="/professors">Перелік викладачів</a>
+    <a href="/teachers">Перелік викладачів</a>
 
     <p>5. Сформуйте необхідні файли</p>
 
@@ -176,20 +176,20 @@
         </ul>
         <p>6. Активуйте акаунти викладачів або самостійно розішліть документи</p>
         <a href="/users">Перелік акаунтів викладачів</a><br>
-        <a href="/professors/docs">Перелік викладачів для відправки</a>
+        <a href="/teachers/docs">Перелік викладачів для відправки</a>
 
     </div>
 </div>
 <div sec:authorize="hasAnyAuthority('USER')" align="center">
     <br>
     <p>Завантажте індивідуальний план</p>
-    <form th:action="@{/professor/downloadIp}">
+    <form th:action="@{/teacher/downloadIp}">
         <input th:type="hidden" th:name="prof_name" th:value="${#authentication.name}">
         <input type="submit" value="Завантажити"/>
     </form>
     <br>
     <p>Завантажте навантаження</p>
-    <form th:action="@{/professor/downloadPsl}">
+    <form th:action="@{/teacher/downloadPsl}">
         <input th:type="hidden" th:name="prof_name" th:value="${#authentication.name}">
         <input type="submit" value="Завантажити"/>
     </form>

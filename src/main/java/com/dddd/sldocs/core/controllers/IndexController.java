@@ -30,18 +30,18 @@ public class IndexController {
     private final DepartmentService departmentService;
     private final DisciplineService disciplineService;
     private final FacultyService facultyService;
-    private final ProfessorService professorService;
+    private final TeacherService teacherService;
     private final SpecialtyService specialtyService;
 
 
     public IndexController(StudyloadRowService studyloadRowService, DepartmentService departmentService,
                            DisciplineService disciplineService, FacultyService facultyService,
-                           ProfessorService professorService, SpecialtyService specialtyService) {
+                           TeacherService teacherService, SpecialtyService specialtyService) {
         this.studyloadRowService = studyloadRowService;
         this.departmentService = departmentService;
         this.disciplineService = disciplineService;
         this.facultyService = facultyService;
-        this.professorService = professorService;
+        this.teacherService = teacherService;
         this.specialtyService = specialtyService;
     }
 
@@ -96,7 +96,7 @@ public class IndexController {
         departmentService.deleteAll();
         disciplineService.deleteAll();
         facultyService.deleteAll();
-        professorService.deleteAll();
+        teacherService.deleteAll();
         specialtyService.deleteAll();
         return "success/deleteAllSuc";
     }
@@ -138,7 +138,7 @@ public class IndexController {
         File zipFile = new File(Dictionary.RESULTS_FOLDER + "Ind_plans.zip");
         FileOutputStream fos = new FileOutputStream(zipFile);
         try (ZipOutputStream zipOS = new ZipOutputStream(fos)) {
-            List<String> fileNames = professorService.listIpFilenames();
+            List<String> fileNames = teacherService.listIpFilenames();
             for (String fileName : fileNames) {
                 File someFile = new File(Dictionary.RESULTS_FOLDER + fileName);
                 writeToZipFile(Dictionary.RESULTS_FOLDER + someFile.getName(), zipOS);

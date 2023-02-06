@@ -49,11 +49,11 @@ public class StudyloadRow {
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
-            name = "studyload_row_professor",
+            name = "studyload_row_teacher",
             joinColumns = @JoinColumn(name = "studyload_row_id"),
-            inverseJoinColumns = @JoinColumn(name = "professor_id")
+            inverseJoinColumns = @JoinColumn(name = "teacher_id")
     )
-    private Set<Professor> professors = new HashSet<>();
+    private Set<Teacher> teachers = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "specialty_id", referencedColumnName = "id")

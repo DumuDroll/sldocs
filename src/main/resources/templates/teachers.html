@@ -20,8 +20,8 @@
             <a href=#>Викладачі</a>
             <input type="checkbox" id="drop-1"/>
             <ul>
-                <li><a href="/professors">Перевірити зчитаних з ППС</a></li>
-                <li><a href="/professors/docs">Розіслати документи</a></li>
+                <li><a href="/teachers">Перевірити зчитаних з ППС</a></li>
+                <li><a href="/teachers/docs">Розіслати документи</a></li>
             </ul>
         </li>
         <li sec:authorize="hasAnyAuthority('ADMIN')">
@@ -58,12 +58,12 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="professor : ${professors}">
-            <form th:action="@{/professor/save}" method="post">
-                <input type="hidden" th:name="id" th:value="*{professor.id}"/>
-                <td> <input type="text" th:name="name" th:value="*{professor.name}"/> </td>
-                <td> <input type="text" th:name="fullName" th:value="*{professor.getFullName}"/> </td>
-                <td> <input type="text" th:name="emailAddress" th:value="*{professor.getEmailAddress}"/> </td>
+        <tr th:each="teacher : ${teachers}">
+            <form th:action="@{/teacher/save}" method="post">
+                <input type="hidden" th:name="id" th:value="*{teacher.id}"/>
+                <td> <input type="text" th:name="name" th:value="*{teacher.name}"/> </td>
+                <td> <input type="text" th:name="fullName" th:value="*{teacher.getFullName}"/> </td>
+                <td> <input type="text" th:name="emailAddress" th:value="*{teacher.getEmailAddress}"/> </td>
                 <td> <input type="submit" th:value="Зберегти"/></td>
             </form>
         </tr>
