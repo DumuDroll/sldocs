@@ -37,19 +37,14 @@ public class StudyloadRow {
     private String course;
 
     @ManyToOne
+    @JoinColumn(name = "formulary_id", referencedColumnName = "id")
+    private Formulary formulary;
+
+    @ManyToOne
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     private Teacher teacher;
 
     @ManyToOne
     @JoinColumn(name = "discipline_id", referencedColumnName = "id")
     private Discipline discipline;
-
-    @ManyToOne
-    @JoinColumn(name = "specialty_id", referencedColumnName = "id")
-    private Specialty specialty;
-
-    @ManyToOne
-    @JoinColumn(name = "department_id", referencedColumnName = "id")
-    private Department department;
-
 }

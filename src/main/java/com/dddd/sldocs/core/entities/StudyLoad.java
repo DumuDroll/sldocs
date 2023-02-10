@@ -8,20 +8,14 @@ import lombok.Setter;
 public class StudyLoad {
 
     private StudyloadRow studyloadRow;
-    private Department department;
     private Discipline discipline;
-    private Faculty faculty;
     private Teacher teacher;
-    private Specialty specialty;
 
 
     public StudyLoad() {
         studyloadRow = new StudyloadRow();
-        department = new Department();
         discipline = new Discipline();
-        faculty = new Faculty();
         teacher = new Teacher();
-        specialty = new Specialty();
     }
 
 }

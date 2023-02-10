@@ -30,16 +30,16 @@ public class TeacherService {
     }
 
     public Teacher findByName(String name) {
-        return teacherRepository.getTechearByName(name);
+        return teacherRepository.getTeacherByName(name);
     }
 
     public Teacher getByID(long id) {
         return teacherRepository.getById(id);
     }
 
-    public List<String> listIpFilenames(){
-        return teacherRepository.listIpFilenames();
-    }
+//    public List<String> listIpFilenames(){
+//        return teacherRepository.listIpFilenames();
+//    }
 
     public void deleteAll() {
         teacherRepository.deleteAll();

@@ -1,10 +1,9 @@
 package com.dddd.sldocs.core.controllers;
 
-import com.dddd.sldocs.core.entities.Faculty;
 import com.dddd.sldocs.core.entities.views.EdAsStView;
 import com.dddd.sldocs.core.general.Dictionary;
 import com.dddd.sldocs.core.services.EdAsStViewService;
-import com.dddd.sldocs.core.services.FacultyService;
+import com.dddd.sldocs.core.services.FormularyService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
@@ -28,11 +27,11 @@ public class WriteEASController {
     private static final String TIMES_NEW_ROMAN = "Times New Roman";
 
     private final EdAsStViewService easVmService;
-    private final FacultyService facultyService;
+    private final FormularyService formularyService;
 
-    public WriteEASController(EdAsStViewService easVmService, FacultyService facultyService) {
+    public WriteEASController(EdAsStViewService easVmService, FormularyService formularyService) {
         this.easVmService = easVmService;
-        this.facultyService = facultyService;
+        this.formularyService = formularyService;
     }
 
     @RequestMapping("/EdAsSt")
@@ -130,9 +129,9 @@ public class WriteEASController {
                     log.error(e);
                 }
 
-                List<Faculty> faculties = facultyService.listAll();
-                faculties.get(0).setEasFilename(someFile.getName());
-                facultyService.save(faculties.get(0));
+//                List<Formulary> formularies = formularyService.listAll();
+//                Formulary formulary = formularyService.listAll().get(0).setEasFilename(someFile.getName());
+//                formularyService.save(formularies.get(0));
             } catch (Exception e) {
                 log.error(e);
             }

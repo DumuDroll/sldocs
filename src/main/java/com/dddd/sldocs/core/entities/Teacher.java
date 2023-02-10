@@ -23,14 +23,11 @@ public class Teacher {
     private String vchZvana;
     private String stavka;
     private String note;
-    private String ipFilename;
-    private String pslFilename;
     private String emailAddress;
     private String emailedDate;
-    private String bachNum;
-    private String fifthCourseNum;
-    private String masterProfNum;
-    private String masterScNum;
+
+    @OneToOne
+    private TeacherHours teacherHours = new TeacherHours();
 
     @OneToMany(mappedBy = "teacher")
     private Set<StudyloadRow> studyloadRows = new HashSet<>();

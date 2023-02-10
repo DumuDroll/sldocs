@@ -5,6 +5,7 @@ import com.dddd.sldocs.core.repositories.DisciplineRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -16,15 +17,11 @@ public class DisciplineService {
         this.disciplineRepository = disciplineRepository;
     }
 
-    public void save(Discipline discipline) {
-        disciplineRepository.save(discipline);
+    public List<Discipline> listAll(){
+        return disciplineRepository.findAll();
     }
 
-    public Discipline findByName(String name) {
-        return disciplineRepository.getDisciplineByName(name);
-    }
-
-    public void deleteAll() {
+    public void deleteAll(){
         disciplineRepository.deleteAll();
     }
 }

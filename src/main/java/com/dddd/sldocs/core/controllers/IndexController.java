@@ -1,9 +1,12 @@
 package com.dddd.sldocs.core.controllers;
 
 
-import com.dddd.sldocs.core.entities.Faculty;
+import com.dddd.sldocs.core.entities.Formulary;
 import com.dddd.sldocs.core.general.Dictionary;
-import com.dddd.sldocs.core.services.*;
+import com.dddd.sldocs.core.services.DisciplineService;
+import com.dddd.sldocs.core.services.FormularyService;
+import com.dddd.sldocs.core.services.StudyloadRowService;
+import com.dddd.sldocs.core.services.TeacherService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +20,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -27,22 +29,17 @@ import static com.dddd.sldocs.core.general.utils.email.Sender.rfc5987_encode;
 @Controller
 public class IndexController {
     private final StudyloadRowService studyloadRowService;
-    private final DepartmentService departmentService;
     private final DisciplineService disciplineService;
-    private final FacultyService facultyService;
     private final TeacherService teacherService;
-    private final SpecialtyService specialtyService;
+    private final FormularyService formularyService;
 
 
-    public IndexController(StudyloadRowService studyloadRowService, DepartmentService departmentService,
-                           DisciplineService disciplineService, FacultyService facultyService,
-                           TeacherService teacherService, SpecialtyService specialtyService) {
+    public IndexController(StudyloadRowService studyloadRowService, DisciplineService disciplineService,
+                           TeacherService teacherService, FormularyService formularyService) {
         this.studyloadRowService = studyloadRowService;
-        this.departmentService = departmentService;
         this.disciplineService = disciplineService;
-        this.facultyService = facultyService;
         this.teacherService = teacherService;
-        this.specialtyService = specialtyService;
+        this.formularyService = formularyService;
     }
 
     @GetMapping(path = "/")
@@ -51,9 +48,9 @@ public class IndexController {
         String pslfn = "";
         String ipzipfn = "";
         try {
-            easfn = facultyService.listAll().get(0).getEasFilename();
-            pslfn = facultyService.listAll().get(0).getPslFilename();
-            ipzipfn = facultyService.listAll().get(0).getIndPlanZipFilename();
+            easfn = formularyService.listAll().get(0).getEasFilename();
+            pslfn = formularyService.listAll().get(0).getPslFilename();
+            ipzipfn = formularyService.listAll().get(0).getIndPlanZipFilename();
         } catch (IndexOutOfBoundsException ex) {
             log.info("no faculties");
         }
@@ -93,11 +90,9 @@ public class IndexController {
     @GetMapping(path = "/deleteAll")
     public String deleteAll(Model model) {
         studyloadRowService.deleteAll();
-        departmentService.deleteAll();
         disciplineService.deleteAll();
-        facultyService.deleteAll();
         teacherService.deleteAll();
-        specialtyService.deleteAll();
+        formularyService.deleteAll();
         return "success/deleteAllSuc";
     }
 
@@ -105,31 +100,29 @@ public class IndexController {
     @GetMapping(path = "/deleteWithoutProfs")
     public String deleteWithoutProfs(Model model) {
         studyloadRowService.deleteAll();
-        departmentService.deleteAll();
         disciplineService.deleteAll();
-        facultyService.deleteAll();
-        specialtyService.deleteAll();
+        formularyService.deleteAll();
         return "success/deleteWOprofsSuc";
     }
 
     @GetMapping("/downloadEAS")
     public ResponseEntity downloadEAS() throws IOException {
-        Faculty faculty = facultyService.listAll().get(0);
-        File file = new File(Dictionary.RESULTS_FOLDER + faculty.getEasFilename());
+        Formulary formulary = formularyService.listAll().get(0);
+        File file = new File(Dictionary.RESULTS_FOLDER + formulary.getEasFilename());
         return ResponseEntity.ok()
                 .contentType(MediaType.MULTIPART_FORM_DATA)
-                .header(HttpHeaders.CONTENT_DISPOSITION, Dictionary.ATTACHMENT_FILENAME + rfc5987_encode(faculty.getEasFilename()) + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, Dictionary.ATTACHMENT_FILENAME + rfc5987_encode(formulary.getEasFilename()) + "\"")
                 .body(FileUtils.readFileToByteArray(file));
     }
 
     @GetMapping("/downloadPSL")
     public ResponseEntity downloadPSL() throws IOException {
 
-        Faculty faculty = facultyService.listAll().get(0);
-        File file = new File(Dictionary.RESULTS_FOLDER + faculty.getPslFilename());
+        Formulary formulary = formularyService.listAll().get(0);
+        File file = new File(Dictionary.RESULTS_FOLDER + formulary.getPslFilename());
         return ResponseEntity.ok()
                 .contentType(MediaType.MULTIPART_FORM_DATA)
-                .header(HttpHeaders.CONTENT_DISPOSITION, Dictionary.ATTACHMENT_FILENAME + rfc5987_encode(faculty.getPslFilename()) + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, Dictionary.ATTACHMENT_FILENAME + rfc5987_encode(formulary.getPslFilename()) + "\"")
                 .body(FileUtils.readFileToByteArray(file));
     }
 
@@ -138,19 +131,19 @@ public class IndexController {
         File zipFile = new File(Dictionary.RESULTS_FOLDER + "Ind_plans.zip");
         FileOutputStream fos = new FileOutputStream(zipFile);
         try (ZipOutputStream zipOS = new ZipOutputStream(fos)) {
-            List<String> fileNames = teacherService.listIpFilenames();
-            for (String fileName : fileNames) {
-                File someFile = new File(Dictionary.RESULTS_FOLDER + fileName);
-                writeToZipFile(Dictionary.RESULTS_FOLDER + someFile.getName(), zipOS);
-            }
+//            List<String> fileNames = teacherService.listIpFilenames();
+//            for (String fileName : fileNames) {
+//                File someFile = new File(Dictionary.RESULTS_FOLDER + fileName);
+//                writeToZipFile(Dictionary.RESULTS_FOLDER + someFile.getName(), zipOS);
+//            }
         }
-        Faculty faculty = facultyService.listAll().get(0);
-        faculty.setIndPlanZipFilename(zipFile.getName());
-        facultyService.save(faculty);
+        Formulary formulary = formularyService.listAll().get(0);
+        formulary.setIndPlanZipFilename(zipFile.getName());
+        formularyService.save(formulary);
         fos.close();
         return ResponseEntity.ok()
                 .contentType(MediaType.MULTIPART_FORM_DATA)
-                .header(HttpHeaders.CONTENT_DISPOSITION, Dictionary.ATTACHMENT_FILENAME + rfc5987_encode(facultyService.listAll().get(0).getIndPlanZipFilename()) + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, Dictionary.ATTACHMENT_FILENAME + rfc5987_encode(formularyService.listAll().get(0).getIndPlanZipFilename()) + "\"")
                 .body(FileUtils.readFileToByteArray(zipFile));
     }
 

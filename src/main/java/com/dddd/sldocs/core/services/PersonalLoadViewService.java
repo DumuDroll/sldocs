@@ -17,7 +17,7 @@ public class PersonalLoadViewService {
         this.personalLoadViewRepository = personalLoadViewRepository;
     }
 
-    public List<PersonalLoadView> getPSL_VMData(String semester, String pname) {
-        return personalLoadViewRepository.getPSL_VM(semester, pname);
+    public List<PersonalLoadView> getPSLVMData(String semester, String pname) {
+        return personalLoadViewRepository.getPSLVM(semester, pname);
     }
 }

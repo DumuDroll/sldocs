@@ -119,4 +119,138 @@
         </createView>
     </changeSet>
 
+    <changeSet id="2023/02/08-1" author="dddd">
+        <dropForeignKeyConstraint baseTableName="studyload_row" constraintName="FK6myxkmo0upbbkh7fnds3jb67v"/>
+        <dropForeignKeyConstraint baseTableName="studyload_row" constraintName="FKcb91o408ic3xbtaddeqyi7rfi"/>
+        <dropForeignKeyConstraint baseTableName="department" constraintName="FKj2xhv1clx0m0axk2y53wm4hgl"/>
+        <dropTable tableName="faculty"/>
+        <dropTable tableName="specialty"/>
+        <dropTable tableName="department"/>
+        <createTable tableName="formulary">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="folderName" type="varchar(255)"/>
+            <column name="fileName" type="varchar(255)"/>
+            <column name="easFilename" type="varchar(255)"/>
+            <column name="pslFilename" type="varchar(255)"/>
+            <column name="indPlanZipFilename" type="varchar(255)"/>
+            <column name="departmentShortName" type="varchar(255)"/>
+            <column name="departmentFullNameGenitiveCase" type="varchar(255)"/>
+            <column name="departmentFullNameNominativeCase" type="varchar(255)"/>
+            <column name="academicYear" type="varchar(255)"/>
+            <column name="departmentHeadTittle" type="varchar(255)"/>
+            <column name="departmentHeadPositionName" type="varchar(255)"/>
+            <column name="departmentHeadFullName" type="varchar(255)"/>
+            <column name="institute" type="varchar(255)"/>
+            <column name="protocolNumber" type="varchar(255)"/>
+            <column name="protocolDate" type="varchar(255)"/>
+            <column name="approvedByTittle" type="varchar(255)"/>
+            <column name="approvedByPosition" type="varchar(255)"/>
+        </createTable>
+        <createTable tableName="teacher_hours">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ipFilename" type="varchar(255)"/>
+            <column name="bachNum" type="varchar(255)"/>
+            <column name="fifthCourseNum" type="varchar(255)"/>
+            <column name="masterProfNum" type="varchar(255)"/>
+            <column name="masterScNum" type="varchar(255)"/>
+            <column name="autumnSumFact" type="varchar(255)"/>
+            <column name="autumnSumPlan" type="varchar(255)"/>
+            <column name="autumnSumRowNumber" type="varchar(255)"/>
+            <column name="springSumFact" type="varchar(255)"/>
+            <column name="springSumPlan" type="varchar(255)"/>
+            <column name="springSumRowNumber" type="varchar(255)"/>
+        </createTable>
+        <dropColumn tableName="teacher" columnName="ip_filename"/>
+        <dropColumn tableName="teacher" columnName="bach_num"/>
+        <dropColumn tableName="teacher" columnName="fifth_course_num"/>
+        <dropColumn tableName="teacher" columnName="master_prof_num"/>
+        <dropColumn tableName="teacher" columnName="master_sc_num"/>
+        <dropColumn tableName="teacher" columnName="asp_num"/>
+        <dropColumn tableName="teacher" columnName="autumn_asp"/>
+        <dropColumn tableName="teacher" columnName="spring_asp"/>
+        <dropColumn tableName="studyload_row" columnName="department_id"/>
+        <dropColumn tableName="studyload_row" columnName="specialty_id"/>
+        <addColumn tableName="studyload_row">
+            <column name="formulary_id" type="bigint"/>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="fk_studyload_row2formulary"
+                                 baseTableName="studyload_row"
+                                 baseColumnNames="formulary_id"
+                                 referencedTableName="formulary"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint constraintName="fk_teacher2teacher_hours"
+                                 baseTableName="teacher"
+                                 baseColumnNames="id"
+                                 referencedTableName="teacher_hours"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+    <changeSet id="2023/02/08-2" author="dddd">
+        <createView viewName="eas_vm" replaceIfExists="true">
+            select `s`.`id`                  as `id`,
+                   `s`.`semester`            as `csem`,
+                   `s`.`course`              as `ccor`,
+                   `d`.`name`                as `discipline_name`,
+                   `s`.`group_names`         as `group_names`,
+                   `s`.`lec_hours`           as `lec_hours`,
+                   `s`.`lab_hours`           as `lab_hours`,
+                   `t`.`name`                as `teacher_name`,
+                   `s`.`pract_hours`         as `pract_hours`,
+                   `s`.`note`                as `note`,
+                   `s`.`number_of_subgroups` as `number_of_subgroups`,
+                   `s`.`year`                as `year`
+            from ((`discipline` `d`
+                join `studyload_row` `s` on
+                ((`d`.`id` = `s`.`discipline_id`)))
+                join `teacher` `t` on
+                ((`t`.`id` = `s`.`teacher_id`)))
+            order by `d`.`name`,
+                     char_length(`s`.`group_names`);
+        </createView>
+        <createView viewName="psl_vm" replaceIfExists="true">
+            select `s`.`id`                               as `id`,
+                   `s`.`year`                             as `year`,
+                   `s`.`course`                           as `course`,
+                   `s`.`semester`                         as `csem`,
+                   `s`.`number_of_subgroups`              as `number_of_subgroups`,
+                   `s`.`students_number`                  as `students_number`,
+                   `s`.`group_names`                      as `group_names`,
+                   `s`.`lec_hours`                        as `lec_hours`,
+                   `s`.`consults_hours`                   as `consult_hours`,
+                   `s`.`lab_hours`                        as `lab_hours`,
+                   `s`.`pract_hours`                      as `pract_hours`,
+                   `s`.`ind_task_hours`                   as `ind_task_hours`,
+                   `s`.`cp_hours`                         as `cp_hours`,
+                   `s`.`zalik_hours`                      as `zalik_hours`,
+                   `s`.`exam_hours`                       as `exam_hours`,
+                   `s`.`diploma_hours`                    as `diploma_hours`,
+                   `s`.`dec_cell`                         as `dec_cell`,
+                   `s`.`ndrs`                             as `ndrs`,
+                   `s`.`practice`                         as `practice`,
+                   `s`.`aspirant_hours`                   as `aspirant_hours`,
+                   `f`.`departmentFullNameGenitiveCase`   as `dep_name_gc`,
+                   `f`.`departmentFullNameNominativeCase` as `dep_name_nc`,
+                   `s`.`other_forms_hours`                as `other_forms_hours`,
+                   `t`.`name`                             as `teacher_name`,
+                   `d`.`name`                             as `discipline_name`,
+                   `f`.`institute`                        as `institute`,
+                   `t`.`nauk_stupin`                      as `nauk_stupin`,
+                   `t`.`posada`                           as `posada`,
+                   `t`.`vch_zvana`                        as `vch_zvana`,
+                   `t`.`stavka`                           as `stavka`
+            from (((`teacher` `t`
+                join `studyload_row` `s` on
+                (`t`.`id` = `s`.`teacher_id`))
+                join `discipline` `d` on
+                (`d`.`id` = `s`.`discipline_id`))
+                join `formulary` `f` on
+                (`f`.`id` = `s`.`formulary_id`))
+                order by `d`.`name`,
+                     char_length(`s`.`group_names`);
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>

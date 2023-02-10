@@ -30,21 +30,17 @@ public class ReadExcelController {
 
     private final StudyloadRowService studyloadRowService;
 
-    private final DepartmentService departmentService;
-
     private final DisciplineService disciplineService;
 
-    private final FacultyService facultyService;
+    private final FormularyService formularyService;
 
     private final TeacherService teacherService;
 
-    public ReadExcelController(StudyloadRowService studyloadRowService, DepartmentService departmentService,
-                               DisciplineService disciplineService, FacultyService facultyService,
-                               TeacherService teacherService) {
+    public ReadExcelController(StudyloadRowService studyloadRowService, DisciplineService disciplineService,
+                               FormularyService formularyService, TeacherService teacherService) {
         this.studyloadRowService = studyloadRowService;
-        this.departmentService = departmentService;
+        this.formularyService = formularyService;
         this.disciplineService = disciplineService;
-        this.facultyService = facultyService;
         this.teacherService = teacherService;
     }
 
@@ -197,14 +193,14 @@ public class ReadExcelController {
                     depFacSem.add(values[6]);
                 }
             }
-            if (facultyService.findByName(depFacSem.get(1).toString()) == null) {
-                studyLoad.getDepartment().setName(depFacSem.get(0).toString());
-                studyLoad.getFaculty().setName(depFacSem.get(1).toString());
-                studyLoad.getFaculty().getDepartments().add(studyLoad.getDepartment());
-                studyLoad.getDepartment().setFaculty(studyLoad.getFaculty());
-                facultyService.save(studyLoad.getFaculty());
-                departmentService.save(studyLoad.getDepartment());
-            }
+//            if (facultyService.findByName(depFacSem.get(1).toString()) == null) {
+//                studyLoad.getDepartment().setName(depFacSem.get(0).toString());
+//                studyLoad.getFaculty().setName(depFacSem.get(1).toString());
+//                studyLoad.getFaculty().getDepartments().add(studyLoad.getDepartment());
+//                studyLoad.getDepartment().setFaculty(studyLoad.getFaculty());
+//                facultyService.save(studyLoad.getFaculty());
+//                departmentService.save(studyLoad.getDepartment());
+//            }
 
             for (int r = 10; r < rows; r++) {
                 row = sheet.getRow(r);
@@ -235,7 +231,7 @@ public class ReadExcelController {
                 studyLoad.getStudyloadRow().setPractice(excelRow.get(29).toString());
                 studyLoad.getStudyloadRow().setOtherFormsHours(excelRow.get(31).toString());
                 studyLoad.getStudyloadRow().setYear(depFacSem.get(3).toString());
-                studyLoad.getStudyloadRow().setDepartment(departmentService.findByName(depFacSem.get(0).toString()));
+//                studyLoad.getStudyloadRow().setDepartment(departmentService.findByName(depFacSem.get(0).toString()));
 
                 if (teacherService.findByName(excelRow.get(36).toString().trim()) == null) {
                     if (!(excelRow.get(36).toString().equals("") || excelRow.get(36).toString().equals("курсові"))) {
@@ -247,13 +243,13 @@ public class ReadExcelController {
                     studyLoad.getStudyloadRow().setTeacher(teacherService.findByName(excelRow.get(36).toString().trim()));
                 }
 
-                if (disciplineService.findByName(excelRow.get(1).toString().trim()) == null) {
-                    studyLoad.getDiscipline().setName(excelRow.get(1).toString().trim());
-                    disciplineService.save(studyLoad.getDiscipline());
-                    studyLoad.getStudyloadRow().setDiscipline(studyLoad.getDiscipline());
-                } else {
-                    studyLoad.getStudyloadRow().setDiscipline(disciplineService.findByName(excelRow.get(1).toString().trim()));
-                }
+//                if (disciplineService.findByName(excelRow.get(1).toString().trim()) == null) {
+//                    studyLoad.getDiscipline().setName(excelRow.get(1).toString().trim());
+//                    disciplineService.save(studyLoad.getDiscipline());
+//                    studyLoad.getStudyloadRow().setDiscipline(studyLoad.getDiscipline());
+//                } else {
+//                    studyLoad.getStudyloadRow().setDiscipline(disciplineService.findByName(excelRow.get(1).toString().trim()));
+//                }
 
 
                 studyloadRowService.save(studyLoad.getStudyloadRow());
@@ -342,10 +338,10 @@ public class ReadExcelController {
                 teacher = new Teacher();
                 teacher.setName(arrayList.get(1).toString());
             }
-            teacher.setBachNum(arrayList.get(4).toString());
-            teacher.setFifthCourseNum(arrayList.get(5).toString());
-            teacher.setMasterProfNum(arrayList.get(6).toString());
-            teacher.setMasterScNum(arrayList.get(7).toString());
+//            teacher.setBachNum(arrayList.get(4).toString());
+//            teacher.setFifthCourseNum(arrayList.get(5).toString());
+//            teacher.setMasterProfNum(arrayList.get(6).toString());
+//            teacher.setMasterScNum(arrayList.get(7).toString());
             teacherService.save(teacher);
             arrayList = new ArrayList<>();
         }

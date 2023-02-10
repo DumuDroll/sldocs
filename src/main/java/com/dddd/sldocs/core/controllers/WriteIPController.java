@@ -1,15 +1,11 @@
 package com.dddd.sldocs.core.controllers;
 
 import com.dddd.sldocs.core.entities.CreationMetric;
-import com.dddd.sldocs.core.entities.Faculty;
 import com.dddd.sldocs.core.entities.Teacher;
 import com.dddd.sldocs.core.entities.views.PersonalLoadView;
 import com.dddd.sldocs.core.general.Dictionary;
 import com.dddd.sldocs.core.general.utils.cyrToLatin.UkrainianToLatin;
-import com.dddd.sldocs.core.services.CreationMetricService;
-import com.dddd.sldocs.core.services.FacultyService;
-import com.dddd.sldocs.core.services.PersonalLoadViewService;
-import com.dddd.sldocs.core.services.TeacherService;
+import com.dddd.sldocs.core.services.*;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -41,15 +37,15 @@ public class WriteIPController {
     private final PersonalLoadViewService plsVmService;
     private final CreationMetricService metricService;
     private final TeacherService teacherService;
-    private final FacultyService facultyService;
+    private final FormularyService formularyService;
     private double totalSum;
     private static final String TIMES_NEW_ROMAN = "Times New Roman";
 
     public WriteIPController(PersonalLoadViewService plsVmService, TeacherService teacherService,
-                             FacultyService facultyService, CreationMetricService metricService) {
+                              CreationMetricService metricService, FormularyService formularyService) {
         this.plsVmService = plsVmService;
         this.teacherService = teacherService;
-        this.facultyService = facultyService;
+        this.formularyService = formularyService;
         this.metricService = metricService;
     }
 
@@ -260,12 +256,12 @@ public class WriteIPController {
 
                             XSSFCellStyle rowAutoHeightStyle = workbook.createCellStyle();
                             rowAutoHeightStyle.setWrapText(true);
-                            if (!plsVmService.getPSL_VMData("1", teacher.getName()).isEmpty()
-                                    || !plsVmService.getPSL_VMData("2", teacher.getName()).isEmpty()) {
-                                if (!plsVmService.getPSL_VMData("1", teacher.getName()).isEmpty()) {
-                                    personalLoadViewList = plsVmService.getPSL_VMData("1", teacher.getName());
+                            if (!plsVmService.getPSLVMData("1", teacher.getName()).isEmpty()
+                                    || !plsVmService.getPSLVMData("2", teacher.getName()).isEmpty()) {
+                                if (!plsVmService.getPSLVMData("1", teacher.getName()).isEmpty()) {
+                                    personalLoadViewList = plsVmService.getPSLVMData("1", teacher.getName());
                                 } else {
-                                    personalLoadViewList = plsVmService.getPSL_VMData("2", teacher.getName());
+                                    personalLoadViewList = plsVmService.getPSLVMData("2", teacher.getName());
                                 }
                                 XSSFSheet sheet = workbook.getSheetAt(0);
                                 row = sheet.getRow(8);
@@ -311,9 +307,9 @@ public class WriteIPController {
 
                                 rownum = 4;
                                 sheet = workbook.getSheetAt(2);
-                                if (!plsVmService.getPSL_VMData("1", teacher.getName()).isEmpty()) {
+                                if (!plsVmService.getPSLVMData("1", teacher.getName()).isEmpty()) {
                                     personalLoadViewList.clear();
-                                    personalLoadViewList = plsVmService.getPSL_VMData("1", teacher.getName());
+                                    personalLoadViewList = plsVmService.getPSLVMData("1", teacher.getName());
                                     rownum = writeHours(cell, rownum, personalLoadViewList, style, rowAutoHeightStyle, sheet);
                                 }
                                 String[] ends1 = {"КЕРІВНИЦТВО"};
@@ -356,9 +352,9 @@ public class WriteIPController {
                                         "+AE" + rownum + "+AG" + rownum + "+AI" + rownum + "+AK" + rownum + "+AM" + rownum + "+AO" + rownum +
                                         "+AQ" + rownum + "+AS" + rownum + "+AU" + rownum + "+AW" + rownum);
 
-                                if (!plsVmService.getPSL_VMData("2", teacher.getName()).isEmpty()) {
+                                if (!plsVmService.getPSLVMData("2", teacher.getName()).isEmpty()) {
                                     personalLoadViewList.clear();
-                                    personalLoadViewList = plsVmService.getPSL_VMData("2", teacher.getName());
+                                    personalLoadViewList = plsVmService.getPSLVMData("2", teacher.getName());
 
                                     rownum = writeHours(cell, rownum, personalLoadViewList, style, rowAutoHeightStyle, sheet);
                                 }
@@ -477,7 +473,7 @@ public class WriteIPController {
 
                                 workbook.write(outputStream);
 
-                                teacher.setIpFilename(someFile.getName());
+//                                teacher.setIpFilename(someFile.getName());
                                 teacherService.save(teacher);
                             } catch (Exception e) {
                                 log.error(e);
@@ -490,9 +486,9 @@ public class WriteIPController {
                     }
                 }
             }
-            Faculty faculty = facultyService.listAll().get(0);
-            faculty.setIndPlanZipFilename("someFileName");
-            facultyService.save(faculty);
+//            Faculty faculty = facultyService.listAll().get(0);
+//            faculty.setIndPlanZipFilename("someFileName");
+//            facultyService.save(faculty);
 
             CreationMetric cr = new CreationMetric();
             cr.setTeacherNumber(teachers.size());
@@ -541,11 +537,11 @@ public class WriteIPController {
                         }
                         break;
                     case ("Магістри професійні"):
-                        if (l == 5 && teacher.getMasterProfNum() != null && !teacher.getMasterProfNum().isEmpty()) {
-                            cell = row.createCell(l);
-                            cell.setCellValue((int) Double.parseDouble(teacher.getMasterProfNum()));
-                            cell.setCellStyle(style);
-                        }
+//                        if (l == 5 && teacher.getMasterProfNum() != null && !teacher.getMasterProfNum().isEmpty()) {
+//                            cell = row.createCell(l);
+//                            cell.setCellValue((int) Double.parseDouble(teacher.getMasterProfNum()));
+//                            cell.setCellStyle(style);
+//                        }
                         if (l == 23) {
                             cell = row.createCell(l);
                             cell.setCellFormula("F" + rownum + "*27");
@@ -553,11 +549,11 @@ public class WriteIPController {
                         }
                         break;
                     case ("Магістри наукові"):
-                        if (l == 5 && teacher.getMasterScNum() != null && !teacher.getMasterScNum().isEmpty()) {
-                            cell = row.createCell(l);
-                            cell.setCellValue((int) Double.parseDouble(teacher.getMasterScNum()));
-                            cell.setCellStyle(style);
-                        }
+//                        if (l == 5 && teacher.getMasterScNum() != null && !teacher.getMasterScNum().isEmpty()) {
+//                            cell = row.createCell(l);
+//                            cell.setCellValue((int) Double.parseDouble(teacher.getMasterScNum()));
+//                            cell.setCellStyle(style);
+//                        }
                         if (l == 23) {
                             cell = row.createCell(l);
                             cell.setCellFormula("F" + rownum + "*27");
@@ -565,11 +561,11 @@ public class WriteIPController {
                         }
                         break;
                     case (Dictionary.BACHELORS):
-                        if (l == 5 && teacher.getBachNum() != null && !teacher.getBachNum().isEmpty()) {
-                            cell = row.createCell(l);
-                            cell.setCellValue((int) Double.parseDouble(teacher.getBachNum()));
-                            cell.setCellStyle(style);
-                        }
+//                        if (l == 5 && teacher.getBachNum() != null && !teacher.getBachNum().isEmpty()) {
+//                            cell = row.createCell(l);
+//                            cell.setCellValue((int) Double.parseDouble(teacher.getBachNum()));
+//                            cell.setCellStyle(style);
+//                        }
                         if (autumn) {
                             if (l == 17) {
                                 cell = row.createCell(l);
@@ -585,11 +581,11 @@ public class WriteIPController {
                         }
                         break;
                     case (Dictionary.COURSE_PROJECTS_5_COURSE):
-                        if (l == 5 && teacher.getFifthCourseNum() != null && !teacher.getFifthCourseNum().isEmpty()) {
-                            cell = row.createCell(l);
-                            cell.setCellValue((int) Double.parseDouble(teacher.getFifthCourseNum()));
-                            cell.setCellStyle(style);
-                        }
+//                        if (l == 5 && teacher.getFifthCourseNum() != null && !teacher.getFifthCourseNum().isEmpty()) {
+//                            cell = row.createCell(l);
+//                            cell.setCellValue((int) Double.parseDouble(teacher.getFifthCourseNum()));
+//                            cell.setCellStyle(style);
+//                        }
                         if (l == 17) {
                             cell = row.createCell(l);
                             cell.setCellFormula("F" + rownum + "*3");
