@@ -2,6 +2,7 @@ package com.dddd.sldocs.core.controllers;
 
 
 import com.dddd.sldocs.core.entities.Formulary;
+import com.dddd.sldocs.core.entities.Teacher;
 import com.dddd.sldocs.core.general.Dictionary;
 import com.dddd.sldocs.core.services.DisciplineService;
 import com.dddd.sldocs.core.services.FormularyService;
@@ -20,6 +21,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -82,9 +85,9 @@ public class IndexController {
         return "confirmation/deleteAllConf";
     }
 
-    @GetMapping(path = "/deleteWOProfs")
+    @GetMapping(path = "/deleteWithoutTeachers")
     public String viewDeleteWOprofsPage() {
-        return "confirmation/deleteWOprofsConf";
+        return "confirmation/deleteWithoutTeachersConf";
     }
 
     @GetMapping(path = "/deleteAll")
@@ -97,12 +100,12 @@ public class IndexController {
     }
 
 
-    @GetMapping(path = "/deleteWithoutProfs")
-    public String deleteWithoutProfs(Model model) {
+    @GetMapping(path = "/deleteWithoutTeachersMethod")
+    public String deleteWithoutTeachersMethod() {
         studyloadRowService.deleteAll();
         disciplineService.deleteAll();
         formularyService.deleteAll();
-        return "success/deleteWOprofsSuc";
+        return "success/deleteWithouTeachersSuc";
     }
 
     @GetMapping("/downloadEAS")
@@ -131,11 +134,15 @@ public class IndexController {
         File zipFile = new File(Dictionary.RESULTS_FOLDER + "Ind_plans.zip");
         FileOutputStream fos = new FileOutputStream(zipFile);
         try (ZipOutputStream zipOS = new ZipOutputStream(fos)) {
-//            List<String> fileNames = teacherService.listIpFilenames();
-//            for (String fileName : fileNames) {
-//                File someFile = new File(Dictionary.RESULTS_FOLDER + fileName);
-//                writeToZipFile(Dictionary.RESULTS_FOLDER + someFile.getName(), zipOS);
-//            }
+            List<String> fileNames = new ArrayList<>();
+            List<Teacher> teachers = teacherService.listAll();
+            for(Teacher teacher : teachers){
+                fileNames.add(teacher.getTeacherHours().getIpFilename());
+            }
+            for (String fileName : fileNames) {
+                File someFile = new File(Dictionary.RESULTS_FOLDER + fileName);
+                writeToZipFile(Dictionary.RESULTS_FOLDER + someFile.getName(), zipOS);
+            }
         }
         Formulary formulary = formularyService.listAll().get(0);
         formulary.setIndPlanZipFilename(zipFile.getName());

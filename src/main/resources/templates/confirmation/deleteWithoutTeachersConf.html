@@ -5,7 +5,7 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>Успіх</title>
+    <title>Видалення БД</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
 </head>
 <body>
@@ -30,7 +30,7 @@
             <input type="checkbox" id="drop-3"/>
             <ul>
                 <li><a href="/delete">Очистити БД (Усе зчитане)</a></li>
-                <li><a href="/deleteWOProfs">Очистити БД (викладачі
+                <li><a href="/deleteWithoutTeachers">Очистити БД (викладачі
                     залишаться)</a></li>
             </ul>
         </li>
@@ -49,8 +49,18 @@
     </ul>
 </nav>
 <p>
-    Всі дані крім даних викладачів успішно видалені.
-    <a href="/">На головну</a>
+    Ви впевнені? Наступна дія видалить УСІ дані з БД, але залишить перелік викладачів.
+</p>
+<div align="center">
+    <form th:action="@{/deleteWithoutTeachersMethod}">
+        <input type="submit" value="Все одно видалити"/>
+    </form>
+</div>
+
+
+<p>
+    Або повернутись <a href="/">На головну</a>.
+
 </p>
 </body>
 </html>

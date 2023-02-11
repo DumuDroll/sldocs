@@ -1,5 +1,6 @@
 package com.dddd.sldocs.core.controllers;
 
+import com.dddd.sldocs.core.entities.Formulary;
 import com.dddd.sldocs.core.entities.views.EdAsStView;
 import com.dddd.sldocs.core.general.Dictionary;
 import com.dddd.sldocs.core.services.EdAsStViewService;
@@ -129,9 +130,9 @@ public class WriteEASController {
                     log.error(e);
                 }
 
-//                List<Formulary> formularies = formularyService.listAll();
-//                Formulary formulary = formularyService.listAll().get(0).setEasFilename(someFile.getName());
-//                formularyService.save(formularies.get(0));
+                List<Formulary> formularies = formularyService.listAll();
+                formularies.get(0).setEasFilename(someFile.getName());
+                formularyService.save(formularies.get(0));
             } catch (Exception e) {
                 log.error(e);
             }
@@ -199,7 +200,7 @@ public class WriteEASController {
         styleBig.setAlignment(HorizontalAlignment.CENTER);
         XSSFFont fontBig = workbook.createFont();
         fontBig.setFontHeightInPoints((short) 24);
-        fontBig.setFontName("Times New Roman");
+        fontBig.setFontName(TIMES_NEW_ROMAN);
         fontBig.setColor(IndexedColors.BLACK.getIndex());
         fontBig.setBold(true);
         fontBig.setItalic(false);

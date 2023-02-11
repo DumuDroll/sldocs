@@ -1,6 +1,7 @@
 package com.dddd.sldocs.core.controllers;
 
 import com.dddd.sldocs.core.entities.CreationMetric;
+import com.dddd.sldocs.core.entities.Formulary;
 import com.dddd.sldocs.core.entities.Teacher;
 import com.dddd.sldocs.core.entities.views.PersonalLoadView;
 import com.dddd.sldocs.core.general.Dictionary;
@@ -42,7 +43,7 @@ public class WriteIPController {
     private static final String TIMES_NEW_ROMAN = "Times New Roman";
 
     public WriteIPController(PersonalLoadViewService plsVmService, TeacherService teacherService,
-                              CreationMetricService metricService, FormularyService formularyService) {
+                             CreationMetricService metricService, FormularyService formularyService) {
         this.plsVmService = plsVmService;
         this.teacherService = teacherService;
         this.formularyService = formularyService;
@@ -486,9 +487,9 @@ public class WriteIPController {
                     }
                 }
             }
-//            Faculty faculty = facultyService.listAll().get(0);
-//            faculty.setIndPlanZipFilename("someFileName");
-//            facultyService.save(faculty);
+            Formulary formulary = formularyService.listAll().get(0);
+            formulary.setIndPlanZipFilename("someFileName");
+            formularyService.save(formulary);
 
             CreationMetric cr = new CreationMetric();
             cr.setTeacherNumber(teachers.size());
@@ -537,11 +538,12 @@ public class WriteIPController {
                         }
                         break;
                     case ("Магістри професійні"):
-//                        if (l == 5 && teacher.getMasterProfNum() != null && !teacher.getMasterProfNum().isEmpty()) {
-//                            cell = row.createCell(l);
-//                            cell.setCellValue((int) Double.parseDouble(teacher.getMasterProfNum()));
-//                            cell.setCellStyle(style);
-//                        }
+                        if (l == 5 && teacher.getTeacherHours().getMasterProfNum() != null
+                                && !teacher.getTeacherHours().getMasterProfNum().isEmpty()) {
+                            cell = row.createCell(l);
+                            cell.setCellValue((int) Double.parseDouble(teacher.getTeacherHours().getMasterProfNum()));
+                            cell.setCellStyle(style);
+                        }
                         if (l == 23) {
                             cell = row.createCell(l);
                             cell.setCellFormula("F" + rownum + "*27");
@@ -549,11 +551,12 @@ public class WriteIPController {
                         }
                         break;
                     case ("Магістри наукові"):
-//                        if (l == 5 && teacher.getMasterScNum() != null && !teacher.getMasterScNum().isEmpty()) {
-//                            cell = row.createCell(l);
-//                            cell.setCellValue((int) Double.parseDouble(teacher.getMasterScNum()));
-//                            cell.setCellStyle(style);
-//                        }
+                        if (l == 5 && teacher.getTeacherHours().getMasterScNum() != null
+                                && !teacher.getTeacherHours().getMasterScNum().isEmpty()) {
+                            cell = row.createCell(l);
+                            cell.setCellValue((int) Double.parseDouble(teacher.getTeacherHours().getMasterScNum()));
+                            cell.setCellStyle(style);
+                        }
                         if (l == 23) {
                             cell = row.createCell(l);
                             cell.setCellFormula("F" + rownum + "*27");
@@ -561,11 +564,12 @@ public class WriteIPController {
                         }
                         break;
                     case (Dictionary.BACHELORS):
-//                        if (l == 5 && teacher.getBachNum() != null && !teacher.getBachNum().isEmpty()) {
-//                            cell = row.createCell(l);
-//                            cell.setCellValue((int) Double.parseDouble(teacher.getBachNum()));
-//                            cell.setCellStyle(style);
-//                        }
+                        if (l == 5 && teacher.getTeacherHours().getBachNum() != null
+                                && !teacher.getTeacherHours().getBachNum().isEmpty()) {
+                            cell = row.createCell(l);
+                            cell.setCellValue((int) Double.parseDouble(teacher.getTeacherHours().getBachNum()));
+                            cell.setCellStyle(style);
+                        }
                         if (autumn) {
                             if (l == 17) {
                                 cell = row.createCell(l);
@@ -581,11 +585,12 @@ public class WriteIPController {
                         }
                         break;
                     case (Dictionary.COURSE_PROJECTS_5_COURSE):
-//                        if (l == 5 && teacher.getFifthCourseNum() != null && !teacher.getFifthCourseNum().isEmpty()) {
-//                            cell = row.createCell(l);
-//                            cell.setCellValue((int) Double.parseDouble(teacher.getFifthCourseNum()));
-//                            cell.setCellStyle(style);
-//                        }
+                        if (l == 5 && teacher.getTeacherHours().getFifthCourseNum() != null
+                                && !teacher.getTeacherHours().getFifthCourseNum().isEmpty()) {
+                            cell = row.createCell(l);
+                            cell.setCellValue((int) Double.parseDouble(teacher.getTeacherHours().getFifthCourseNum()));
+                            cell.setCellStyle(style);
+                        }
                         if (l == 17) {
                             cell = row.createCell(l);
                             cell.setCellFormula("F" + rownum + "*3");

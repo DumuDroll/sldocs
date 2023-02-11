@@ -1,6 +1,7 @@
 package com.dddd.sldocs.core.controllers;
 
 import com.dddd.sldocs.core.entities.CreationMetric;
+import com.dddd.sldocs.core.entities.Formulary;
 import com.dddd.sldocs.core.entities.Teacher;
 import com.dddd.sldocs.core.entities.views.PersonalLoadView;
 import com.dddd.sldocs.core.general.Dictionary;
@@ -61,7 +62,7 @@ public class WritePSLController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        writePSLforProf();
+        writePSLforTeacher();
         return "success/pslToDB";
     }
 
@@ -411,10 +412,10 @@ public class WritePSLController {
                 File someFile = new File(Dictionary.RESULTS_FOLDER + PERSONAL_STUDY_LOAD_XLSX);
                 try (FileOutputStream outputStream = new FileOutputStream(someFile)) {
                     workbook.write(outputStream);
-//                    List<Faculty> faculties = facultyService.listAll();
-//                    faculties.get(0).setPslFilename(someFile.getName());
-//                    facultyService.save(faculties.get(0));
-                    writePSLforProf();
+                    Formulary formulary = formularyService.listAll().get(0);
+                    formulary.setPslFilename(someFile.getName());
+                    formularyService.save(formulary);
+                    writePSLforTeacher();
 
                     CreationMetric cr = new CreationMetric();
                     cr.setTeacherNumber(teachers.size());
@@ -480,7 +481,7 @@ public class WritePSLController {
         }
     }
 
-    private void writePSLforProf() throws IOException {
+    private void writePSLforTeacher() throws IOException {
         List<Teacher> teachers = teacherService.listAll();
         for (Teacher teacher : teachers) {
             File originalWb = new File(Dictionary.RESULTS_FOLDER + PERSONAL_STUDY_LOAD_XLSX);
@@ -540,11 +541,12 @@ public class WritePSLController {
                         }
                         break;
                     case ("Магістри професійні"):
-//                        if (l == 2 && teacher.getMasterProfNum() != null && !teacher.getMasterProfNum().isEmpty()) {
-//                            cell = row.createCell(l);
-//                            cell.setCellValue((int) Double.parseDouble(teacher.getMasterProfNum()));
-//                            cell.setCellStyle(style);
-//                        }
+                        if (l == 2 && teacher.getTeacherHours().getMasterProfNum() != null
+                                && !teacher.getTeacherHours().getMasterProfNum().isEmpty()) {
+                            cell = row.createCell(l);
+                            cell.setCellValue((int) Double.parseDouble(teacher.getTeacherHours().getMasterProfNum()));
+                            cell.setCellStyle(style);
+                        }
                         if (l == 12) {
                             cell = row.createCell(l);
                             cell.setCellFormula("C" + rownum + "*27");
@@ -552,11 +554,12 @@ public class WritePSLController {
                         }
                         break;
                     case ("Магістри наукові"):
-//                        if (l == 2 && teacher.getMasterScNum() != null && !teacher.getMasterScNum().isEmpty()) {
-//                            cell = row.createCell(l);
-//                            cell.setCellValue((int) Double.parseDouble(teacher.getMasterScNum()));
-//                            cell.setCellStyle(style);
-//                        }
+                        if (l == 2 && teacher.getTeacherHours().getMasterScNum() != null
+                                && !teacher.getTeacherHours().getMasterScNum().isEmpty()) {
+                            cell = row.createCell(l);
+                            cell.setCellValue((int) Double.parseDouble(teacher.getTeacherHours().getMasterScNum()));
+                            cell.setCellStyle(style);
+                        }
                         if (l == 12) {
                             cell = row.createCell(l);
                             cell.setCellFormula("C" + rownum + "*27");
@@ -564,11 +567,12 @@ public class WritePSLController {
                         }
                         break;
                     case (Dictionary.BACHELORS):
-//                        if (l == 2 && teacher.getBachNum() != null && !teacher.getBachNum().isEmpty()) {
-//                            cell = row.createCell(l);
-//                            cell.setCellValue((int) Double.parseDouble(teacher.getBachNum()));
-//                            cell.setCellStyle(style);
-//                        }
+                        if (l == 2 && teacher.getTeacherHours().getBachNum() != null
+                                && !teacher.getTeacherHours().getBachNum().isEmpty()) {
+                            cell = row.createCell(l);
+                            cell.setCellValue((int) Double.parseDouble(teacher.getTeacherHours().getBachNum()));
+                            cell.setCellStyle(style);
+                        }
                         if (autumn) {
                             if (l == 9) {
                                 cell = row.createCell(l);
@@ -584,11 +588,12 @@ public class WritePSLController {
                         }
                         break;
                     case (Dictionary.COURSE_PROJECTS_5_COURSE):
-//                        if (l == 2 && teacher.getFifthCourseNum() != null && !teacher.getFifthCourseNum().isEmpty()) {
-//                            cell = row.createCell(l);
-//                            cell.setCellValue((int) Double.parseDouble(teacher.getFifthCourseNum()));
-//                            cell.setCellStyle(style);
-//                        }
+                        if (l == 2 && teacher.getTeacherHours().getFifthCourseNum() != null
+                                && !teacher.getTeacherHours().getFifthCourseNum().isEmpty()) {
+                            cell = row.createCell(l);
+                            cell.setCellValue((int) Double.parseDouble(teacher.getTeacherHours().getFifthCourseNum()));
+                            cell.setCellStyle(style);
+                        }
                         if (l == 9) {
                             cell = row.createCell(l);
                             cell.setCellFormula("C" + rownum + "*3");

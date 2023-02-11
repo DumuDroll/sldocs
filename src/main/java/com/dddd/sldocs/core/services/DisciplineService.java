@@ -21,6 +21,14 @@ public class DisciplineService {
         return disciplineRepository.findAll();
     }
 
+    public void save(Discipline discipline) {
+        disciplineRepository.save(discipline);
+    }
+
+    public Discipline findByName(String name) {
+        return disciplineRepository.getDisciplineByName(name);
+    }
+
     public void deleteAll(){
         disciplineRepository.deleteAll();
     }

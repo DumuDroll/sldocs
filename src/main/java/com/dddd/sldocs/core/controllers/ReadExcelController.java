@@ -1,9 +1,13 @@
 package com.dddd.sldocs.core.controllers;
 
-import com.dddd.sldocs.core.entities.Teacher;
+import com.dddd.sldocs.core.entities.Formulary;
 import com.dddd.sldocs.core.entities.StudyLoad;
+import com.dddd.sldocs.core.entities.Teacher;
 import com.dddd.sldocs.core.general.Dictionary;
-import com.dddd.sldocs.core.services.*;
+import com.dddd.sldocs.core.services.DisciplineService;
+import com.dddd.sldocs.core.services.FormularyService;
+import com.dddd.sldocs.core.services.StudyloadRowService;
+import com.dddd.sldocs.core.services.TeacherService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -12,7 +16,9 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
@@ -82,7 +88,7 @@ public class ReadExcelController {
 
 
     @RequestMapping("/readObsyag")
-    public String readObsyag(@RequestParam("path") String path) throws IOException {
+    public String readObsyag(@RequestParam("path") String path) {
 
         String[] parts = path.split("\\.");
         if (!parts[1].equals("xlsx")) {
@@ -91,12 +97,13 @@ public class ReadExcelController {
 
         try (FileInputStream fis = new FileInputStream(path);) {
             XSSFWorkbook workbook = new XSSFWorkbook(fis);
-            String[] res = workbook.getSheetAt(0).getRow(3).getCell(3).toString()
+            String[] res = workbook.getSheetAt(1).getRow(3).getCell(3).toString()
                     .split(Dictionary.SPACE_REGEX);
             if (!res[0].equals("ПЛАН")) {
                 return Dictionary.ERROR_BAD_FILE;
             }
-            for (int i = 0; i < 2; i++) {
+            readFormulary(workbook);
+            for (int i = 1; i < 3; i++) {
                 readObsyagSheet(workbook, i);
             }
         } catch (Exception e) {
@@ -108,7 +115,7 @@ public class ReadExcelController {
     }
 
     @RequestMapping("/readPPS")
-    public String readPPS(@RequestParam("path") String path) throws IOException {
+    public String readPPS(@RequestParam("path") String path) {
         String[] parts = path.split("\\.");
         if (!parts[1].equals("xlsx")) {
             return Dictionary.ERROR_BAD_FILE;
@@ -143,6 +150,38 @@ public class ReadExcelController {
         return "success/psToDB";
     }
 
+    private void readFormulary(XSSFWorkbook workbook) {
+        XSSFSheet sheet = workbook.getSheetAt(0);
+        XSSFRow row;
+        ArrayList<Object> formularyValues = new ArrayList<>();
+        for (int i = 1; i < 16; i++) {
+            row = sheet.getRow(i);
+            readCell(formularyValues, row.getCell(1));
+        }
+        Formulary formulary = new Formulary();
+        try {
+            formulary.setFolderName(formularyValues.get(0).toString());
+            formulary.setFileName(formularyValues.get(1).toString());
+            formulary.setDepartmentShortName(formularyValues.get(2).toString());
+            formulary.setDepartmentFullNameGenitiveCase(formularyValues.get(3).toString());
+            formulary.setAcademicYear(formularyValues.get(4).toString());
+            formulary.setDepartmentHeadTittle(formularyValues.get(5).toString());
+            formulary.setDepartmentHeadPositionName(formularyValues.get(6).toString());
+            formulary.setDepartmentHeadFullName(formularyValues.get(7).toString());
+            formulary.setInstitute(formularyValues.get(8).toString());
+            formulary.setDepartmentFullNameNominativeCase(formularyValues.get(9).toString());
+            formulary.setProtocolNumber(formularyValues.get(10).toString());
+            formulary.setProtocolDate(formularyValues.get(11).toString());
+            formulary.setApprovedByTittle(formularyValues.get(12).toString());
+            formulary.setApprovedByPosition(formularyValues.get(13).toString());
+            formulary.setApprovedByFullName(formularyValues.get(14).toString());
+            formularyService.save(formulary);
+        } catch (Exception e) {
+            log.error("Error reading formulary");
+            log.error(e);
+        }
+    }
+
     public void readObsyagSheet(XSSFWorkbook workbook, int sheetNum) {
         XSSFSheet sheet = workbook.getSheetAt(sheetNum);
         DataFormatter df = new DataFormatter();
@@ -153,7 +192,7 @@ public class ReadExcelController {
 
             row = sheet.getRow(rows);
             try {
-                if (df.formatCellValue(row.getCell(3)).equals("")) {
+                if (df.formatCellValue(row.getCell(1)).equals("")) {
                     break;
                 }
                 rows++;
@@ -193,14 +232,6 @@ public class ReadExcelController {
                     depFacSem.add(values[6]);
                 }
             }
-//            if (facultyService.findByName(depFacSem.get(1).toString()) == null) {
-//                studyLoad.getDepartment().setName(depFacSem.get(0).toString());
-//                studyLoad.getFaculty().setName(depFacSem.get(1).toString());
-//                studyLoad.getFaculty().getDepartments().add(studyLoad.getDepartment());
-//                studyLoad.getDepartment().setFaculty(studyLoad.getFaculty());
-//                facultyService.save(studyLoad.getFaculty());
-//                departmentService.save(studyLoad.getDepartment());
-//            }
 
             for (int r = 10; r < rows; r++) {
                 row = sheet.getRow(r);
@@ -231,7 +262,6 @@ public class ReadExcelController {
                 studyLoad.getStudyloadRow().setPractice(excelRow.get(29).toString());
                 studyLoad.getStudyloadRow().setOtherFormsHours(excelRow.get(31).toString());
                 studyLoad.getStudyloadRow().setYear(depFacSem.get(3).toString());
-//                studyLoad.getStudyloadRow().setDepartment(departmentService.findByName(depFacSem.get(0).toString()));
 
                 if (teacherService.findByName(excelRow.get(36).toString().trim()) == null) {
                     if (!(excelRow.get(36).toString().equals("") || excelRow.get(36).toString().equals("курсові"))) {
@@ -243,13 +273,13 @@ public class ReadExcelController {
                     studyLoad.getStudyloadRow().setTeacher(teacherService.findByName(excelRow.get(36).toString().trim()));
                 }
 
-//                if (disciplineService.findByName(excelRow.get(1).toString().trim()) == null) {
-//                    studyLoad.getDiscipline().setName(excelRow.get(1).toString().trim());
-//                    disciplineService.save(studyLoad.getDiscipline());
-//                    studyLoad.getStudyloadRow().setDiscipline(studyLoad.getDiscipline());
-//                } else {
-//                    studyLoad.getStudyloadRow().setDiscipline(disciplineService.findByName(excelRow.get(1).toString().trim()));
-//                }
+                if (disciplineService.findByName(excelRow.get(1).toString().trim()) == null) {
+                    studyLoad.getDiscipline().setName(excelRow.get(1).toString().trim());
+                    disciplineService.save(studyLoad.getDiscipline());
+                    studyLoad.getStudyloadRow().setDiscipline(studyLoad.getDiscipline());
+                } else {
+                    studyLoad.getStudyloadRow().setDiscipline(disciplineService.findByName(excelRow.get(1).toString().trim()));
+                }
 
 
                 studyloadRowService.save(studyLoad.getStudyloadRow());
@@ -338,10 +368,10 @@ public class ReadExcelController {
                 teacher = new Teacher();
                 teacher.setName(arrayList.get(1).toString());
             }
-//            teacher.setBachNum(arrayList.get(4).toString());
-//            teacher.setFifthCourseNum(arrayList.get(5).toString());
-//            teacher.setMasterProfNum(arrayList.get(6).toString());
-//            teacher.setMasterScNum(arrayList.get(7).toString());
+            teacher.getTeacherHours().setBachNum(arrayList.get(4).toString());
+            teacher.getTeacherHours().setFifthCourseNum(arrayList.get(5).toString());
+            teacher.getTeacherHours().setMasterProfNum(arrayList.get(6).toString());
+            teacher.getTeacherHours().setMasterScNum(arrayList.get(7).toString());
             teacherService.save(teacher);
             arrayList = new ArrayList<>();
         }

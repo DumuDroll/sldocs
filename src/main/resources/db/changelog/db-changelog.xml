@@ -132,37 +132,37 @@
             </column>
             <column name="folderName" type="varchar(255)"/>
             <column name="fileName" type="varchar(255)"/>
-            <column name="easFilename" type="varchar(255)"/>
-            <column name="pslFilename" type="varchar(255)"/>
-            <column name="indPlanZipFilename" type="varchar(255)"/>
-            <column name="departmentShortName" type="varchar(255)"/>
-            <column name="departmentFullNameGenitiveCase" type="varchar(255)"/>
-            <column name="departmentFullNameNominativeCase" type="varchar(255)"/>
-            <column name="academicYear" type="varchar(255)"/>
-            <column name="departmentHeadTittle" type="varchar(255)"/>
-            <column name="departmentHeadPositionName" type="varchar(255)"/>
-            <column name="departmentHeadFullName" type="varchar(255)"/>
+            <column name="eas_filename" type="varchar(255)"/>
+            <column name="psl_filename" type="varchar(255)"/>
+            <column name="ind_plan_zip_filename" type="varchar(255)"/>
+            <column name="department_short_name" type="varchar(255)"/>
+            <column name="department_full_name_genitive_case" type="varchar(255)"/>
+            <column name="department_full_name_nominative_case" type="varchar(255)"/>
+            <column name="academic_year" type="varchar(255)"/>
+            <column name="department_head_tittle" type="varchar(255)"/>
+            <column name="department_head_position_name" type="varchar(255)"/>
+            <column name="department_head_full_name" type="varchar(255)"/>
             <column name="institute" type="varchar(255)"/>
-            <column name="protocolNumber" type="varchar(255)"/>
-            <column name="protocolDate" type="varchar(255)"/>
-            <column name="approvedByTittle" type="varchar(255)"/>
-            <column name="approvedByPosition" type="varchar(255)"/>
+            <column name="protocol_number" type="varchar(255)"/>
+            <column name="protocol_date" type="varchar(255)"/>
+            <column name="approved_by_tittle" type="varchar(255)"/>
+            <column name="approved_by_position" type="varchar(255)"/>
         </createTable>
         <createTable tableName="teacher_hours">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="ipFilename" type="varchar(255)"/>
-            <column name="bachNum" type="varchar(255)"/>
-            <column name="fifthCourseNum" type="varchar(255)"/>
-            <column name="masterProfNum" type="varchar(255)"/>
-            <column name="masterScNum" type="varchar(255)"/>
-            <column name="autumnSumFact" type="varchar(255)"/>
-            <column name="autumnSumPlan" type="varchar(255)"/>
-            <column name="autumnSumRowNumber" type="varchar(255)"/>
-            <column name="springSumFact" type="varchar(255)"/>
-            <column name="springSumPlan" type="varchar(255)"/>
-            <column name="springSumRowNumber" type="varchar(255)"/>
+            <column name="ip_filename" type="varchar(255)"/>
+            <column name="bach_num" type="varchar(255)"/>
+            <column name="fifth_course_num" type="varchar(255)"/>
+            <column name="master_prof_num" type="varchar(255)"/>
+            <column name="master_sc_num" type="varchar(255)"/>
+            <column name="autumn_sum_fact" type="varchar(255)"/>
+            <column name="autumn_sum_plan" type="varchar(255)"/>
+            <column name="autumn_sum_row_number" type="varchar(255)"/>
+            <column name="spring_sum_fact" type="varchar(255)"/>
+            <column name="spring_sum_plan" type="varchar(255)"/>
+            <column name="spring_sum_row_number" type="varchar(255)"/>
         </createTable>
         <dropColumn tableName="teacher" columnName="ip_filename"/>
         <dropColumn tableName="teacher" columnName="bach_num"/>
@@ -231,7 +231,7 @@
                    `s`.`ndrs`                             as `ndrs`,
                    `s`.`practice`                         as `practice`,
                    `s`.`aspirant_hours`                   as `aspirant_hours`,
-                   `f`.`departmentFullNameGenitiveCase`   as `dep_name_gc`,
+                   `f`.`department_full_nameGenitiveCase`   as `dep_name_gc`,
                    `f`.`departmentFullNameNominativeCase` as `dep_name_nc`,
                    `s`.`other_forms_hours`                as `other_forms_hours`,
                    `t`.`name`                             as `teacher_name`,
