@@ -14,6 +14,7 @@ public class TeacherHours {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String ipFilename;
+    private String pslFilename;
     private String bachNum;
     private String fifthCourseNum;
     private String masterProfNum;

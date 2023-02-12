@@ -264,6 +264,7 @@ public class WriteIPController {
                                 } else {
                                     personalLoadViewList = plsVmService.getPSLVMData("2", teacher.getName());
                                 }
+                                Formulary formulary = formularyService.listAll().get(0);
                                 XSSFSheet sheet = workbook.getSheetAt(0);
                                 row = sheet.getRow(8);
                                 cell = row.getCell(1);
@@ -299,9 +300,10 @@ public class WriteIPController {
                                 sheet = workbook.getSheetAt(4);
                                 row = sheet.getRow(12);
                                 cell = row.getCell(1);
-                                String sb = "Звіт про виконання індивідуального плану за" + " 2022/2023 навчальний рік викладача " +
-                                        getCellValue(workbook, 23, 0) + " розглянуто розглянуто ___  _____________ 20__ р. " +
-                                        " на засіданні кафедри " + getCellValue(workbook, 11, 1) + " й ухвалено рішення ( протокол №___):" +
+                                String sb = "Звіт про виконання індивідуального плану за " + formulary.getAcademicYear() + " навчальний рік викладача " +
+                                        getCellValue(workbook, 23, 0) + " розглянуто " + formulary.getProtocolDate() +
+                                        " на засіданні кафедри " + getCellValue(workbook, 11, 1) + " й ухвалено рішення ( протокол № "
+                                        + formulary.getProtocolNumber() + "):" +
                                         " ): Індивідуальний план виконано в повному обсязі.";
                                 cell.setCellValue(sb);
                                 cell.setCellStyle(style10);
@@ -431,7 +433,7 @@ public class WriteIPController {
                                 cellRangeAddress = new CellRangeAddress(rownum - 1, rownum - 1, 1, 9);
                                 sheet.addMergedRegion(cellRangeAddress);
                                 cell = row.createCell(1);
-                                cell.setCellValue("Затвердженно на засіданні кафедри \"____\"___________20__р. Протокол № ____");
+                                cell.setCellValue("Затвердженно на засіданні кафедри" + formulary.getProtocolDate() + " Протокол № " + formulary.getProtocolNumber());
                                 cell.setCellStyle(style12I);
                                 for (int c = 10; c < 33; c++) {
                                     row.createCell(c);
@@ -439,7 +441,7 @@ public class WriteIPController {
                                 cellRangeAddress = new CellRangeAddress(rownum - 1, rownum - 1, 33, 44);
                                 sheet.addMergedRegion(cellRangeAddress);
                                 cell = row.createCell(33);
-                                cell.setCellValue("Затвідувач кафедри _________________________");
+                                cell.setCellValue("Затвідувач кафедри " + formulary.getDepartmentHeadFullName());
                                 cell.setCellStyle(style12I);
 
                                 row = sheet.createRow(rownum++);
@@ -474,7 +476,7 @@ public class WriteIPController {
 
                                 workbook.write(outputStream);
 
-//                                teacher.setIpFilename(someFile.getName());
+                                teacher.getTeacherHours().setIpFilename(someFile.getName());
                                 teacherService.save(teacher);
                             } catch (Exception e) {
                                 log.error(e);

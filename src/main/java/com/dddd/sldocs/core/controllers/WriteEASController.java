@@ -145,7 +145,7 @@ public class WriteEASController {
     private void writeSheet(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount,
                             List<EdAsStView> data, boolean divider, XSSFWorkbook workbook, XSSFCellStyle rowAutoHeightStyle) {
 
-
+        Formulary formulary = formularyService.listAll().get(0);
         for (int i = 0; i < data.size(); i++) {
 
             if ((!(data.get(i).getLecHours().equals("") || data.get(i).getLecHours().equals("0.0"))) &&
@@ -232,7 +232,7 @@ public class WriteEASController {
         style2.setFont(fontCustom);
         cell.setCellStyle(style2);
         cell = row.createCell(2);
-        cell.setCellValue("Зав. кафедрою");
+        cell.setCellValue(formulary.getDepartmentHeadTittle());
         style2 = workbook.createCellStyle();
         fontCustom = workbook.createFont();
         fontCustom.setFontHeightInPoints((short) 12);
@@ -253,7 +253,7 @@ public class WriteEASController {
         style2.setBottomBorderColor(IndexedColors.BLACK.getIndex());
         cell.setCellStyle(style2);
         cell = row.createCell(6);
-        cell.setCellValue("Ігор ГАМАЮН");
+        cell.setCellValue(formulary.getDepartmentHeadFullName());
         style2 = workbook.createCellStyle();
         style2.setFont(font);
         style2.setBorderBottom(BorderStyle.THIN);

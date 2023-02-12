@@ -253,4 +253,10 @@
         </createView>
     </changeSet>
 
+    <changeSet id="2023/02/11-1" author="dddd">
+        <addColumn tableName="teacher_hours">
+            <column name="psl_filename" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

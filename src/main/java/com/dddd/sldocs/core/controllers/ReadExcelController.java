@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,25 +50,25 @@ public class ReadExcelController {
     }
 
     @PostMapping("/uploadObs")
-    public String uploadObsToLFS(@RequestParam("file") MultipartFile file) throws IOException {
+    public String uploadObsToLFS(@RequestParam("file") MultipartFile file) {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         Path path = Paths.get(fileName);
         try {
             Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error(e);
         }
         return readObsyag(file.getOriginalFilename());
     }
 
     @PostMapping("/uploadPPS")
-    public String uploadPPSToLFS(@RequestParam("file") MultipartFile file) throws IOException {
+    public String uploadPPSToLFS(@RequestParam("file") MultipartFile file) {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         Path path = Paths.get(fileName);
         try {
             Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error(e);
         }
         return readPPS(file.getOriginalFilename());
     }
@@ -80,8 +79,8 @@ public class ReadExcelController {
         Path path = Paths.get(fileName);
         try {
             Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error(e);
         }
         return readPS(file.getOriginalFilename());
     }
