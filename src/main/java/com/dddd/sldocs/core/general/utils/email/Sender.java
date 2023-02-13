@@ -42,7 +42,7 @@ public class Sender {
             BodyPart messageBodyPart = new MimeBodyPart();
             messageBodyPart.setText("Mail Body");
             Multipart multipart = new MimeMultipart();
-            DataSource source = new FileDataSource(Dictionary.RESULTS_FOLDER + filename);
+            DataSource source = new FileDataSource(Dictionary.getResultsFolder() + filename);
             messageBodyPart.setDataHandler(new DataHandler(source));
             messageBodyPart.setFileName(MimeUtility.encodeWord(filename));
             multipart.addBodyPart(messageBodyPart);

@@ -122,7 +122,7 @@ public class WriteEASController {
 
                 writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
 
-                File someFile = new File(Dictionary.RESULTS_FOLDER + "Відомість_учбових_доручень.xlsx");
+                File someFile = new File(Dictionary.getResultsFolder() + "Відомість_учбових_доручень.xlsx");
 
                 try (FileOutputStream outputStream = new FileOutputStream(someFile)) {
                     workbook.write(outputStream);
@@ -345,7 +345,7 @@ public class WriteEASController {
         cell = row.createCell(6);
         style.setFont(font);
         cell.setCellStyle(style);
-        cell.setCellValue(data.get(i).getPname());
+        cell.setCellValue(data.get(i).getTeacherName());
         cell = row.createCell(7);
         style.setFont(font);
         cell.setCellStyle(style);
@@ -460,7 +460,7 @@ public class WriteEASController {
         cell = row.createCell(6);
         style.setFont(font);
         cell.setCellStyle(style);
-        cell.setCellValue(data.get(i).getPname());
+        cell.setCellValue(data.get(i).getTeacherName());
         cell = row.createCell(7);
         style.setFont(font);
         cell.setCellStyle(style);
@@ -474,7 +474,7 @@ public class WriteEASController {
         cell = row.createCell(1);
         style.setFont(font);
         cell.setCellStyle(style);
-        cell.setCellValue(data.get(i).getDname());
+        cell.setCellValue(data.get(i).getDisciplineName());
         cell = row.createCell(2);
         style.setFont(font);
         cell.setCellStyle(style);

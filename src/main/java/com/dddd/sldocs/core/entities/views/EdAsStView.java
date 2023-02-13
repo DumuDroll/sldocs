@@ -16,11 +16,11 @@ public class EdAsStView {
     private Long id;
     private String csem;
     private String ccor;
-    private String dname;
+    private String disciplineName;
     private String groupNames;
     private String lecHours;
     private String labHours;
-    private String pname;
+    private String teacherName;
     private String practHours;
     private String note;
     private String numberOfSubgroups;

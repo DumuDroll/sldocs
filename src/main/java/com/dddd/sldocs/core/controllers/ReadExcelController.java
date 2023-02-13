@@ -4,10 +4,7 @@ import com.dddd.sldocs.core.entities.Formulary;
 import com.dddd.sldocs.core.entities.StudyLoad;
 import com.dddd.sldocs.core.entities.Teacher;
 import com.dddd.sldocs.core.general.Dictionary;
-import com.dddd.sldocs.core.services.DisciplineService;
-import com.dddd.sldocs.core.services.FormularyService;
-import com.dddd.sldocs.core.services.StudyloadRowService;
-import com.dddd.sldocs.core.services.TeacherService;
+import com.dddd.sldocs.core.services.*;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -41,12 +38,16 @@ public class ReadExcelController {
 
     private final TeacherService teacherService;
 
+    private final TeacherHoursService teacherHoursService;
+
     public ReadExcelController(StudyloadRowService studyloadRowService, DisciplineService disciplineService,
-                               FormularyService formularyService, TeacherService teacherService) {
+                               FormularyService formularyService, TeacherService teacherService,
+                               TeacherHoursService teacherHoursService) {
         this.studyloadRowService = studyloadRowService;
         this.formularyService = formularyService;
         this.disciplineService = disciplineService;
         this.teacherService = teacherService;
+        this.teacherHoursService = teacherHoursService;
     }
 
     @PostMapping("/uploadObs")

@@ -15,6 +15,7 @@ public class Teacher {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     private String name;
     private String fullName;
@@ -26,8 +27,9 @@ public class Teacher {
     private String emailAddress;
     private String emailedDate;
 
-    @OneToOne
-    private TeacherHours teacherHours = new TeacherHours();
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "teacher_hours_id")
+    private TeacherHours teacherHours;
 
     @OneToMany(mappedBy = "teacher")
     private Set<StudyloadRow> studyloadRows = new HashSet<>();

@@ -18,7 +18,7 @@ public class TeacherService {
     }
 
     public List<Teacher> listAll() {
-        return teacherRepository.findAll();
+        return teacherRepository.listAllOrderName();
     }
 
     public List<Teacher> listAllOrderName() {

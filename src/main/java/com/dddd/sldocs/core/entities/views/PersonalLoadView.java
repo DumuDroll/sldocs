@@ -34,10 +34,11 @@ public class PersonalLoadView {
     private String aspirantHours;
     private String practice;
     private String otherFormsHours;
-    private String pname;
-    private String dname;
-    private String depName;
-    private String facName;
+    private String teacherName;
+    private String disciplineName;
+    private String depNameGc;
+    private String depNameNc;
+    private String institute;
     private String naukStupin;
     private String posada;
     private String vchZvana;

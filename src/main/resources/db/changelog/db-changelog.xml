@@ -130,8 +130,8 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="folderName" type="varchar(255)"/>
-            <column name="fileName" type="varchar(255)"/>
+            <column name="folder_name" type="varchar(255)"/>
+            <column name="file_name" type="varchar(255)"/>
             <column name="eas_filename" type="varchar(255)"/>
             <column name="psl_filename" type="varchar(255)"/>
             <column name="ind_plan_zip_filename" type="varchar(255)"/>
@@ -147,6 +147,7 @@
             <column name="protocol_date" type="varchar(255)"/>
             <column name="approved_by_tittle" type="varchar(255)"/>
             <column name="approved_by_position" type="varchar(255)"/>
+            <column name="approved_by_full_name" type="varchar(255)"/>
         </createTable>
         <createTable tableName="teacher_hours">
             <column name="id" type="bigint" autoIncrement="true">
@@ -177,6 +178,9 @@
         <addColumn tableName="studyload_row">
             <column name="formulary_id" type="bigint"/>
         </addColumn>
+        <addColumn tableName="teacher">
+            <column name="teacher_hours_id" type="bigint"/>
+        </addColumn>
         <addForeignKeyConstraint constraintName="fk_studyload_row2formulary"
                                  baseTableName="studyload_row"
                                  baseColumnNames="formulary_id"
@@ -184,7 +188,7 @@
                                  referencedColumnNames="id"/>
         <addForeignKeyConstraint constraintName="fk_teacher2teacher_hours"
                                  baseTableName="teacher"
-                                 baseColumnNames="id"
+                                 baseColumnNames="teacher_hours_id"
                                  referencedTableName="teacher_hours"
                                  referencedColumnNames="id"/>
     </changeSet>
@@ -231,8 +235,8 @@
                    `s`.`ndrs`                             as `ndrs`,
                    `s`.`practice`                         as `practice`,
                    `s`.`aspirant_hours`                   as `aspirant_hours`,
-                   `f`.`department_full_nameGenitiveCase`   as `dep_name_gc`,
-                   `f`.`departmentFullNameNominativeCase` as `dep_name_nc`,
+                   `f`.`department_full_name_genitive_case`   as `dep_name_gc`,
+                   `f`.`department_full_name_nominative_case` as `dep_name_nc`,
                    `s`.`other_forms_hours`                as `other_forms_hours`,
                    `t`.`name`                             as `teacher_name`,
                    `d`.`name`                             as `discipline_name`,

@@ -54,7 +54,7 @@ public class WriteIPController {
     public String uploadAgain(@RequestParam("file") MultipartFile[] files) {
         for (MultipartFile file : files) {
             String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-            Path path = Paths.get(Dictionary.RESULTS_FOLDER + fileName);
+            Path path = Paths.get(Dictionary.getResultsFolder() + fileName);
             try {
                 Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
             } catch (Exception e) {
@@ -268,11 +268,11 @@ public class WriteIPController {
                                 XSSFSheet sheet = workbook.getSheetAt(0);
                                 row = sheet.getRow(8);
                                 cell = row.getCell(1);
-                                cell.setCellValue(personalLoadViewList.get(0).getFacName());
+                                cell.setCellValue(personalLoadViewList.get(0).getInstitute());
                                 cell.setCellStyle(style16Bot);
                                 row = sheet.getRow(11);
                                 cell = row.getCell(1);
-                                cell.setCellValue(personalLoadViewList.get(0).getDepName());
+                                cell.setCellValue(personalLoadViewList.get(0).getDepNameGc());
                                 cell.setCellStyle(style16Bot);
                                 row = sheet.getRow(23);
                                 cell = row.getCell(0);
@@ -471,7 +471,7 @@ public class WriteIPController {
                                 cell.setCellFormula("SUM(D15:D18)");
                                 cell.setCellStyle(style14Bot);
                             }
-                            File someFile = new File(Dictionary.RESULTS_FOLDER + UkrainianToLatin.generateLat(teacher.getName()) + " ind_plan.xlsx");
+                            File someFile = new File(Dictionary.getResultsFolder() + UkrainianToLatin.generateLat(teacher.getName()) + " ind_plan.xlsx");
                             try (FileOutputStream outputStream = new FileOutputStream(someFile)) {
 
                                 workbook.write(outputStream);
@@ -630,7 +630,7 @@ public class WriteIPController {
             cell = row.createCell(1);
             cell.setCellStyle(style);
             cell = row.createCell(2);
-            cell.setCellValue(personalLoadView.getDname());
+            cell.setCellValue(personalLoadView.getDisciplineName());
             cell.setCellStyle(style);
             cell = row.createCell(3);
             cell.setCellStyle(style);

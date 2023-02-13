@@ -113,8 +113,8 @@ public class TeacherController {
     }
 
     @GetMapping("/teacher/downloadIp")
-    public ResponseEntity downloadIp(@RequestParam("profName") String profName) throws IOException {
-        Teacher teacher = teacherService.findByName(userService.getUserByUsername(profName).getName());
+    public ResponseEntity downloadIp(@RequestParam("teacherName") String teacherName) throws IOException {
+        Teacher teacher = teacherService.findByName(userService.getUserByUsername(teacherName).getName());
         File someFile = new File(teacher.getTeacherHours().getIpFilename());
         return ResponseEntity.ok()
                 .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -124,12 +124,13 @@ public class TeacherController {
     }
 
     @GetMapping("/teacher/downloadPsl")
-    public ResponseEntity downloadPsl(@RequestParam("profName") String profName) throws IOException {
-        File someFile = new File(formularyService.listAll().get(0).getPslFilename());
+    public ResponseEntity downloadPsl(@RequestParam("teacherName") String teacherName) throws IOException {
+        Teacher teacher = teacherService.findByName(userService.getUserByUsername(teacherName).getName());
+        File someFile = new File(teacher.getTeacherHours().getPslFilename());
         return ResponseEntity.ok()
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .header(HttpHeaders.CONTENT_DISPOSITION, Dictionary.ATTACHMENT_FILENAME
-                        + rfc5987_encode(formularyService.listAll().get(0).getPslFilename()) + "\"")
+                        + rfc5987_encode(teacher.getTeacherHours().getPslFilename()) + "\"")
                 .body(FileUtils.readFileToByteArray(someFile));
     }
 

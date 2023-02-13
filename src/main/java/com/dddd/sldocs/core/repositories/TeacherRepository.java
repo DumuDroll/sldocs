@@ -10,17 +10,17 @@ import java.util.List;
 
 public interface TeacherRepository extends JpaRepository<Teacher,Long> {
 
-    @Query("SELECT u FROM Teacher u order by u.name")
+    @Query("SELECT u FROM Teacher u JOIN u.teacherHours order by u.name")
     List<Teacher> listAllOrderName();
 
     @Modifying
     @Query("delete from Teacher p")
     void deleteAll();
 
-    @Query("SELECT u FROM Teacher u WHERE u.name = :name")
+    @Query("SELECT u FROM Teacher u JOIN u.teacherHours WHERE u.name = :name")
     Teacher getTeacherByName(@Param("name") String name);
 
-    @Query("SELECT u FROM Teacher u WHERE u.id = :id")
+    @Query("SELECT u FROM Teacher u JOIN u.teacherHours WHERE u.id = :id")
     Teacher getById(@Param("id") long id);
 
 //    @Query("SELECT u.ipFilename FROM Teacher u")
