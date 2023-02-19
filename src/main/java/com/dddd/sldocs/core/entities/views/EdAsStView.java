@@ -1,18 +1,19 @@
 package com.dddd.sldocs.core.entities.views;
 
 import lombok.Getter;
-import lombok.Setter;
+import org.hibernate.annotations.Subselect;
+import org.springframework.data.annotation.Immutable;
 
 import javax.persistence.*;
 
 @Getter
-@Setter
 @Entity
+@Immutable
+@Subselect("select eas_vm.* from eas_vm")
 @Table(name = "eas_vm")
 public class EdAsStView {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String csem;
     private String ccor;

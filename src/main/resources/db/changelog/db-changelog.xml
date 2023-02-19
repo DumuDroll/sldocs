@@ -45,7 +45,7 @@
             <column name="teacher_id" type="bigint"/>
         </addColumn>
         <addForeignKeyConstraint baseTableName="studyload_row" baseColumnNames="discipline_id"
-                                 constraintName="dicsipline_id_fk"
+                                 constraintName="discipline_id_fk"
                                  referencedTableName="discipline"
                                  referencedColumnNames="id"/>
         <addForeignKeyConstraint baseTableName="studyload_row" baseColumnNames="teacher_id"

@@ -281,7 +281,9 @@ public class ReadExcelController {
                     studyLoad.getStudyloadRow().setDiscipline(disciplineService.findByName(excelRow.get(1).toString().trim()));
                 }
 
-
+                if(!formularyService.listAll().isEmpty()){
+                    studyLoad.getStudyloadRow().setFormulary(formularyService.listAll().get(0));
+                }
                 studyloadRowService.save(studyLoad.getStudyloadRow());
                 excelRow = new ArrayList<>();
                 studyLoad = new StudyLoad();

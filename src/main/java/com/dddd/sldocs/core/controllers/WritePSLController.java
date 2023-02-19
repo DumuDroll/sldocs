@@ -352,7 +352,7 @@ public class WritePSLController {
                         ));
                         // Добавляем строки нагрузки, если есть в весеннем семестре
                         int firstSumCellSpring = rowNum + 1;
-                        double springHoursTotal=0;
+                        double springHoursTotal = 0;
                         if (!plsVmService.getPSLVMData("2", teacher.getName()).isEmpty()) {
                             personalLoadViewList = plsVmService.getPSLVMData("2", teacher.getName());
                             for (PersonalLoadView personalLoadView : personalLoadViewList) {
@@ -438,59 +438,108 @@ public class WritePSLController {
                         row = sheet.getRow(0);
                         cell = row.getCell(0);
                         cell.setCellValue("ЗВЕДЕНЕ НАВЧАЛЬНЕ НАВАНТАЖЕННЯ кафедри " + formulary.getDepartmentFullNameGenitiveCase()
-                                + " на "+ formulary.getAcademicYear() + " навчальний рік");
+                                + " на " + formulary.getAcademicYear() + " навчальний рік");
 
                         row = sheet.getRow(1);
                         cell = row.getCell(0);
                         cell.setCellValue("Станом на " + DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDateTime.now()));
 
-                        row = sheet.getRow(teacherSummaryRowNumber-1);
-                        cell = row.getCell(0);
-                        cell.setCellStyle(style14RightAl);
-                        cell.setCellValue(teacherSummaryRowNumber-4);
+                        if(teacher.getFullName()==null || teacher.getFullName().isEmpty()){
+                            break;
+                        }
 
-                        cell = row.getCell(1);
+                        row = sheet.createRow(teacherSummaryRowNumber - 1);
+                        cell = row.createCell(0);
+                        cell.setCellStyle(style14RightAl);
+                        cell.setCellValue(teacherSummaryRowNumber - 4);
+
+                        cell = row.createCell(1);
                         cell.setCellStyle(style14LeftAl);
                         cell.setCellValue(teacher.getPosada());
 
-                        cell = row.getCell(2);
+                        cell = row.createCell(2);
                         cell.setCellStyle(style14LeftAl);
                         //Штат/сумісництво
                         cell.setCellValue(teacher.getNote());
 
-                        cell = row.getCell(3);
+                        cell = row.createCell(3);
                         cell.setCellStyle(style14LeftAl);
                         cell.setCellValue(teacher.getFullName());
 
-                        cell = row.getCell(4);
+                        cell = row.createCell(4);
                         cell.setCellStyle(style14);
-                        cell.setCellValue(teacher.getStavka());
+                        cell.setCellValue(Double.parseDouble(teacher.getStavka()));
 
-                        cell = row.getCell(5);
+                        cell = row.createCell(5);
                         cell.setCellStyle(style14RightAl);
-                        cell.setCellValue(teacher.getTeacherHours().getAutumnSumPlan());
+                        if (teacher.getTeacherHours().getAutumnSumPlan() != null && !teacher.getTeacherHours().getAutumnSumPlan().isEmpty()) {
+                            cell.setCellValue(Math.round(Double.parseDouble(teacher.getTeacherHours().getAutumnSumPlan())));
+                        } else {
+                            cell.setCellValue(0);
+                        }
 
-                        cell = row.getCell(6);
+                        cell = row.createCell(6);
                         cell.setCellStyle(style14RightAl);
-                        cell.setCellValue(teacher.getTeacherHours().getSpringSumPlan());
+                        if (teacher.getTeacherHours().getSpringSumPlan() != null && !teacher.getTeacherHours().getSpringSumPlan().isEmpty()) {
+                            cell.setCellValue(Math.round(Double.parseDouble(teacher.getTeacherHours().getSpringSumPlan())));
+                        } else {
+                            cell.setCellValue(0);
+                        }
 
-                        cell = row.getCell(7);
+                        cell = row.createCell(7);
                         cell.setCellStyle(style14RightAl);
-                        cell.setCellValue(teacher.getTeacherHours().getMasterProfNum()
-                                + teacher.getTeacherHours().getMasterScNum());
+                        if (teacher.getTeacherHours().getMasterProfNum() != null && !teacher.getTeacherHours().getMasterProfNum().isEmpty()) {
+                            if (teacher.getTeacherHours().getMasterScNum() != null && !teacher.getTeacherHours().getMasterScNum().isEmpty()) {
+                                cell.setCellValue((double) Math.round(Double.parseDouble(teacher.getTeacherHours().getMasterProfNum()))
+                                        + Math.round(Double.parseDouble(teacher.getTeacherHours().getMasterScNum())));
+                            } else {
+                                cell.setCellValue((double) Math.round(Double.parseDouble(teacher.getTeacherHours().getMasterProfNum()))
+                                        + 0);
+                            }
+                        } else {
+                            if (teacher.getTeacherHours().getMasterScNum() != null && !teacher.getTeacherHours().getMasterScNum().isEmpty()) {
+                                cell.setCellValue((double) 0
+                                        + Math.round(Double.parseDouble(teacher.getTeacherHours().getMasterScNum())));
+                            } else {
+                                cell.setCellValue(0);
+                            }
 
-                        cell = row.getCell(8);
+                        }
+
+                        cell = row.createCell(8);
                         cell.setCellStyle(style14RightAl);
-                        cell.setCellFormula("27*H"+teacherSummaryRowNumber);
+                        cell.setCellFormula("27*H" + teacherSummaryRowNumber);
 
-                        cell = row.getCell(9);
+                        cell = row.createCell(9);
                         cell.setCellStyle(style14RightAl);
-                        cell.setCellValue(teacher.getTeacherHours().getBachNum());
+                        if (teacher.getTeacherHours().getBachNum() != null && !teacher.getTeacherHours().getBachNum().isEmpty()) {
+                            cell.setCellValue(Math.round(Double.parseDouble(teacher.getTeacherHours().getBachNum())));
+                        } else {
+                            cell.setCellValue(0);
+                        }
 
-                        cell = row.getCell(10);
+                        cell = row.createCell(10);
                         cell.setCellStyle(style14RightAl);
-                        cell.setCellFormula("14*J"+teacherSummaryRowNumber+"+3*J"+teacherSummaryRowNumber);
+                        cell.setCellFormula("14*J" + teacherSummaryRowNumber + "+3*J" + teacherSummaryRowNumber);
 
+                        cell = row.createCell(11);
+                        cell.setCellStyle(style14RightAl);
+                        cell.setCellFormula("F" + teacherSummaryRowNumber + "+G" + teacherSummaryRowNumber
+                                + "+H" + teacherSummaryRowNumber + "+I" + teacherSummaryRowNumber
+                                + "+J" + teacherSummaryRowNumber + "+K" + teacherSummaryRowNumber);
+
+                        cell = row.createCell(12);
+                        cell.setCellStyle(style14RightAl);
+                        cell.setCellFormula("E" + teacherSummaryRowNumber + "*" + 600);
+
+                        cell = row.createCell(13);
+                        cell.setCellStyle(style14RightAl);
+                        cell.setCellFormula("L" + teacherSummaryRowNumber + "-M" + teacherSummaryRowNumber);
+
+                        cell = row.createCell(14);
+                        cell.setCellStyle(style14LeftAl);
+
+                        teacherSummaryRowNumber++;
                     }
                 }
 
@@ -622,7 +671,7 @@ public class WritePSLController {
                 log.error("Error creating a workbook for summary");
                 log.error(e);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("Error opening copied summary file");
             log.error(e);
         }
@@ -731,7 +780,7 @@ public class WritePSLController {
 
     private double writeDisciplines(CellStyle style, CellStyle styleName, CellStyle styleGroups, XSSFRow row, PersonalLoadView personalLoadView) {
         XSSFCell cell;
-        double sum=0;
+        double sum = 0;
         cell = row.createCell(0);
         cell.setCellValue(personalLoadView.getDisciplineName());
         cell.setCellStyle(styleName);
@@ -756,73 +805,73 @@ public class WritePSLController {
         cell = row.createCell(5);
         if (!personalLoadView.getConsultHours().isEmpty()) {
             cell.setCellValue(Double.parseDouble(personalLoadView.getConsultHours()));
-            sum+=Double.parseDouble(personalLoadView.getConsultHours());
+            sum += Double.parseDouble(personalLoadView.getConsultHours());
         }
         cell.setCellStyle(style);
         cell = row.createCell(6);
         if (!personalLoadView.getLabHours().isEmpty()) {
             cell.setCellValue(Double.parseDouble(personalLoadView.getLabHours()));
-            sum+=Double.parseDouble(personalLoadView.getLabHours());
+            sum += Double.parseDouble(personalLoadView.getLabHours());
         }
         cell.setCellStyle(style);
         cell = row.createCell(7);
         if (!personalLoadView.getPractHours().isEmpty()) {
             cell.setCellValue(Double.parseDouble(personalLoadView.getPractHours()));
-            sum+=Double.parseDouble(personalLoadView.getPractHours());
+            sum += Double.parseDouble(personalLoadView.getPractHours());
         }
         cell.setCellStyle(style);
         cell = row.createCell(8);
         if (!personalLoadView.getIndTaskHours().isEmpty()) {
             cell.setCellValue(Double.parseDouble(personalLoadView.getIndTaskHours()));
-            sum+=Double.parseDouble(personalLoadView.getIndTaskHours());
+            sum += Double.parseDouble(personalLoadView.getIndTaskHours());
         }
         cell.setCellStyle(style);
         cell = row.createCell(9);
         if (!personalLoadView.getCpHours().isEmpty()) {
             cell.setCellValue(Double.parseDouble(personalLoadView.getCpHours()));
-            sum+=Double.parseDouble(personalLoadView.getCpHours());
+            sum += Double.parseDouble(personalLoadView.getCpHours());
         }
         cell.setCellStyle(style);
         cell = row.createCell(10);
         if (!personalLoadView.getZalikHours().isEmpty()) {
             cell.setCellValue(Double.parseDouble(personalLoadView.getZalikHours()));
-            sum+=Double.parseDouble(personalLoadView.getZalikHours());
+            sum += Double.parseDouble(personalLoadView.getZalikHours());
         }
         cell.setCellStyle(style);
         cell = row.createCell(11);
         if (!personalLoadView.getExamHours().isEmpty()) {
             cell.setCellValue(Math.round(Double.parseDouble(personalLoadView.getExamHours())));
-            sum+=Math.round(Double.parseDouble(personalLoadView.getExamHours()));
+            sum += Math.round(Double.parseDouble(personalLoadView.getExamHours()));
         }
         cell.setCellStyle(style);
         cell = row.createCell(12);
         if (!personalLoadView.getDiplomaHours().isEmpty()) {
             cell.setCellValue(Double.parseDouble(personalLoadView.getDiplomaHours()));
-            sum+=Double.parseDouble(personalLoadView.getDiplomaHours());
+            sum += Double.parseDouble(personalLoadView.getDiplomaHours());
         }
         cell.setCellStyle(style);
         cell = row.createCell(13);
         if (!personalLoadView.getDecCell().isEmpty()) {
             cell.setCellValue(Double.parseDouble(personalLoadView.getDecCell()));
-            sum+=Double.parseDouble(personalLoadView.getDecCell());
+            sum += Double.parseDouble(personalLoadView.getDecCell());
         }
         cell.setCellStyle(style);
         cell = row.createCell(14);
         if (!personalLoadView.getNdrs().isEmpty()) {
             cell.setCellValue(Double.parseDouble(personalLoadView.getNdrs()));
-            sum+=Double.parseDouble(personalLoadView.getNdrs());
+            sum += Double.parseDouble(personalLoadView.getNdrs());
         }
         cell.setCellStyle(style);
         cell = row.createCell(15);
         if (!personalLoadView.getAspirantHours().isEmpty()) {
             cell.setCellValue(Double.parseDouble(personalLoadView.getAspirantHours()));
-            sum+=Double.parseDouble(personalLoadView.getAspirantHours());
+            sum += Double.parseDouble(personalLoadView.getAspirantHours());
         }
         cell.setCellStyle(style);
         cell = row.createCell(16);
         if (!personalLoadView.getPractice().isEmpty()) {
             cell.setCellValue(Double.parseDouble(personalLoadView.getPractice()));
-            sum+=Double.parseDouble(personalLoadView.getPractice());
+            sum += Double.parseDouble(personalLoadView.getPractice());
         }
         cell.setCellStyle(style);
         cell = row.createCell(17);
@@ -830,9 +879,9 @@ public class WritePSLController {
         cell = row.createCell(18);
         if (!personalLoadView.getOtherFormsHours().isEmpty()) {
             cell.setCellValue(Math.round(Double.parseDouble(personalLoadView.getOtherFormsHours())));
-            sum+=Math.round(Double.parseDouble(personalLoadView.getOtherFormsHours()));
+            sum += Math.round(Double.parseDouble(personalLoadView.getOtherFormsHours()));
         }
-
+        cell.setCellStyle(style);
         return sum;
     }
 }

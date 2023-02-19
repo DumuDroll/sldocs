@@ -1,18 +1,21 @@
 package com.dddd.sldocs.core.entities.views;
 
 import lombok.Getter;
-import lombok.Setter;
+import org.hibernate.annotations.Subselect;
+import org.springframework.data.annotation.Immutable;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Getter
-@Setter
 @Entity
+@Immutable
+@Subselect("select psl_vm.* from psl_vm")
 @Table(name = "psl_vm")
 public class PersonalLoadView {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String year;
     private String course;

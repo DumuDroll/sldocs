@@ -29,7 +29,7 @@ public class Teacher {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "teacher_hours_id")
-    private TeacherHours teacherHours;
+    private TeacherHours teacherHours = new TeacherHours();
 
     @OneToMany(mappedBy = "teacher")
     private Set<StudyloadRow> studyloadRows = new HashSet<>();
