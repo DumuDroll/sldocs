@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface EdAsStViewRepository extends JpaRepository<EdAsStView,Long> {
     @Query(value = "select e from EdAsStView e where e.csem=:semester and e.ccor<:course")
-    List<EdAsStView> getEAS_VM13(@Param("semester") String semester, @Param("course") String course);
+    List<EdAsStView> getEASVM13(@Param("semester") String semester, @Param("course") String course);
     @Query(value = "select e from EdAsStView e where e.csem=:semester and e.ccor=:course")
-    List<EdAsStView> getEAS_VM(@Param("semester") String semester, @Param("course") String course);
+    List<EdAsStView> getEASVM(@Param("semester") String semester, @Param("course") String course);
 
 }

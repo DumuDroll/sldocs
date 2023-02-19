@@ -18,11 +18,11 @@ public class EdAsStViewService {
     }
 
     public List<EdAsStView> getEASVM13Data(String semester, String course) {
-        return edAsStViewRepository.getEAS_VM13(semester, course);
+        return edAsStViewRepository.getEASVM13(semester, course);
     }
 
     public List<EdAsStView> getEASVMData(String semester, String course) {
-        return edAsStViewRepository.getEAS_VM(semester, course);
+        return edAsStViewRepository.getEASVM(semester, course);
     }
 
 }

@@ -16,17 +16,13 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Controller
 @Log4j2
 public class WriteEASController {
 
     private static final String COMMA_REGEX = ",";
-    private static final String GROUP_REGEX = "^([\\p{L}]{2})([-])([0-9]{3}|[\\p{L}][0-9]{3})(.[.].*|[і].*|.[і].*|[\\p{L}]*)?$";
     private static final String TIMES_NEW_ROMAN = "Times New Roman";
-
     private final EdAsStViewService easVmService;
     private final FormularyService formularyService;
 
@@ -268,56 +264,21 @@ public class WriteEASController {
 
     private int writePractHours(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount, List<EdAsStView> data, int i,
                                 boolean divider, XSSFCellStyle rowAutoHeightStyle) {
-        Row row;
-        Cell cell;
-        StringBuilder stringBuilder;
         String[] valuesGroups = data.get(i).getGroupNames().split(COMMA_REGEX);
-        Pattern pattern = Pattern.compile(GROUP_REGEX);
-        Matcher matcher;
         for (String values_group : valuesGroups) {
-            matcher = pattern.matcher(values_group.trim());
-            while (matcher.find()) {
-                if (Character.isDigit(matcher.group(3).charAt(0))) {
-                    if (!matcher.group(4).equals("") && matcher.group(4).length() > 1) {
-                        if (matcher.group(4).charAt(0) == 'і' || matcher.group(4).charAt(1) == 'і' || matcher.group(4).charAt(1) == 'е' || matcher.group(4).charAt(1) == '.') {
-                            rowCount = writePractHoursInner(font, style, sheet, rowCount, data, i, matcher, divider, rowAutoHeightStyle);
-                        } else {
-                            for (int i1 = 0; i1 < matcher.group(4).length(); i1++) {
-                                stringBuilder = new StringBuilder();
-                                stringBuilder.append(matcher.group(1)).append(matcher.group(2)).append(matcher.group(3)).append(matcher.group(4).charAt(i1));
-                                row = sheet.createRow(++rowCount);
-                                cell = row.createCell(0);
-                                cell = writeDnGn(font, style, data, i, row, cell, rowAutoHeightStyle);
-                                cell.setCellValue(stringBuilder.toString());
-                                cell = row.createCell(3);
-                                style.setFont(font);
-                                cell.setCellStyle(style);
-                                cell.setCellValue("");
-                                cell = row.createCell(4);
-                                style.setFont(font);
-                                cell.setCellStyle(style);
-                                writePractHoursInnerInner(font, style, data, i, row, cell, divider);
-                            }
-                        }
-                    } else {
-                        rowCount = writePractHoursInner(font, style, sheet, rowCount, data, i, matcher, divider, rowAutoHeightStyle);
-                    }
-                } else {
-                    rowCount = writePractHoursInner(font, style, sheet, rowCount, data, i, matcher, divider, rowAutoHeightStyle);
-                }
-            }
+            rowCount = writePractHoursInner(font, style, sheet, rowCount, data, i, values_group, divider, rowAutoHeightStyle);
         }
         return rowCount;
     }
 
-    private int writePractHoursInner(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount, List<EdAsStView> data, int i,
-                                     Matcher matcher, boolean divider, XSSFCellStyle rowAutoHeightStyle) {
+    private int writePractHoursInner(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount,
+                                     List<EdAsStView> data, int i, String group, boolean divider, XSSFCellStyle rowAutoHeightStyle) {
         Row row;
         Cell cell;
         row = sheet.createRow(++rowCount);
         cell = row.createCell(0);
         cell = writeDnGn(font, style, data, i, row, cell, rowAutoHeightStyle);
-        cell.setCellValue(matcher.group(0));
+        cell.setCellValue(group);
         cell = row.createCell(3);
         style.setFont(font);
         cell.setCellStyle(style);
@@ -354,56 +315,21 @@ public class WriteEASController {
 
     private int writeLabHours(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount, List<EdAsStView> data, int i,
                               boolean divider, XSSFCellStyle rowAutoHeightStyle) {
-        Row row;
-        Cell cell;
-        StringBuilder stringBuilder;
         String[] valuesGroups = data.get(i).getGroupNames().split(COMMA_REGEX);
-        Pattern pattern = Pattern.compile(GROUP_REGEX);
-        Matcher matcher;
         for (String valuesGroup : valuesGroups) {
-            matcher = pattern.matcher(valuesGroup.trim());
-            while (matcher.find()) {
-                if (Character.isDigit(matcher.group(3).charAt(0))) {
-                    if (!matcher.group(4).equals("") && matcher.group(4).length() > 1) {
-                        if (matcher.group(4).charAt(0) == 'і' || matcher.group(4).charAt(1) == 'і' || matcher.group(4).charAt(1) == 'е' || matcher.group(4).charAt(1) == '.') {
-                            rowCount = writeLabHoursInner(font, style, sheet, rowCount, data, i, matcher, divider, rowAutoHeightStyle);
-                        } else {
-                            for (int i1 = 0; i1 < matcher.group(4).length(); i1++) {
-                                stringBuilder = new StringBuilder();
-                                stringBuilder.append(matcher.group(1)).append(matcher.group(2)).append(matcher.group(3)).append(matcher.group(4).charAt(i1));
-                                row = sheet.createRow(++rowCount);
-                                cell = row.createCell(0);
-                                cell = writeDnGn(font, style, data, i, row, cell, rowAutoHeightStyle);
-                                cell.setCellValue(stringBuilder.toString());
-                                cell = row.createCell(3);
-                                style.setFont(font);
-                                cell.setCellStyle(style);
-                                cell.setCellValue("");
-                                cell = row.createCell(4);
-                                style.setFont(font);
-                                cell.setCellStyle(style);
-                                writeLabHoursInnerInner(font, style, data, i, row, cell, divider);
-                            }
-                        }
-                    } else {
-                        rowCount = writeLabHoursInner(font, style, sheet, rowCount, data, i, matcher, divider, rowAutoHeightStyle);
-                    }
-                } else {
-                    rowCount = writeLabHoursInner(font, style, sheet, rowCount, data, i, matcher, divider, rowAutoHeightStyle);
-                }
-            }
+            rowCount = writeLabHoursInner(font, style, sheet, rowCount, data, i, valuesGroup, divider, rowAutoHeightStyle);
         }
         return rowCount;
     }
 
     private int writeLabHoursInner(XSSFFont font, CellStyle style, XSSFSheet sheet, int rowCount, List<EdAsStView> data, int i,
-                                   Matcher matcher, boolean divider, XSSFCellStyle rowAutoHeightStyle) {
+                                   String group, boolean divider, XSSFCellStyle rowAutoHeightStyle) {
         Row row;
         Cell cell;
         row = sheet.createRow(++rowCount);
         cell = row.createCell(0);
         cell = writeDnGn(font, style, data, i, row, cell, rowAutoHeightStyle);
-        cell.setCellValue(matcher.group(0));
+        cell.setCellValue(group);
         cell = row.createCell(3);
         style.setFont(font);
         cell.setCellStyle(style);
