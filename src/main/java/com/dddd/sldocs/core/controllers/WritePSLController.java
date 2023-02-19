@@ -289,7 +289,7 @@ public class WritePSLController {
                             personalLoadViewList = plsVmService.getPSLVMData("1", teacher.getName());
                             for (PersonalLoadView personalLoadView : personalLoadViewList) {
                                 row = sheet.createRow(rowNum++);
-                                autumnHoursTotal = writeDisciplines(styleDiscHours, styleDiscName, styleDiscGroups, row, personalLoadView);
+                                autumnHoursTotal += writeDisciplines(styleDiscHours, styleDiscName, styleDiscGroups, row, personalLoadView);
                                 cell.setCellStyle(styleDiscHours);
                                 cell = row.createCell(19);
                                 cell.setCellFormula(Dictionary.SUM_E_START_OF_THE_FORMULA + rowNum + ":S" + rowNum + ")");
@@ -357,7 +357,7 @@ public class WritePSLController {
                             personalLoadViewList = plsVmService.getPSLVMData("2", teacher.getName());
                             for (PersonalLoadView personalLoadView : personalLoadViewList) {
                                 row = sheet.createRow(rowNum++);
-                                springHoursTotal = writeDisciplines(styleDiscHours, styleDiscName, styleDiscGroups, row, personalLoadView);
+                                springHoursTotal += writeDisciplines(styleDiscHours, styleDiscName, styleDiscGroups, row, personalLoadView);
                                 cell.setCellStyle(styleDiscHours);
                                 cell = row.createCell(19);
                                 cell.setCellFormula(Dictionary.SUM_E_START_OF_THE_FORMULA + rowNum + ":S" + rowNum + ")");
@@ -800,6 +800,7 @@ public class WritePSLController {
         cell = row.createCell(4);
         if (!personalLoadView.getLecHours().isEmpty()) {
             cell.setCellValue(Double.parseDouble(personalLoadView.getLecHours()));
+            sum += Double.parseDouble(personalLoadView.getLecHours());
         }
         cell.setCellStyle(style);
         cell = row.createCell(5);
