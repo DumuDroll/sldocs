@@ -17,7 +17,7 @@ import java.util.Properties;
 @Log4j2
 public class Sender {
 
-    public static void Send(String to, String filename) {
+    public static void Send(String to, String folder, String filename) {
         String from = "isppd.semit@gmail.com";
         Properties props = new Properties();
         props.put("mail.smtp.user", "username");
@@ -42,7 +42,7 @@ public class Sender {
             BodyPart messageBodyPart = new MimeBodyPart();
             messageBodyPart.setText("Mail Body");
             Multipart multipart = new MimeMultipart();
-            DataSource source = new FileDataSource(Dictionary.getResultsFolder() + filename);
+            DataSource source = new FileDataSource(folder + filename);
             messageBodyPart.setDataHandler(new DataHandler(source));
             messageBodyPart.setFileName(MimeUtility.encodeWord(filename));
             multipart.addBodyPart(messageBodyPart);

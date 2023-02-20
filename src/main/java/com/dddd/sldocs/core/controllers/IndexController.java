@@ -111,7 +111,7 @@ public class IndexController {
     @GetMapping("/downloadEAS")
     public ResponseEntity downloadEAS() throws IOException {
         Formulary formulary = formularyService.listAll().get(0);
-        File file = new File(Dictionary.getResultsFolder() + formulary.getEasFilename());
+        File file = new File(Dictionary.ED_AS_ST_FOLDER + formulary.getEasFilename());
         return ResponseEntity.ok()
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .header(HttpHeaders.CONTENT_DISPOSITION, Dictionary.ATTACHMENT_FILENAME + rfc5987_encode(formulary.getEasFilename()) + "\"")
@@ -122,32 +122,42 @@ public class IndexController {
     public ResponseEntity downloadPSL() throws IOException {
 
         Formulary formulary = formularyService.listAll().get(0);
-        File file = new File(Dictionary.getResultsFolder() + formulary.getPslFilename());
+        File file = new File(Dictionary.PERSONAL_STUDYLOAD_FOLDER + formulary.getPslFilename());
         return ResponseEntity.ok()
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .header(HttpHeaders.CONTENT_DISPOSITION, Dictionary.ATTACHMENT_FILENAME + rfc5987_encode(formulary.getPslFilename()) + "\"")
                 .body(FileUtils.readFileToByteArray(file));
     }
 
+    @GetMapping("/downloadSummary")
+    public ResponseEntity downloadSummary() throws IOException {
+
+        File file = new File(Dictionary.PERSONAL_STUDYLOAD_FOLDER + Dictionary.STUDYLOAD_SUMMARY_FILENAME_XLSX);
+        return ResponseEntity.ok()
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .header(HttpHeaders.CONTENT_DISPOSITION, Dictionary.ATTACHMENT_FILENAME + Dictionary.STUDYLOAD_SUMMARY_FILENAME_XLSX + "\"")
+                .body(FileUtils.readFileToByteArray(file));
+    }
+
     @GetMapping(value = "/downloadIp", produces = "application/zip")
     public ResponseEntity downloadIpZip() throws IOException {
-        File zipFile = new File(Dictionary.getResultsFolder() + "Ind_plans.zip");
-        FileOutputStream fos = new FileOutputStream(zipFile);
-        try (ZipOutputStream zipOS = new ZipOutputStream(fos)) {
-            List<String> fileNames = new ArrayList<>();
-            List<Teacher> teachers = teacherService.listAll();
-            for(Teacher teacher : teachers){
-                fileNames.add(teacher.getTeacherHours().getIpFilename());
-            }
-            for (String fileName : fileNames) {
-                File someFile = new File(Dictionary.getResultsFolder() + fileName);
-                writeToZipFile(Dictionary.getResultsFolder() + someFile.getName(), zipOS);
+        File zipFile = new File(Dictionary.INDIVIDUAL_PLANS_FOLDER + "Ind_plans.zip");
+        try (FileOutputStream fos = new FileOutputStream(zipFile)) {
+            try (ZipOutputStream zipOS = new ZipOutputStream(fos)) {
+                List<String> fileNames = new ArrayList<>();
+                List<Teacher> teachers = teacherService.listAll();
+                for (Teacher teacher : teachers) {
+                    fileNames.add(teacher.getTeacherHours().getIpFilename());
+                }
+                for (String fileName : fileNames) {
+                    File someFile = new File(Dictionary.INDIVIDUAL_PLANS_FOLDER + fileName);
+                    writeToZipFile(Dictionary.INDIVIDUAL_PLANS_FOLDER + someFile.getName(), zipOS);
+                }
             }
         }
         Formulary formulary = formularyService.listAll().get(0);
         formulary.setIndPlanZipFilename(zipFile.getName());
         formularyService.save(formulary);
-        fos.close();
         return ResponseEntity.ok()
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .header(HttpHeaders.CONTENT_DISPOSITION, Dictionary.ATTACHMENT_FILENAME + rfc5987_encode(formularyService.listAll().get(0).getIndPlanZipFilename()) + "\"")

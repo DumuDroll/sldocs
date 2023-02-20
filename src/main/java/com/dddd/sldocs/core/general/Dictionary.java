@@ -19,15 +19,10 @@ public class Dictionary {
     public static final String ASPIRANTS_DOCTORANTS = "Аспіранти, докторанти";
     public static final String BACHELORS = "Бакалаври";
     public static final String COURSE_PROJECTS_5_COURSE = "Курсові 5 курс";
-    private static String RESULTS_FOLDER = "results/";
-
+    public static final String RESULTS_FOLDER = "results/";
+    public static final String ED_AS_ST_FOLDER = "results/edAsSt/";
+    public static final String PERSONAL_STUDYLOAD_FOLDER = "results/personal_studyload/";
+    public static final String INDIVIDUAL_PLANS_FOLDER = "results/individual_plans/";
     public static final String STUDYLOAD_SUMMARY_FILENAME_XLSX = "studyload_summary.xlsx";
 
-    public static String getResultsFolder() {
-        return RESULTS_FOLDER;
-    }
-
-    public static void setResultsFolder(String folder){
-        RESULTS_FOLDER = folder;
-    }
 }

@@ -38,16 +38,12 @@ public class ReadExcelController {
 
     private final TeacherService teacherService;
 
-    private final TeacherHoursService teacherHoursService;
-
     public ReadExcelController(StudyloadRowService studyloadRowService, DisciplineService disciplineService,
-                               FormularyService formularyService, TeacherService teacherService,
-                               TeacherHoursService teacherHoursService) {
+                               FormularyService formularyService, TeacherService teacherService) {
         this.studyloadRowService = studyloadRowService;
         this.formularyService = formularyService;
         this.disciplineService = disciplineService;
         this.teacherService = teacherService;
-        this.teacherHoursService = teacherHoursService;
     }
 
     @PostMapping("/uploadObs")
@@ -182,7 +178,7 @@ public class ReadExcelController {
         }
     }
 
-    public void readObsyagSheet(XSSFWorkbook workbook, int sheetNum) {
+    public void readObsyagSheet(XSSFWorkbook workbook, int sheetNum) throws Exception {
         XSSFSheet sheet = workbook.getSheetAt(sheetNum);
         DataFormatter df = new DataFormatter();
         StudyLoad studyLoad = new StudyLoad();
@@ -281,7 +277,7 @@ public class ReadExcelController {
                     studyLoad.getStudyloadRow().setDiscipline(disciplineService.findByName(excelRow.get(1).toString().trim()));
                 }
 
-                if(!formularyService.listAll().isEmpty()){
+                if (!formularyService.listAll().isEmpty()) {
                     studyLoad.getStudyloadRow().setFormulary(formularyService.listAll().get(0));
                 }
                 studyloadRowService.save(studyLoad.getStudyloadRow());
@@ -290,6 +286,7 @@ public class ReadExcelController {
             }
         } catch (Exception ex) {
             log.error(ex);
+            throw new Exception(ex);
         }
     }
 

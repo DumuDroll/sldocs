@@ -69,7 +69,7 @@ public class TeacherController {
     public String sendIpTo(@RequestParam("name") String name, @RequestParam("email") String email) {
         Teacher teacher = teacherService.findByName(name);
         try {
-            Sender.Send(email, teacher.getTeacherHours().getIpFilename());
+            Sender.Send(email, Dictionary.INDIVIDUAL_PLANS_FOLDER, teacher.getTeacherHours().getIpFilename());
         } catch (NullPointerException ex) {
             return "error/noFilesYet";
         }
@@ -81,7 +81,7 @@ public class TeacherController {
     public String sendPslTo(@RequestParam("name") String name, @RequestParam("email") String email) {
         Teacher teacher = teacherService.findByName(name);
         try {
-            Sender.Send(email, formularyService.listAll().get(0).getPslFilename());
+            Sender.Send(email, Dictionary.PERSONAL_STUDYLOAD_FOLDER, formularyService.listAll().get(0).getPslFilename());
         } catch (NullPointerException ex) {
             return "error/noFilesYet";
         }
@@ -93,7 +93,7 @@ public class TeacherController {
         List<Teacher> teachers = teacherService.listWithEmails();
         StringBuilder stringBuilder = new StringBuilder();
         for (Teacher teacher : teachers) {
-            Sender.Send(teacher.getEmailAddress(), teacher.getTeacherHours().getIpFilename());
+            Sender.Send(teacher.getEmailAddress(), Dictionary.INDIVIDUAL_PLANS_FOLDER, teacher.getTeacherHours().getIpFilename());
             setEmailedDate(teacher, stringBuilder);
             stringBuilder = new StringBuilder();
         }
@@ -105,7 +105,7 @@ public class TeacherController {
         List<Teacher> teachers = teacherService.listWithEmails();
         StringBuilder stringBuffer = new StringBuilder();
         for (Teacher teacher : teachers) {
-            Sender.Send(teacher.getEmailAddress(), formularyService.listAll().get(0).getPslFilename());
+            Sender.Send(teacher.getEmailAddress(), Dictionary.PERSONAL_STUDYLOAD_FOLDER, formularyService.listAll().get(0).getPslFilename());
             setEmailedDate(teacher, stringBuffer);
             stringBuffer = new StringBuilder();
         }

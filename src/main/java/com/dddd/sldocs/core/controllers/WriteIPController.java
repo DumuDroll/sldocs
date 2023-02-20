@@ -51,21 +51,22 @@ public class WriteIPController {
     }
 
     @PostMapping("/uploadIp")
-    public String uploadAgain(@RequestParam("file") MultipartFile[] files) {
+    public String uploadAgain(@RequestParam("file") MultipartFile[] files) throws Exception {
         for (MultipartFile file : files) {
             String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-            Path path = Paths.get(Dictionary.getResultsFolder() + fileName);
+            Path path = Paths.get(Dictionary.INDIVIDUAL_PLANS_FOLDER + fileName);
             try {
                 Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
             } catch (Exception e) {
                 log.error(e);
+                throw new Exception(e);
             }
         }
         return "success/ipToDB";
     }
 
     @RequestMapping("/IP")
-    public String createExcel() {
+    public String createExcel() throws Exception {
         long startTime = System.currentTimeMillis();
         try {
             List<Teacher> teachers = teacherService.listAll();
@@ -471,21 +472,15 @@ public class WriteIPController {
                                 cell.setCellFormula("SUM(D15:D18)");
                                 cell.setCellStyle(style14Bot);
                             }
-                            File someFile = new File(Dictionary.getResultsFolder() + UkrainianToLatin.generateLat(teacher.getName()) + " ind_plan.xlsx");
+                            File someFile = new File(Dictionary.INDIVIDUAL_PLANS_FOLDER + UkrainianToLatin.generateLat(teacher.getName()) + " ind_plan.xlsx");
                             try (FileOutputStream outputStream = new FileOutputStream(someFile)) {
 
                                 workbook.write(outputStream);
 
                                 teacher.getTeacherHours().setIpFilename(someFile.getName());
                                 teacherService.save(teacher);
-                            } catch (Exception e) {
-                                log.error(e);
                             }
-                        } catch (Exception e) {
-                            log.error(e);
                         }
-                    } catch (Exception e) {
-                        log.error(e);
                     }
                 }
             }
@@ -500,6 +495,7 @@ public class WriteIPController {
             metricService.save(cr);
         } catch (Exception e) {
             log.error(e);
+            throw new Exception(e);
         }
 
         return "redirect:/";

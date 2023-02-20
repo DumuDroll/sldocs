@@ -32,7 +32,7 @@ public class WriteEASController {
     }
 
     @RequestMapping("/EdAsSt")
-    public String createExcel() {
+    public String createExcel() throws Exception {
         try (InputStream in = Files.newInputStream(new File("src/main/resources/EdAsStExample.xlsx").toPath())) {
             XSSFWorkbookFactory workbookFactory = new XSSFWorkbookFactory();
             try (XSSFWorkbook workbook = workbookFactory.create(in)) {
@@ -118,22 +118,19 @@ public class WriteEASController {
 
                 writeSheet(font, style, sheet, rowCount, data, true, workbook, rowAutoHeightStyle);
 
-                File someFile = new File(Dictionary.getResultsFolder() + "Відомість_учбових_доручень.xlsx");
+                File someFile = new File(Dictionary.ED_AS_ST_FOLDER + "Відомість_учбових_доручень.xlsx");
 
                 try (FileOutputStream outputStream = new FileOutputStream(someFile)) {
                     workbook.write(outputStream);
-                } catch (Exception e) {
-                    log.error(e);
                 }
 
                 List<Formulary> formularies = formularyService.listAll();
                 formularies.get(0).setEasFilename(someFile.getName());
                 formularyService.save(formularies.get(0));
-            } catch (Exception e) {
-                log.error(e);
             }
-        } catch (Exception ex) {
-            log.error(ex);
+        } catch (Exception e) {
+            log.error(e);
+            throw new Exception(e);
         }
         return "redirect:/";
     }

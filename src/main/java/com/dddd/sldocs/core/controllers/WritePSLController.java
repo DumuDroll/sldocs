@@ -58,19 +58,19 @@ public class WritePSLController {
     @PostMapping("/uploadPSL")
     public String uploadPSLToLFS(@RequestParam("file") MultipartFile file) throws IOException {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        Path path = Paths.get(Dictionary.getResultsFolder() + fileName);
+        Path path = Paths.get(Dictionary.PERSONAL_STUDYLOAD_FOLDER + fileName);
         try {
             Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
             log.error(e);
         }
-        writePSLforTeacher();
+        writePSLForTeacher();
         return "success/pslToDB";
     }
 
 
     @RequestMapping("/PSL")
-    public String writePSL() {
+    public String writePSL() throws Exception {
         long startTime = System.currentTimeMillis();
         try (InputStream inputStream = Files.newInputStream(new File("src/main/resources/PSLExample.xlsx").toPath())) {
             XSSFWorkbookFactory workbookFactory = new XSSFWorkbookFactory();
@@ -444,7 +444,7 @@ public class WritePSLController {
                         cell = row.getCell(0);
                         cell.setCellValue("Станом на " + DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDateTime.now()));
 
-                        if(teacher.getFullName()==null || teacher.getFullName().isEmpty()){
+                        if (teacher.getFullName() == null || teacher.getFullName().isEmpty()) {
                             break;
                         }
 
@@ -544,12 +544,12 @@ public class WritePSLController {
                 }
 
                 workbook.removeSheetAt(2);
-                File someFile = new File(Dictionary.getResultsFolder() + PERSONAL_STUDY_LOAD_XLSX);
+                File someFile = new File(Dictionary.PERSONAL_STUDYLOAD_FOLDER + PERSONAL_STUDY_LOAD_XLSX);
                 try (FileOutputStream outputStream = new FileOutputStream(someFile)) {
                     workbook.write(outputStream);
                     formulary.setPslFilename(someFile.getName());
                     formularyService.save(formulary);
-                    writePSLforTeacher();
+                    writePSLForTeacher();
 
                     writeSummaryInSeparateFile();
 
@@ -558,17 +558,11 @@ public class WritePSLController {
                     cr.setTimeToForm((System.currentTimeMillis() - startTime));
                     log.info("Number of teachers: [{}]    Creation time: [{}]", cr.getTeacherNumber() + 100, cr.getTimeToForm());
                     metricService.save(cr);
-                } catch (Exception e) {
-                    log.error("Error creating resulting PSL file");
-                    log.error(e);
                 }
-            } catch (Exception e) {
-                log.error("Error creating workbook object");
-                log.error(e);
             }
         } catch (Exception e) {
-            log.error("Error reading PSL example");
             log.error(e);
+            throw new Exception(e);
         }
         return "redirect:/";
     }
@@ -617,11 +611,11 @@ public class WritePSLController {
         }
     }
 
-    private void writePSLforTeacher() throws IOException {
+    private void writePSLForTeacher() throws IOException {
         List<Teacher> teachers = teacherService.listAll();
         for (Teacher teacher : teachers) {
-            File originalWb = new File(Dictionary.getResultsFolder() + PERSONAL_STUDY_LOAD_XLSX);
-            File clonedWb = new File(Dictionary.getResultsFolder() + UkrainianToLatin.generateLat(teacher.getName()) + " personal_study_load.xlsx");
+            File originalWb = new File(Dictionary.PERSONAL_STUDYLOAD_FOLDER + PERSONAL_STUDY_LOAD_XLSX);
+            File clonedWb = new File(Dictionary.PERSONAL_STUDYLOAD_FOLDER + UkrainianToLatin.generateLat(teacher.getName()) + " personal_study_load.xlsx");
             Files.copy(originalWb.toPath(), clonedWb.toPath(), StandardCopyOption.REPLACE_EXISTING);
             try (FileInputStream iS = new FileInputStream(clonedWb)) {
 
@@ -650,9 +644,9 @@ public class WritePSLController {
         }
     }
 
-    private void writeSummaryInSeparateFile() throws IOException {
-        File originalWb = new File(Dictionary.getResultsFolder() + PERSONAL_STUDY_LOAD_XLSX);
-        File clonedWb = new File(Dictionary.getResultsFolder() + Dictionary.STUDYLOAD_SUMMARY_FILENAME_XLSX);
+    private void writeSummaryInSeparateFile() throws Exception {
+        File originalWb = new File(Dictionary.PERSONAL_STUDYLOAD_FOLDER + PERSONAL_STUDY_LOAD_XLSX);
+        File clonedWb = new File(Dictionary.PERSONAL_STUDYLOAD_FOLDER + Dictionary.STUDYLOAD_SUMMARY_FILENAME_XLSX);
         Files.copy(originalWb.toPath(), clonedWb.toPath(), StandardCopyOption.REPLACE_EXISTING);
         try (FileInputStream iS = new FileInputStream(clonedWb)) {
 
@@ -663,17 +657,10 @@ public class WritePSLController {
                 }
                 try (FileOutputStream outputStream = new FileOutputStream(clonedWb)) {
                     workbook.write(outputStream);
-                } catch (Exception e) {
-                    log.error("Error writing summary to a file");
-                    log.error(e);
                 }
-            } catch (Exception e) {
-                log.error("Error creating a workbook for summary");
-                log.error(e);
             }
         } catch (Exception e) {
-            log.error("Error opening copied summary file");
-            log.error(e);
+            throw new Exception(e);
         }
 
     }
