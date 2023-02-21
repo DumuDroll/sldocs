@@ -44,7 +44,6 @@ public class WritePSLController {
     private final CreationMetricService metricService;
     private final TeacherService teacherService;
     private final FormularyService formularyService;
-    private static final String PERSONAL_STUDY_LOAD_XLSX = "personal_study_load.xlsx";
     private static final String TIMES_NEW_ROMAN = "Times New Roman";
 
     public WritePSLController(PersonalLoadViewService plsVmService, TeacherService teacherService,
@@ -268,7 +267,7 @@ public class WritePSLController {
                         cell = row.getCell(5);
                         CellRangeAddress cellRangeAddress = new CellRangeAddress(2, 2, 5, 19);
                         sheet.addMergedRegion(cellRangeAddress);
-                        cell.setCellValue("Кафедра програмної інженерії та інтелектуальних технологій управління");
+                        cell.setCellValue(formulary.getDepartmentFullNameGenitiveCase());
                         cell.getCellStyle().setFont(font14);
 
                         rowNum = 4; //Поменялся пример -ОСЕНЬ -Норматив
@@ -314,7 +313,6 @@ public class WritePSLController {
 
 
                         int autumnSum = rowNum;
-                        teacher.getTeacherHours().setAutumnSumRowNumber(String.valueOf(autumnSum));
                         row = sheet.createRow(rowNum++);
                         cell = row.createCell(0);
                         cell.setCellValue("Усього за осінь");
@@ -437,7 +435,7 @@ public class WritePSLController {
                         sheet = workbook.getSheetAt(0);
                         row = sheet.getRow(0);
                         cell = row.getCell(0);
-                        cell.setCellValue("ЗВЕДЕНЕ НАВЧАЛЬНЕ НАВАНТАЖЕННЯ кафедри " + formulary.getDepartmentFullNameGenitiveCase()
+                        cell.setCellValue("ЗВЕДЕНЕ НАВЧАЛЬНЕ НАВАНТАЖЕННЯ кафедри " + formulary.getDepartmentFullNameGenitiveCase().toUpperCase()
                                 + " на " + formulary.getAcademicYear() + " навчальний рік");
 
                         row = sheet.getRow(1);
@@ -544,7 +542,7 @@ public class WritePSLController {
                 }
 
                 workbook.removeSheetAt(2);
-                File someFile = new File(Dictionary.PERSONAL_STUDYLOAD_FOLDER + PERSONAL_STUDY_LOAD_XLSX);
+                File someFile = new File(Dictionary.PERSONAL_STUDYLOAD_FOLDER + formularyService.listAll().get(0).getPslFilename());
                 try (FileOutputStream outputStream = new FileOutputStream(someFile)) {
                     workbook.write(outputStream);
                     formulary.setPslFilename(someFile.getName());
@@ -614,7 +612,7 @@ public class WritePSLController {
     private void writePSLForTeacher() throws IOException {
         List<Teacher> teachers = teacherService.listAll();
         for (Teacher teacher : teachers) {
-            File originalWb = new File(Dictionary.PERSONAL_STUDYLOAD_FOLDER + PERSONAL_STUDY_LOAD_XLSX);
+            File originalWb = new File(Dictionary.PERSONAL_STUDYLOAD_FOLDER + formularyService.listAll().get(0).getPslFilename());
             File clonedWb = new File(Dictionary.PERSONAL_STUDYLOAD_FOLDER + UkrainianToLatin.generateLat(teacher.getName()) + " personal_study_load.xlsx");
             Files.copy(originalWb.toPath(), clonedWb.toPath(), StandardCopyOption.REPLACE_EXISTING);
             try (FileInputStream iS = new FileInputStream(clonedWb)) {
@@ -645,7 +643,7 @@ public class WritePSLController {
     }
 
     private void writeSummaryInSeparateFile() throws Exception {
-        File originalWb = new File(Dictionary.PERSONAL_STUDYLOAD_FOLDER + PERSONAL_STUDY_LOAD_XLSX);
+        File originalWb = new File(Dictionary.PERSONAL_STUDYLOAD_FOLDER + formularyService.listAll().get(0).getPslFilename());
         File clonedWb = new File(Dictionary.PERSONAL_STUDYLOAD_FOLDER + Dictionary.STUDYLOAD_SUMMARY_FILENAME_XLSX);
         Files.copy(originalWb.toPath(), clonedWb.toPath(), StandardCopyOption.REPLACE_EXISTING);
         try (FileInputStream iS = new FileInputStream(clonedWb)) {

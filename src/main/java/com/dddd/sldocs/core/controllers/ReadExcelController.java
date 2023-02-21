@@ -150,32 +150,26 @@ public class ReadExcelController {
         XSSFSheet sheet = workbook.getSheetAt(0);
         XSSFRow row;
         ArrayList<Object> formularyValues = new ArrayList<>();
-        for (int i = 1; i < 16; i++) {
+        for (int i = 1; i < 15; i++) {
             row = sheet.getRow(i);
             readCell(formularyValues, row.getCell(1));
         }
         Formulary formulary = new Formulary();
-        try {
-            formulary.setFolderName(formularyValues.get(0).toString());
-            formulary.setFileName(formularyValues.get(1).toString());
-            formulary.setDepartmentShortName(formularyValues.get(2).toString());
-            formulary.setDepartmentFullNameGenitiveCase(formularyValues.get(3).toString());
-            formulary.setAcademicYear(formularyValues.get(4).toString());
-            formulary.setDepartmentHeadTittle(formularyValues.get(5).toString());
-            formulary.setDepartmentHeadPositionName(formularyValues.get(6).toString());
-            formulary.setDepartmentHeadFullName(formularyValues.get(7).toString());
-            formulary.setInstitute(formularyValues.get(8).toString());
-            formulary.setDepartmentFullNameNominativeCase(formularyValues.get(9).toString());
-            formulary.setProtocolNumber(formularyValues.get(10).toString());
-            formulary.setProtocolDate(formularyValues.get(11).toString());
-            formulary.setApprovedByTittle(formularyValues.get(12).toString());
-            formulary.setApprovedByPosition(formularyValues.get(13).toString());
-            formulary.setApprovedByFullName(formularyValues.get(14).toString());
-            formularyService.save(formulary);
-        } catch (Exception e) {
-            log.error("Error reading formulary");
-            log.error(e);
-        }
+        formulary.setPslFilename(formularyValues.get(0).toString());
+        formulary.setDepartmentShortName(formularyValues.get(1).toString());
+        formulary.setDepartmentFullNameGenitiveCase(formularyValues.get(2).toString());
+        formulary.setAcademicYear(formularyValues.get(3).toString());
+        formulary.setDepartmentHeadTittle(formularyValues.get(4).toString());
+        formulary.setDepartmentHeadPositionName(formularyValues.get(5).toString());
+        formulary.setDepartmentHeadFullName(formularyValues.get(6).toString());
+        formulary.setInstitute(formularyValues.get(7).toString());
+        formulary.setDepartmentFullNameNominativeCase(formularyValues.get(8).toString());
+        formulary.setProtocolNumber(formularyValues.get(9).toString());
+        formulary.setProtocolDate(formularyValues.get(10).toString());
+        formulary.setApprovedByTittle(formularyValues.get(11).toString());
+        formulary.setApprovedByPosition(formularyValues.get(12).toString());
+        formulary.setApprovedByFullName(formularyValues.get(13).toString());
+        formularyService.save(formulary);
     }
 
     public void readObsyagSheet(XSSFWorkbook workbook, int sheetNum) throws Exception {

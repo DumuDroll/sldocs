@@ -4,7 +4,6 @@ import com.dddd.sldocs.auth.user_details.UserService;
 import com.dddd.sldocs.core.entities.Teacher;
 import com.dddd.sldocs.core.general.Dictionary;
 import com.dddd.sldocs.core.general.utils.email.Sender;
-import com.dddd.sldocs.core.services.FormularyService;
 import com.dddd.sldocs.core.services.TeacherService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
@@ -16,8 +15,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.mail.MessagingException;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,12 +30,10 @@ public class TeacherController {
 
     private final TeacherService teacherService;
     private final UserService userService;
-    private final FormularyService formularyService;
 
-    public TeacherController(TeacherService teacherService, UserService userService, FormularyService formularyService) {
+    public TeacherController(TeacherService teacherService, UserService userService) {
         this.teacherService = teacherService;
         this.userService = userService;
-        this.formularyService = formularyService;
     }
 
     @RequestMapping("/teachers")
@@ -70,7 +69,7 @@ public class TeacherController {
         Teacher teacher = teacherService.findByName(name);
         try {
             Sender.Send(email, Dictionary.INDIVIDUAL_PLANS_FOLDER, teacher.getTeacherHours().getIpFilename());
-        } catch (NullPointerException ex) {
+        } catch (Exception ex) {
             return "error/noFilesYet";
         }
         return getTimeString(teacher);
@@ -81,15 +80,15 @@ public class TeacherController {
     public String sendPslTo(@RequestParam("name") String name, @RequestParam("email") String email) {
         Teacher teacher = teacherService.findByName(name);
         try {
-            Sender.Send(email, Dictionary.PERSONAL_STUDYLOAD_FOLDER, formularyService.listAll().get(0).getPslFilename());
-        } catch (NullPointerException ex) {
+            Sender.Send(email, Dictionary.PERSONAL_STUDYLOAD_FOLDER, teacher.getTeacherHours().getPslFilename());
+        } catch (Exception ex) {
             return "error/noFilesYet";
         }
         return getTimeString(teacher);
     }
 
     @RequestMapping("/teacher/sendIpToAll")
-    public String sendIpToAll() {
+    public String sendIpToAll() throws MessagingException, UnsupportedEncodingException {
         List<Teacher> teachers = teacherService.listWithEmails();
         StringBuilder stringBuilder = new StringBuilder();
         for (Teacher teacher : teachers) {
@@ -101,11 +100,11 @@ public class TeacherController {
     }
 
     @RequestMapping("/teacher/sendPslToAll")
-    public String sendPslToAll() {
+    public String sendPslToAll() throws MessagingException, UnsupportedEncodingException {
         List<Teacher> teachers = teacherService.listWithEmails();
         StringBuilder stringBuffer = new StringBuilder();
         for (Teacher teacher : teachers) {
-            Sender.Send(teacher.getEmailAddress(), Dictionary.PERSONAL_STUDYLOAD_FOLDER, formularyService.listAll().get(0).getPslFilename());
+            Sender.Send(teacher.getEmailAddress(), Dictionary.PERSONAL_STUDYLOAD_FOLDER, teacher.getTeacherHours().getPslFilename());
             setEmailedDate(teacher, stringBuffer);
             stringBuffer = new StringBuilder();
         }

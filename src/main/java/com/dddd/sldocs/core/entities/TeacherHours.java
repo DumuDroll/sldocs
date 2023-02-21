@@ -22,8 +22,6 @@ public class TeacherHours {
     private String masterScNum;
     private String autumnSumFact;
     private String autumnSumPlan;
-    private String autumnSumRowNumber;
     private String springSumFact;
     private String springSumPlan;
-    private String springSumRowNumber;
 }

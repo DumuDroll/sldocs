@@ -55,23 +55,11 @@ public class IndexController {
             pslfn = formularyService.listAll().get(0).getPslFilename();
             ipzipfn = formularyService.listAll().get(0).getIndPlanZipFilename();
         } catch (IndexOutOfBoundsException ex) {
-            log.info("no faculties");
+            log.info("no files yet");
         }
-        boolean eas = true;
-        boolean psl = true;
-        boolean ip = true;
-        if (easfn == null || easfn.isEmpty()) {
-            eas = false;
-        }
-        if (pslfn == null || pslfn.isEmpty()) {
-            psl = false;
-        }
-        if (ipzipfn == null || ipzipfn.isEmpty()) {
-            ip = false;
-        }
-        model.addAttribute("eas", eas);
-        model.addAttribute("psl", psl);
-        model.addAttribute("ip", ip);
+        model.addAttribute("eas", easfn != null && !easfn.isEmpty());
+        model.addAttribute("psl", new File(Dictionary.PERSONAL_STUDYLOAD_FOLDER + pslfn).isFile());
+        model.addAttribute("ip", ipzipfn != null && !ipzipfn.isEmpty());
         return "index";
     }
 
